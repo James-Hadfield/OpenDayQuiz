@@ -371,6 +371,58 @@ h1 {
         padding: 10px;
     }
 }
+/* Leaderboard */
+.leaderboard {
+    margin-top: 20px;
+    padding: 15px;
+    background: rgba(33, 150, 243, 0.1);
+    border-radius: 10px;
+    max-height: 400px;
+    display: flex;
+    flex-direction: column;
+}
+
+#leaderboardList {
+    overflow-y: auto;
+    margin: 10px 0;
+}
+
+.leaderboard-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin: 10px 0;
+    padding: 10px 0;
+    border-top: 1px solid rgba(0,0,0,0.1);
+}
+
+.leaderboard-pagination button {
+    padding: 5px 15px;
+    background: #2196F3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.leaderboard-pagination button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+#pageInfo {
+    font-size: 0.9em;
+    color: #666;
+}
+
+/* Rank colors for more positions */
+.score-entry:nth-child(1) .rank { color: #FFD700; } /* Gold */
+.score-entry:nth-child(2) .rank { color: #C0C0C0; } /* Silver */
+.score-entry:nth-child(3) .rank { color: #CD7F32; } /* Bronze */
+.score-entry:nth-child(n+4):nth-child(-n+10) .rank { color: #2196F3; } /* Top 10 */
+.score-entry:nth-child(n+11):nth-child(-n+20) .rank { color: #4CAF50; } /* Top 20 */
+.score-entry:nth-child(n+21) .rank { color: #666; } /* Rest */
   </style>
 </head>
 <body>
@@ -439,7 +491,7 @@ h1 {
           <img src=".github/images/UCC logo (Color).jpg" alt="UCC Logo" class="ucc-logo">
       </div>
       
-      <h1>Quest Complete! 🏆</h1>
+      <h1>Game Complete! 🏆</h1>
       
       <div class="welcome-card">
           <div class="score-info">
@@ -459,11 +511,27 @@ h1 {
           </div>
       </div>
 
+      <div class="leaderboard">
+        <h3>🏆 Top 50 Scores</h3>
+        <div id="leaderboardList"></div>
+        <div class="leaderboard-pagination">
+            <button onclick="changePage(-1)">Previous</button>
+            <span id="pageInfo">Page 1 of 1</span>
+            <button onclick="changePage(1)">Next</button>
+        </div>
+        <div class="player-name-input" id="playerNameInput">
+            <input type="text" id="playerName" placeholder="Enter your name" maxlength="20">
+            <button onclick="saveScore()">Save Score</button>
+        </div>
+    </div>
+
       <button class="start-button" onclick="restartQuiz()">
-          <span class="button-text">Play Again</span>
+          <span class="button-text">Play Again?</span>
           <span class="button-icon">🎮</span>
       </button>
   </div>
+
+</div>
 </div>
 
 <script>
@@ -737,6 +805,113 @@ h1 {
     document.getElementById('startContainer').classList.add('active');
     document.getElementById('score').textContent = 0;
   }
+
+  let currentPage = 1;
+const entriesPerPage = 10;
+
+// Leaderboard functions
+function getLeaderboard() {
+    const leaderboard = JSON.parse(localStorage.getItem('quizLeaderboard')) || [];
+    return leaderboard.sort((a, b) => b.score - a.score).slice(0, 50); // Keep top 50
+}
+
+function saveScore() {
+    const playerName = document.getElementById('playerName').value.trim();
+    if (!playerName) {
+        alert('Please enter your name!');
+        return;
+    }
+
+    const newScore = {
+        name: playerName,
+        score: score,
+        date: new Date().toISOString()
+    };
+
+    const leaderboard = getLeaderboard();
+    leaderboard.push(newScore);
+    leaderboard.sort((a, b) => b.score - a.score);
+    
+    // Keep only top 50 scores
+    while (leaderboard.length > 50) {
+        leaderboard.pop();
+    }
+
+    localStorage.setItem('quizLeaderboard', JSON.stringify(leaderboard));
+    currentPage = 1; // Reset to first page
+    updateLeaderboardDisplay();
+    
+    // Hide the input form after saving
+    document.getElementById('playerNameInput').style.display = 'none';
+}
+
+function updateLeaderboardDisplay() {
+    const leaderboard = getLeaderboard();
+    const leaderboardList = document.getElementById('leaderboardList');
+    leaderboardList.innerHTML = '';
+
+    const totalPages = Math.ceil(leaderboard.length / entriesPerPage);
+    const start = (currentPage - 1) * entriesPerPage;
+    const end = start + entriesPerPage;
+    const pageEntries = leaderboard.slice(start, end);
+
+    pageEntries.forEach((entry, index) => {
+        const globalRank = start + index + 1;
+        const scoreEntry = document.createElement('div');
+        scoreEntry.className = 'score-entry';
+        scoreEntry.innerHTML = `
+            <span class="rank">#${globalRank}</span>
+            <span class="name">${entry.name}</span>
+            <span class="score">${entry.score}</span>
+        `;
+        leaderboardList.appendChild(scoreEntry);
+    });
+
+    // Update pagination
+    document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages}`;
+    const prevButton = document.querySelector('.leaderboard-pagination button:first-child');
+    const nextButton = document.querySelector('.leaderboard-pagination button:last-child');
+    prevButton.disabled = currentPage === 1;
+    nextButton.disabled = currentPage === totalPages;
+}
+
+function changePage(delta) {
+    const leaderboard = getLeaderboard();
+    const totalPages = Math.ceil(leaderboard.length / entriesPerPage);
+    const newPage = currentPage + delta;
+
+    if (newPage >= 1 && newPage <= totalPages) {
+        currentPage = newPage;
+        updateLeaderboardDisplay();
+    }
+}
+
+// Modify your existing showEndScreen function
+function showEndScreen() {
+    document.getElementById('quizContainer').classList.remove('active');
+    document.getElementById('endContainer').classList.add('active');
+    document.getElementById('finalScore').textContent = score;
+
+    const descriptor = getScoreDescription(score);
+    document.getElementById('scoreDescription').textContent = descriptor;
+    
+    // Reset player name input and page
+    document.getElementById('playerName').value = '';
+    document.getElementById('playerNameInput').style.display = 'block';
+    currentPage = 1;
+    
+    // Update leaderboard display
+    updateLeaderboardDisplay();
+}
+
+// Add this to your restartQuiz function
+function restartQuiz() {
+    document.getElementById('endContainer').classList.remove('active');
+    document.getElementById('startContainer').classList.add('active');
+    document.getElementById('score').textContent = 0;
+    document.getElementById('playerNameInput').style.display = 'block';
+    currentPage = 1;
+}
 </script>
 </body>
 </html>
