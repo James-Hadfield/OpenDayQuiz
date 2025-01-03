@@ -467,6 +467,78 @@ h1 {
 .score-entry:nth-child(n+4):nth-child(-n+10) .rank { color: #2196F3; } /* Top 10 */
 .score-entry:nth-child(n+11):nth-child(-n+20) .rank { color: #4CAF50; } /* Top 20 */
 .score-entry:nth-child(n+21) .rank { color: #666; } /* Rest */
+
+/* Update start button styles */
+.start-button {
+    background: linear-gradient(45deg, #2196F3, #21CBF3);
+    border: none;
+    border-radius: 25px;
+    padding: 12px 30px; /* Reduced padding */
+    font-size: 1.1em; /* Slightly smaller font */
+    color: white;
+    cursor: pointer;
+    transition: transform 0.2s;
+    margin: 15px auto; /* Changed to auto margins */
+    display: inline-flex; /* Changed to inline-flex */
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* Reduced gap */
+    width: auto; /* Allow button to fit content */
+    min-width: 200px; /* Minimum width */
+    max-width: 90%; /* Maximum width relative to container */
+}
+
+/* Mobile adjustments for start button */
+@media (max-width: 480px) {
+    .start-button {
+        padding: 10px 20px;
+        font-size: 1em;
+        min-width: 180px;
+        margin: 10px auto;
+    }
+    
+    .button-text {
+        font-size: 0.9em;
+    }
+    
+    .button-icon {
+        font-size: 1.1em;
+    }
+}
+
+/* Update container padding for mobile */
+@media (max-width: 480px) {
+    .start-container,
+    .quiz-container,
+    .end-container {
+        padding: 15px 10px;
+        margin: 10px;
+    }
+    
+    .quiz-intro {
+        padding: 5px;
+    }
+    
+    .welcome-card {
+        margin: 10px 0;
+    }
+}
+
+/* Ensure content fits in viewport */
+@media (max-height: 600px) {
+    .start-container .welcome-card {
+        margin: 5px 0;
+    }
+    
+    .start-button {
+        margin: 5px auto;
+    }
+    
+    .rules-box {
+        padding: 10px;
+        margin-top: 10px;
+    }
+}
   </style>
 </head>
 <body>
