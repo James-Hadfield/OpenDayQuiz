@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Character Riddle Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #f0f0f0;
+    }
+    /* Containers */
+    .start-container, .quiz-container, .end-container {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      display: none; /* All hidden by default; we toggle them on/off in JS */
+    }
+    /* Visible by toggling .active in JS */
+    .start-container.active,
+    .quiz-container.active,
+    .end-container.active {
+      display: block;
+    }
+    /* Buttons */
+    button {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    button:disabled {
+      background: #cccccc;
+      cursor: not-allowed;
+    }
+    /* Score display */
+    .score {
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 20px;
+    }
+    /* Quiz question area */
+    #quiz-area h3 {
+      margin-top: 0;
+    }
+    /* Updated Options Layout (2×2 grid) */
+    .options {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin: 15px 0;
+    }
+    /* Each option is now stacked vertically: image above text */
+    .option {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 10px;
+      background: #f8f8f8;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    /* Make sure images show in full (contain) and fit the grid nicely */
+    .option img {
+      width: 100%;
+      max-height: 200px;
+      object-fit: contain;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    .option:hover {
+      background: #e8e8e8;
+    }
+    .option.selected {
+      background: #4CAF50;
+      color: white;
+      border-color: #4CAF50;
+    }
+    /* Hints */
+    .hint {
+      color: #666;
+      margin: 10px 0;
+      padding: 10px;
+      background: #fff3cd;
+      border-radius: 5px;
+      display: none;
+    }
+    /* End page style */
+    #endContainer h2 {
+      margin-top: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- START PAGE -->
+  <div class="start-container active" id="startContainer">
+    <h1>Welcome to the Character Riddle Quiz!</h1>
+    <p>
+      You can earn <strong>up to 10 points</strong> for each correct answer.
+      <br />The first hint is free, but if you need the 2 additional hints, each costs you 3 points.
+      <br />That means if you use <strong>all 3 hints</strong>, you'll still earn <strong>4 points</strong> for a correct answer.
+    </p>
+    <p>
+      Ready? Click <strong>Start Quiz</strong> to begin!
+    </p>
+    <button onclick="startQuiz()">Start Quiz</button>
+  </div>
+
+  <!-- QUIZ PAGE -->
+  <div class="quiz-container" id="quizContainer">
+    <h1>Character Riddle Quiz</h1>
+    <div class="score">Score: <span id="score">0</span></div>
+    <div id="quiz-area">
+      <h3>Question <span id="questionNumber">1</span></h3>
+      <div id="hints"></div>
+      <button onclick="showNextHint()" id="hintButton">Show Hint</button>
+      <div class="options" id="options"></div>
+      <button onclick="submitAnswer()" id="submitButton">Submit Answer</button>
+    </div>
+  </div>
+
+  <!-- END PAGE -->
+  <div class="end-container" id="endContainer">
+    <h2>Quiz Finished!</h2>
+    <p>Your final score is: <span id="finalScore"></span></p>
+    <p id="scoreDescription" style="font-style: italic;"></p>
+    <button onclick="restartQuiz()">Play Again</button>
+  </div>
+
+  <script>
+    // The same riddles and code logic, just with updated layout & images shown fully.
+    const riddles = [
+      {
+        hints: [
+          "I have no heart inside me. ",
+          "I am silver and shiny.",
+          "I look like a big robot."
+        ],
+        options: [
+          { 
+            text: "Captain America",    
+            img: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Captain_America_cosplay_o.jpg" 
+          },
+          { 
+            text: "Tin Man",           
+            img: "https://images.squarespace-cdn.com/content/v1/5f553a973193933cec492e92/1602495441823-UNEHXF7E3535YJMUSRCR/tin_man.jpg"
+          },
+          { 
+            text: "Harry Potter",      
+            img: "https://static.independent.co.uk/s3fs-public/thumbnails/image/2013/09/12/17/potter.jpg?width=1200"
+          },
+          { 
+            text: "British Guardsman",
+            img: "https://www.partypacks.co.uk/cdn/shop/products/product_102793_1_orig_450x.jpg?v=1596812889"
+          }
+        ],
+        answer: "Tin Man"
+      },
+      {
+        hints: [
+          "I went to a place called Wonderland.",
+          "I have light-coloured hair and a headband.",
+          "I am a girl in a blue dress."
+        ],
+        options: [
+          { 
+            text: "Anna",        
+            img: "https://i.pinimg.com/originals/df/ae/36/dfae36fbd0c38f891a1032528ca479bc.png" 
+          },
+          { 
+            text: "Alice",       
+            img: "https://i.pinimg.com/originals/47/65/a5/4765a5c712cf70f0f9ca41a617802184.png" 
+          },
+          { 
+            text: "Supergirl",   
+            img: "https://static1.funidelia.com/474151-f6_big2/supergirl-costume-for-women.jpg" 
+          },
+          { 
+            text: "Willy Wonka", 
+            img: "https://i.pinimg.com/originals/88/1b/e6/881be6a2f3e51d0ac8a96312838252de.png" 
+          }
+        ],
+        answer: "Alice"
+      },
+      {
+        hints: [
+          "I carry a round shield of red, white, and blue.",
+          " I wear a blue suit with a white star.",
+          " I am a strong superhero."
+        ],
+        options: [
+          { 
+            text: "Harry Potter",     
+            img: "https://static.independent.co.uk/s3fs-public/thumbnails/image/2013/09/12/17/potter.jpg?width=1200"
+          },
+          { 
+            text: "Captain America",  
+            img: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Captain_America_cosplay_o.jpg" 
+          },
+          { 
+            text: "Willy Wonka",      
+            img: "https://i.pinimg.com/originals/88/1b/e6/881be6a2f3e51d0ac8a96312838252de.png"
+          },
+          { 
+            text: "Tin Man",          
+            img: "https://images.squarespace-cdn.com/content/v1/5f553a973193933cec492e92/1602495441823-UNEHXF7E3535YJMUSRCR/tin_man.jpg"
+          }
+        ],
+        answer: "Captain America"
+      },
+      {
+        hints: [
+          "I love candy and chocolate.",
+          "I have a big chocolate factory.",
+          "I wear a tall hat and a purple coat."
+        ],
+        options: [
+          { 
+            text: "Willy Wonka",       
+            img: "https://i.pinimg.com/originals/88/1b/e6/881be6a2f3e51d0ac8a96312838252de.png"
+          },
+          { 
+            text: "Jack Sparrow",      
+            img: "https://img4.wikia.nocookie.net/__cb20121228135424/pirates/images/a/ac/JackSparrowProfile.jpg"
+          },
+          { 
+            text: "British Guardsman", 
+            img: "https://www.partypacks.co.uk/cdn/shop/products/product_102793_1_orig_450x.jpg?v=1596812889"
+          },
+          { 
+            text: "Astronaut",         
+            img: "https://www.andrew-sinclair.com/wp-content/uploads/2021/10/Andrew-Sinclair-Astronaut-7.jpg"
+          }
+        ],
+        answer: "Willy Wonka"
+      },
+      {
+        hints: [
+          "I stand in front of the King of England's house.",
+          "I wear a tall, black hat.",
+          "I have a red coat."
+        ],
+        options: [
+          { 
+            text: "Tin Man",           
+            img: "https://images.squarespace-cdn.com/content/v1/5f553a973193933cec492e92/1602495441823-UNEHXF7E3535YJMUSRCR/tin_man.jpg"
+          },
+          { 
+            text: "British Guardsman", 
+            img: "https://www.partypacks.co.uk/cdn/shop/products/product_102793_1_orig_450x.jpg?v=1596812889"
+          },
+          { 
+            text: "Anna",              
+            img: "https://i.pinimg.com/originals/df/ae/36/dfae36fbd0c38f891a1032528ca479bc.png"
+          },
+          { 
+            text: "Jack Sparrow",      
+            img: "https://img4.wikia.nocookie.net/__cb20121228135424/pirates/images/a/ac/JackSparrowProfile.jpg"
+          }
+        ],
+        answer: "British Guardsman"
+      },
+      {
+        hints: [
+          "I sail on a black ship.",
+          "I am a pirate.",
+          "I wear a black hat and have long hair."
+        ],
+        options: [
+          { 
+            text: "Willy Wonka",  
+            img: "https://i.pinimg.com/originals/88/1b/e6/881be6a2f3e51d0ac8a96312838252de.png"
+          },
+          { 
+            text: "Jack Sparrow", 
+            img: "https://img4.wikia.nocookie.net/__cb20121228135424/pirates/images/a/ac/JackSparrowProfile.jpg"
+          },
+          { 
+            text: "Harry Potter", 
+            img: "https://static.independent.co.uk/s3fs-public/thumbnails/image/2013/09/12/17/potter.jpg?width=1200"
+          },
+          { 
+            text: "Astronaut",    
+            img: "https://www.andrew-sinclair.com/wp-content/uploads/2021/10/Andrew-Sinclair-Astronaut-7.jpg"
+          }
+        ],
+        answer: "Jack Sparrow"
+      },
+      {
+        hints: [
+          "I travel in a rocket. ",
+          "I see the stars and the moon.",
+          "I wear a white suit and a big helmet."
+        ],
+        options: [
+          { 
+            text: "Captain America", 
+            img: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Captain_America_cosplay_o.jpg"
+          },
+          { 
+            text: "Astronaut",       
+            img: "https://www.andrew-sinclair.com/wp-content/uploads/2021/10/Andrew-Sinclair-Astronaut-7.jpg"
+          },
+          { 
+            text: "Anna",           
+            img: "https://i.pinimg.com/originals/df/ae/36/dfae36fbd0c38f891a1032528ca479bc.png"
+          },
+          { 
+            text: "Supergirl",      
+            img: "https://static1.funidelia.com/474151-f6_big2/supergirl-costume-for-women.jpg"
+          }
+        ],
+        answer: "Astronaut"
+      },
+      {
+        hints: [
+          "I live in a cold, snowy place.",
+          "I have red-brown hair in braids.",
+          "I wear warm clothes and a cape."
+        ],
+        options: [
+          { 
+            text: "Anna",         
+            img: "https://i.pinimg.com/originals/df/ae/36/dfae36fbd0c38f891a1032528ca479bc.png"
+          },
+          { 
+            text: "Alice",        
+            img: "https://i.pinimg.com/originals/47/65/a5/4765a5c712cf70f0f9ca41a617802184.png"
+          },
+          { 
+            text: "Willy Wonka",  
+            img: "https://i.pinimg.com/originals/88/1b/e6/881be6a2f3e51d0ac8a96312838252de.png"
+          },
+          { 
+            text: "Harry Potter",
+            img: "https://static.independent.co.uk/s3fs-public/thumbnails/image/2013/09/12/17/potter.jpg?width=1200"
+          }
+        ],
+        answer: "Anna"
+      },
+      {
+        hints: [
+          "I can fly in the sky. ",
+          "I have an 'S' on my chest.",
+          "I wear a blue suit and a red cape."
+        ],
+        options: [
+          { 
+            text: "Astronaut",       
+            img: "https://www.andrew-sinclair.com/wp-content/uploads/2021/10/Andrew-Sinclair-Astronaut-7.jpg"
+          },
+          { 
+            text: "Captain America", 
+            img: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Captain_America_cosplay_o.jpg" 
+          },
+          { 
+            text: "Supergirl",       
+            img: "https://static1.funidelia.com/474151-f6_big2/supergirl-costume-for-women.jpg"
+          },
+          { 
+            text: "Tin Man",         
+            img: "https://images.squarespace-cdn.com/content/v1/5f553a973193933cec492e92/1602495441823-UNEHXF7E3535YJMUSRCR/tin_man.jpg"
+          }
+        ],
+        answer: "Supergirl"
+      },
+      {
+        hints: [
+          "I have a lightning scar on my forehead.",
+          "I hold a magic wand.",
+          "I am a boy with glasses."
+        ],
+        options: [
+          { 
+            text: "Harry Potter",     
+            img: "https://static.independent.co.uk/s3fs-public/thumbnails/image/2013/09/12/17/potter.jpg?width=1200"
+          },
+          { 
+            text: "Anna",            
+            img: "https://i.pinimg.com/originals/df/ae/36/dfae36fbd0c38f891a1032528ca479bc.png"
+          },
+          { 
+            text: "British Guardsman",
+            img: "https://www.partypacks.co.uk/cdn/shop/products/product_102793_1_orig_450x.jpg?v=1596812889"
+          },
+          { 
+            text: "Supergirl",       
+            img: "https://static1.funidelia.com/474151-f6_big2/supergirl-costume-for-women.jpg"
+          }
+        ],
+        answer: "Harry Potter"
+      }
+    ];
+
+    let currentRiddle = 0;
+    let score = 0;
+    let hintsShown = 0;  // Tracks how many hints are currently shown (out of 3)
+    let selectedOptionIndex = null;
+
+    function startQuiz() {
+      // Hide start container, show quiz container
+      document.getElementById('startContainer').classList.remove('active');
+      document.getElementById('quizContainer').classList.add('active');
+
+      // Reset quiz progress
+      currentRiddle = 0;
+      score = 0;
+      document.getElementById('score').textContent = score;
+
+      loadRiddle();
+    }
+
+    function loadRiddle() {
+      // Update question number text
+      document.getElementById('questionNumber').textContent = currentRiddle + 1;
+
+      // Reset hints
+      hintsShown = 0;
+      selectedOptionIndex = null;
+
+      // Clear & build hints
+      const hintsDiv = document.getElementById('hints');
+      hintsDiv.innerHTML = ''; 
+      for (let i = 0; i < 3; i++) {
+        const hintDiv = document.createElement('div');
+        hintDiv.className = 'hint';
+        hintDiv.id = `hint${i+1}`;
+        hintDiv.textContent = riddles[currentRiddle].hints[i];
+        hintsDiv.appendChild(hintDiv);
+      }
+      document.getElementById('hintButton').disabled = false;
+
+      // Create options
+      const optionsDiv = document.getElementById('options');
+      optionsDiv.innerHTML = '';
+      riddles[currentRiddle].options.forEach((optionObj, index) => {
+        const optionDiv = document.createElement('div');
+        optionDiv.className = 'option';
+
+        // Option image
+        const imgElement = document.createElement('img');
+        imgElement.src = optionObj.img; 
+        imgElement.alt = optionObj.text;
+
+        // Option text
+        const textSpan = document.createElement('span');
+        textSpan.textContent = optionObj.text;
+
+        // Click event to select
+        optionDiv.onclick = () => selectOption(index);
+
+        // Add to DOM
+        optionDiv.appendChild(imgElement);
+        optionDiv.appendChild(textSpan);
+        optionsDiv.appendChild(optionDiv);
+      });
+
+      // Automatically show the first hint
+      showNextHint();
+    }
+
+    function selectOption(index) {
+      selectedOptionIndex = index;
+      document.querySelectorAll('.option').forEach((opt, i) => {
+        opt.classList.toggle('selected', i === index);
+      });
+    }
+
+    function showNextHint() {
+      hintsShown++;
+      const hintToShow = document.getElementById(`hint${hintsShown}`);
+      if (hintToShow) {
+        hintToShow.style.display = 'block';
+      }
+      if (hintsShown === 3) {
+        document.getElementById('hintButton').disabled = true;
+      }
+    }
+
+    function submitAnswer() {
+      if (selectedOptionIndex === null) {
+        alert('Please select an answer!');
+        return;
+      }
+      const userAnswer = riddles[currentRiddle].options[selectedOptionIndex].text;
+      const correctAnswer = riddles[currentRiddle].answer;
+      
+      // Scoring: first hint is free; each additional hint subtracts 3 points
+      // hintsShown=1 => 10 points; hintsShown=2 => 7 points; hintsShown=3 => 4 points
+      if (userAnswer === correctAnswer) {
+        const pointsEarned = 10 - 3 * (hintsShown - 1);
+        score += pointsEarned;
+        document.getElementById('score').textContent = score;
+        alert(`Correct! You earned ${pointsEarned} points.`);
+      } else {
+        alert('Wrong answer, try the next one!');
+      }
+
+      // Next question or end
+      currentRiddle++;
+      if (currentRiddle < riddles.length) {
+        loadRiddle();
+      } else {
+        showEndScreen();
+      }
+    }
+
+    function showEndScreen() {
+      document.getElementById('quizContainer').classList.remove('active');
+      document.getElementById('endContainer').classList.add('active');
+      document.getElementById('finalScore').textContent = score;
+
+      const descriptor = getScoreDescription(score);
+      document.getElementById('scoreDescription').textContent = descriptor;
+    }
+
+    function getScoreDescription(finalScore) {
+      if (finalScore >= 80) {
+        return "You are an English story master! Keep reading and watching – your understanding is top-notch.";
+      } else if (finalScore >= 60) {
+        return "Awesome job! You’ve got some great knowledge. Keep exploring more English stories to level up.";
+      } else if (finalScore >= 40) {
+        return "Nice attempt! With some more practice and reading, you’ll become a story expert in no time.";
+      } else {
+        return "Don’t worry, practice makes perfect! Keep reading and watching English content to improve.";
+      }
+    }
+
+    function restartQuiz() {
+      // Send user back to the start page
+      document.getElementById('endContainer').classList.remove('active');
+      document.getElementById('startContainer').classList.add('active');
+      document.getElementById('score').textContent = 0;
+    }
+  </script>
+</body>
+</html>
