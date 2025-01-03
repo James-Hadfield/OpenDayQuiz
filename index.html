@@ -206,6 +206,179 @@
           font-size: 1.8em;
       }
     }
+
+    /* Animation for end page score */
+    .end-container .points-circle {
+        animation: scorePopup 1s ease-out;
+    }
+
+    @keyframes scorePopup {
+        0% { transform: scale(0.5); opacity: 0; }
+        70% { transform: scale(1.1); }
+        100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* Add these styles to your existing <style> section */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.start-container,
+.quiz-container,
+.end-container {
+    max-height: 98vh;
+    overflow-y: auto;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+}
+
+.quiz-intro {
+    padding: 10px;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+}
+
+.options {
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.option img {
+    max-height: 150px; /* Reduced from 200px */
+}
+
+.logo-container {
+    margin-bottom: 10px;
+}
+
+.welcome-card {
+    margin: 15px 0;
+}
+
+.points-circle {
+    width: 120px;
+    height: 120px;
+    margin: 15px auto;
+}
+
+.rules-box {
+    margin-top: 15px;
+    padding: 15px;
+}
+
+h1 {
+    margin-bottom: 15px;
+    font-size: 2em;
+}
+
+.rule-item {
+    margin: 10px 0;
+}
+
+/* Adjust mobile styles */
+@media (max-height: 800px) {
+    .points-circle {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .big-number {
+        font-size: 2em;
+    }
+    
+    .option img {
+        max-height: 120px;
+    }
+    
+    h1 {
+        font-size: 1.8em;
+        margin-bottom: 10px;
+    }
+    
+    .rule-item {
+        font-size: 1em;
+        margin: 8px 0;
+    }
+}
+
+@media (max-height: 600px) {
+    .points-circle {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .option img {
+        max-height: 100px;
+    }
+    
+    h1 {
+        font-size: 1.5em;
+    }
+}
+
+/* Add these styles to your existing <style> section */
+/* Hide scrollbar but keep functionality */
+.quiz-intro {
+    padding: 10px;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+}
+
+/* Hide scrollbar for Chrome/Safari/Opera */
+.quiz-intro::-webkit-scrollbar {
+    display: none;
+}
+
+/* Make start page content more compact to avoid need for scrolling */
+.start-container .welcome-card {
+    margin: 10px 0;
+}
+
+.start-container h1 {
+    margin-bottom: 15px;
+}
+
+.start-container .logo-container {
+    margin-bottom: 10px;
+}
+
+.start-container .start-button {
+    margin-top: 15px;
+}
+
+.start-container .rules-box {
+    margin-top: 15px;
+}
+
+/* Adjust spacing for different heights */
+@media (max-height: 700px) {
+    .start-container .points-circle {
+        margin: 10px auto;
+    }
+    
+    .start-container .rule-item {
+        margin: 8px 0;
+    }
+    
+    .start-container .rules-box {
+        padding: 10px;
+    }
+}
   </style>
 </head>
 <body>
@@ -217,11 +390,11 @@
           <img src=".github/images/UCC logo (Color).jpg" alt="UCC Logo" class="ucc-logo">
       </div>
       
-      <h1>English Character Quiz 🎯</h1>
+      <h1>English Story Character Quiz</h1>
       
       <div class="welcome-card">
           <div class="score-info">
-              <h2>Your Mission 🚀</h2>
+              <h2>Can you get the high score? 🚀</h2>
               <div class="points-circle">
                   <span class="big-number">100</span>
                   <span class="points-text">POINTS</span>
@@ -231,22 +404,24 @@
           <div class="rules-box">
               <h3>How to Play 🎮</h3>
               <div class="rule-item">
-                  <span class="rule-icon">⭐</span>
-                  <span>Each correct answer = 10 points!</span>
-              </div>
+                <span class="rule-icon">🤔</span>
+                <span>Read the clue and choose the correct character.</span>
+                </div>
+
               <div class="rule-item">
-                  <span class="rule-icon">🎁</span>
-                  <span>First hint is FREE</span>
-              </div>
+                <span class="rule-icon">✅</span>
+                <span>Each correct answer = 10 points!</span>
+                </div>
+
               <div class="rule-item">
                   <span class="rule-icon">💡</span>
-                  <span>Extra hints cost 3 points</span>
+                  <span>Click help for more clues (-3 points per extra clue). </span>
               </div>
           </div>
       </div>
 
       <button class="start-button" onclick="startQuiz()">
-          <span class="button-text">START ADVENTURE</span>
+          <span class="button-text">START THE QUIZ</span>
           <span class="button-icon">🎮</span>
       </button>
   </div>
@@ -259,7 +434,7 @@
   <div id="quiz-area">
     <h3>Question <span id="questionNumber">1</span></h3>
     <div id="hints"></div>
-    <button onclick="showNextHint()" id="hintButton">Show Hint</button>
+    <button onclick="showNextHint()" id="hintButton">Help me!</button>
     <div class="options" id="options"></div>
     <button onclick="submitAnswer()" id="submitButton">Submit Answer</button>
   </div>
@@ -267,10 +442,36 @@
 
 <!-- END PAGE -->
 <div class="end-container" id="endContainer">
-  <h2>Quiz Finished!</h2>
-  <p>Your final score is: <span id="finalScore"></span></p>
-  <p id="scoreDescription" style="font-style: italic;"></p>
-  <button onclick="restartQuiz()">Play Again</button>
+  <div class="quiz-intro">
+      <div class="logo-container">
+          <img src=".github/images/UCC logo (Color).jpg" alt="UCC Logo" class="ucc-logo">
+      </div>
+      
+      <h1>Quest Complete! 🏆</h1>
+      
+      <div class="welcome-card">
+          <div class="score-info">
+              <h2>Final Score 🌟</h2>
+              <div class="points-circle">
+                  <span id="finalScore" class="big-number">0</span>
+                  <span class="points-text">POINTS</span>
+              </div>
+          </div>
+
+          <div class="rules-box">
+              <h3>Your Achievement 🎉</h3>
+              <div class="rule-item">
+                  <span class="rule-icon">⭐</span>
+                  <span id="scoreDescription" style="text-align: left;"></span>
+              </div>
+          </div>
+      </div>
+
+      <button class="start-button" onclick="restartQuiz()">
+          <span class="button-text">Play Again</span>
+          <span class="button-icon">🎮</span>
+      </button>
+  </div>
 </div>
 
 <script>
