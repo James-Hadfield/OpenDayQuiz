@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8" />
@@ -12,7 +12,7 @@
       padding: 0;
       overflow: hidden; 
       font-family: Comic Sans MS, sans-serif;
-      background-color: #f0f0f0; /* Back to original light grey */
+      background-color: #f0f0f0; 
     }
     body {
       display: flex;
@@ -68,7 +68,7 @@
       margin-top: 0;
     }
     .name-prompt-box button {
-      background: linear-gradient(45deg, #2196F3, #21CBF3); /* Blue gradient restored */
+      background: linear-gradient(45deg, #2196F3, #21CBF3);
       border: none;
       border-radius: 25px;
       padding: 15px 40px;
@@ -119,7 +119,7 @@
       }
     }
 
-    /* Toast message for correct/wrong feedback */
+    /* Toast message */
     .toast {
       position: absolute;
       top: 10px;
@@ -183,7 +183,7 @@
       text-align: center;
     }
     .points-circle {
-      background: linear-gradient(45deg, #2196F3, #21CBF3); /* Blue gradient circle */
+      background: linear-gradient(45deg, #2196F3, #21CBF3);
       width: 150px;
       height: 150px;
       border-radius: 50%;
@@ -240,7 +240,7 @@
       font-size: 1.3em;
     }
 
-    /* Gradient bar for score */
+    /* Gradient bar for score (now also shows time) */
     .score-bar-container {
       width: 80%;
       max-width: 500px;
@@ -275,114 +275,140 @@
     }
 
     /* Hints layout */
-/* Hints layout */
-.hints-row {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 30px;
-    margin: 30px 0;
-    flex-wrap: wrap;
-    width: 100%;
-}
-
-.hint-block {
-    flex: 1 1 200px;
-    max-width: 250px;
-    min-height: 150px;
-    border: 2px solid #e0e0e0;
-    border-radius: 10px;
-    background: #fff3cd;
-    padding: 20px 15px 35px 15px;
-    box-sizing: border-box;
-    position: relative;
-    
-    /* Initial display state */
-    display: none;
-    
-    /* When active */
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-.hint-block p {
-    margin: 0;
-    padding: 0;
-    font-size: 1.2em;
-    font-style: italic;
-    text-align: center;
-    color: #664d03;
-    width: calc(100% - 30px);
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    hyphens: auto;
-    
-    /* Centering */
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    
-    /* Text properties */
-    line-height: 1.4; /* Normal line spacing */
-    min-height: 3em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* Add paragraph spacing between multiple paragraphs */
-.hint-block p + p {
-    margin-top: 2em; /* Double spacing between paragraphs */
-}
-
-/* Style for line breaks */
-.hint-block p br {
-    display: block;
-    content: "";
-    margin-top: 2em; /* Double spacing for hard breaks */
-}
-
-.hint-badge {
-    position: absolute;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #4CAF50;
-    color: #fff;
-    padding: 5px 10px;
-    border-radius: 15px;
-    font-size: 0.9em;
-    display: none;
-    white-space: nowrap;
-    z-index: 1;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
     .hints-row {
-        gap: 25px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 30px;
+      margin: 30px 0;
+      flex-wrap: wrap;
+      width: 100%;
+    }
+    .hint-block {
+      flex: 1 1 200px;
+      max-width: 250px;
+      min-height: 150px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      background: #fff3cd;
+      padding: 20px 15px 35px 15px;
+      box-sizing: border-box;
+      position: relative;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .hint-block p {
+      margin: 0;
+      padding: 0;
+      font-size: 1.2em;
+      font-style: italic;
+      text-align: center;
+      color: #664d03;
+      width: calc(100% - 30px);
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      hyphens: auto;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      line-height: 1.4;
+      min-height: 3em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .hint-block p + p {
+      margin-top: 2em;
+    }
+    .hint-block p br {
+      display: block;
+      content: "";
+      margin-top: 2em; 
+    }
+    .hint-badge {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #4CAF50;
+      color: #fff;
+      padding: 5px 10px;
+      border-radius: 15px;
+      font-size: 0.9em;
+      display: none;
+      white-space: nowrap;
+      z-index: 1;
     }
 
-    .hint-block {
+    @media (max-width: 768px) {
+      .hints-row {
+        gap: 25px;
+      }
+      .hint-block {
         flex: 1 1 100%;
         max-width: none;
         min-height: 130px;
-    }
-    
-    .hint-block p {
+      }
+      .hint-block p {
         font-size: 1.1em;
+      }
     }
-}
 
-/* Ensure hamburger menu stays on top */
-.hamburger-menu {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 9999;
-}
+    /* Hamburger Menu */
+    .hamburger-menu {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+    }
+    .hamburger-icon {
+      width: 30px;
+      height: 22px;
+      cursor: pointer;
+      position: relative;
+    }
+    .hamburger-icon span {
+      display: block;
+      height: 4px;
+      background: #333;
+      margin: 4px 0;
+      transition: 0.3s ease;
+    }
+    .hamburger-links {
+      position: absolute;
+      top: 40px;
+      right: 0;
+      background: white;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      list-style: none;
+      padding: 10px;
+      margin: 0;
+      display: none;
+    }
+    .hamburger-links.active {
+      display: block; 
+    }
+    .hamburger-links li {
+      margin: 0;
+      padding: 5px 0;
+      text-align: right;
+    }
+    .hamburger-links button {
+      background: none;
+      border: none;
+      font-size: 16px;
+      color: #333;
+      cursor: pointer;
+      width: 100%;
+      text-align: right;
+      padding: 5px;
+    }
+    .hamburger-links button:hover {
+      background: #f0f0f0;
+    }
 
     /* Options grid */
     .options {
@@ -483,9 +509,13 @@
       background: linear-gradient(45deg, #fff3e0, #ffe0b2);
       border: 2px solid #ffa726;
       border-radius: 10px;
-      max-height: 400px;
+      /* ADDED: Make the leaderboard scrollable up to 300px */
+      max-height: 300px; /* ADDED */
+      overflow-y: auto;  /* ADDED */
       display: flex;
       flex-direction: column;
+      position: relative; /* ADDED */
+      z-index: 1;         /* ADDED */
     }
     .leaderboard h3 {
       color: #d84315;
@@ -493,10 +523,18 @@
       text-align: center;
       margin-bottom: 10px;
     }
-    #leaderboardList {
-      overflow-y: auto;
-      margin: 10px 0;
+    .leaderboard-table {
+      width: 100%;
+      border-collapse: collapse;
     }
+    .leaderboard-table th,
+    .leaderboard-table td {
+      text-align: left;
+      padding: 6px;
+      border-bottom: 1px dotted #ccc;
+    }
+
+    /* Leaderboard pagination */
     .leaderboard-pagination {
       display: flex;
       justify-content: center;
@@ -522,70 +560,11 @@
       font-size: 0.9em;
       color: #666;
     }
-    .score-entry {
-      display: flex;
-      justify-content: space-between;
-      padding: 5px 0;
-      border-bottom: 1px dotted #ccc;
-    }
-    .score-entry:nth-child(1) .rank { color: #FFD700; }
-    .score-entry:nth-child(2) .rank { color: #C0C0C0; }
-    .score-entry:nth-child(3) .rank { color: #CD7F32; }
-    .score-entry:nth-child(n+4):nth-child(-n+10) .rank { color: #2196F3; }
-    .score-entry:nth-child(n+11):nth-child(-n+20) .rank { color: #4CAF50; }
-    .score-entry:nth-child(n+21) .rank { color: #666; }
 
-    /* Hamburger Menu */
-    .hamburger-menu {
-      position: fixed;
-      top: 20px; 
-      right: 20px;
-      z-index: 9999;
-    }
-    .hamburger-icon {
-      width: 30px;
-      height: 22px;
-      cursor: pointer;
-      position: relative;
-    }
-    .hamburger-icon span {
-      display: block;
-      height: 4px;
-      background: #333;
-      margin: 4px 0;
-      transition: 0.3s ease;
-    }
-    .hamburger-links {
-      position: absolute;
-      top: 40px;
-      right: 0;
-      background: white;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
-      list-style: none;
-      padding: 10px;
-      margin: 0;
-      display: none;
-    }
-    .hamburger-links.active {
-      display: block; 
-    }
-    .hamburger-links li {
-      margin: 0;
-      padding: 5px 0;
-      text-align: right;
-    }
-    .hamburger-links button {
-      background: none;
-      border: none;
-      font-size: 16px;
-      color: #333;
-      cursor: pointer;
-      width: 100%;
-      text-align: right;
-      padding: 5px;
-    }
-    .hamburger-links button:hover {
-      background: #f0f0f0;
+    /* ADDED: Ensure there's room below for the "Play Again?" button */
+    .end-container {
+      position: relative; /* ADDED */
+      padding-bottom: 80px; /* ADDED */
     }
 
     @media (max-width: 600px) {
@@ -618,6 +597,8 @@
     <li><button onclick="restartQuiz()">Restart Game</button></li>
     <li><button onclick="showLeaderboardOnly()">See Leaderboard</button></li>
     <li><button onclick="skipToEnd()">Skip to Final Page</button></li>
+    <!-- Export to Markdown button -->
+    <li><button onclick="exportMarkdown()">Export Leaderboard (MD)</button></li>
   </ul>
 </div>
 
@@ -683,16 +664,17 @@
     <!-- Fancy Score Bar at top -->
     <div class="score-bar-container" id="scoreBarContainer">
       <div class="score-bar-fill" id="scoreBarFill" style="width:0%"></div>
-      <div class="score-bar-label" id="scoreBarLabel">Score: 0</div>
+      <!-- Display Score AND Time here -->
+      <div class="score-bar-label" id="scoreBarLabel">Score: 0 | Time: 0s</div>
     </div>
 
-    <!-- "Question X of 10" -->
+    <!-- "Question X of ..." -->
     <h2 id="questionTracker">Question 1 of 10</h2>
 
-    <!-- 3 Blocks horizontally for hints -->
+    <!-- Hints row -->
     <div class="hints-row" id="hintsRow"></div>
 
-    <!-- Centered "Help me!" button above the options -->
+    <!-- Help me! button -->
     <button onclick="showNextHint()" id="hintButton">Help me!</button>
 
     <div class="options" id="options"></div>
@@ -729,7 +711,20 @@
 
     <div class="leaderboard">
       <h3>🏆 Top 50 Scores</h3>
-      <div id="leaderboardList"></div>
+      <!-- Table for leaderboard -->
+      <div id="leaderboardList">
+        <table class="leaderboard-table">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Name</th>
+              <th>Score</th>
+              <th>Time (s)</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboardTableBody"></tbody>
+        </table>
+      </div>
       <div class="leaderboard-pagination">
         <button onclick="changePage(-1)">Previous</button>
         <span id="pageInfo">Page 1 of 1</span>
@@ -762,25 +757,27 @@ function skipToEnd() {
 
 /* ============== NAME PROMPT ============== */
 let playerName = "";
+
+// Timer variables
+let quizStartTime = 0; 
+let timerInterval = null;
+
 function showNamePrompt() {
-    document.getElementById('namePromptOverlay').classList.add('active');
-    const inputField = document.getElementById('promptName');
-    inputField.value = "";
-    
-    // Attempt to focus and show keyboard
-    setTimeout(() => {
-        inputField.focus();
-        inputField.click(); 
-        inputField.focus();
-        if (typeof inputField.select === 'function') {
-            inputField.select();
-        }
-    }, 300);
+  document.getElementById('namePromptOverlay').classList.add('active');
+  const inputField = document.getElementById('promptName');
+  inputField.value = "";
+  setTimeout(() => {
+      inputField.focus();
+      inputField.click();
+      if (typeof inputField.select === 'function') {
+          inputField.select();
+      }
+  }, 300);
 }
 function handleNameInputKeypress(event) {
-    if (event.key === 'Enter') {
-        actuallyStartQuiz();
-    }
+  if (event.key === 'Enter') {
+      actuallyStartQuiz();
+  }
 }
 function actuallyStartQuiz() {
   const input = document.getElementById('promptName').value.trim();
@@ -792,10 +789,13 @@ function actuallyStartQuiz() {
   document.getElementById('namePromptOverlay').classList.remove('active');
   document.getElementById('startContainer').classList.remove('active');
   document.getElementById('quizContainer').classList.add('active');
-  
+
   currentRiddle = 0;
   score = 0;
   updateScoreBar();
+
+  // Start timer
+  startTimer();
   loadRiddle();
 }
 
@@ -921,10 +921,27 @@ const riddles = [
   }
 ];
 
+/* ============== TIMER FUNCTIONS ============== */
+function startTimer() {
+  quizStartTime = new Date();
+  timerInterval = setInterval(() => {
+    const now = new Date();
+    const elapsed = Math.floor((now - quizStartTime)/1000);
+    document.getElementById('scoreBarLabel').textContent = `Score: ${score} | Time: ${elapsed}s`;
+  }, 1000);
+}
+function stopTimer() {
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+  const now = new Date();
+  return Math.floor((now - quizStartTime)/1000); 
+}
+
 /* ============== LOAD RIDDLE ============== */
 function loadRiddle() {
   document.getElementById('questionTracker').textContent = `Question ${currentRiddle+1} of ${riddles.length}`;
-
   hintsShown = 0;
   selectedOptionIndex = null;
   document.getElementById('hintButton').disabled = false;
@@ -932,7 +949,6 @@ function loadRiddle() {
   // Build hint blocks
   const hintsRow = document.getElementById('hintsRow');
   hintsRow.innerHTML = '';
-
   const curHints = riddles[currentRiddle].hints;
   for (let i = 0; i < 3; i++) {
     const block = document.createElement('div');
@@ -986,18 +1002,16 @@ function showNextHint() {
       prevBadge.style.display = 'none';
     }
   }
-  
   hintsShown++;
   const currentBlock = document.getElementById(`hintBlock${hintsShown}`);
   const currentBadge = document.getElementById(`hintBadge${hintsShown}`);
-  
+
   if (currentBlock) {
     currentBlock.style.display = 'flex';
     if (currentBadge) {
       currentBadge.style.display = 'block';
     }
   }
-
   if (hintsShown === 3) {
     document.getElementById('hintButton').disabled = true;
   }
@@ -1025,7 +1039,6 @@ function submitAnswer() {
   } else {
     showToast("Wrong answer. Keep trying!", false);
   }
-
   updateScoreBar();
 
   currentRiddle++;
@@ -1041,12 +1054,9 @@ function updateScoreBar() {
   const maxScore = riddles.length * 10;
   let percent = (score / maxScore) * 100;
   if (percent > 100) percent = 100;
-
   const fill = document.getElementById('scoreBarFill');
   fill.style.width = `${percent}%`;
-
-  const label = document.getElementById('scoreBarLabel');
-  label.textContent = `Score: ${score}`;
+  document.getElementById('scoreBarLabel').textContent = `Score: ${score} | Time: 0s`;
 }
 
 /* ============== END SCREEN ============== */
@@ -1055,10 +1065,13 @@ function showEndScreen() {
   document.getElementById('endContainer').classList.add('active');
   document.getElementById('finalScore').textContent = score;
 
+  // Stop timer, get total time
+  const totalTime = stopTimer();
+
   const desc = getScoreDescription(score);
   document.getElementById('scoreDescription').textContent = desc;
 
-  saveScore();
+  saveScore(totalTime);
   updateLeaderboardDisplay();
 }
 function getScoreDescription(finalScore) {
@@ -1077,33 +1090,50 @@ function getScoreDescription(finalScore) {
 function restartQuiz() {
   document.getElementById('endContainer').classList.remove('active');
   document.getElementById('startContainer').classList.add('active');
-  // Reset score bar
   document.getElementById('scoreBarFill').style.width = '0%';
-  document.getElementById('scoreBarLabel').textContent = 'Score: 0';
+  document.getElementById('scoreBarLabel').textContent = 'Score: 0 | Time: 0s';
+  stopTimer();
   currentPage = 1;
   playerName = "";
 }
 
 /* ============== LEADERBOARD ============== */
+// Sort by descending score, then ascending time
 function getLeaderboard() {
   const raw = localStorage.getItem('quizLeaderboard');
   const arr = raw ? JSON.parse(raw) : [];
-  return arr.sort((a, b) => b.score - a.score).slice(0, 50);
+  arr.sort((a, b) => {
+    // Higher score first
+    if (b.score !== a.score) return b.score - a.score;
+    // If scores match, faster time first
+    return a.time - b.time;
+  });
+  return arr.slice(0, 50);
 }
-function saveScore() {
+function saveScore(totalTime) {
   if (!playerName) return;
-  const newScore = { name: playerName, score, date: new Date().toISOString() };
+  const newScore = { 
+    name: playerName, 
+    score: score, 
+    time: totalTime, 
+    date: new Date().toISOString() 
+  };
   const lb = getLeaderboard();
   lb.push(newScore);
-  lb.sort((a, b) => b.score - a.score);
+  // Re-sort using same criteria
+  lb.sort((a, b) => {
+    if (b.score !== a.score) return b.score - a.score;
+    return a.time - b.time;
+  });
+  // Keep only top 50
   while (lb.length > 50) lb.pop();
   localStorage.setItem('quizLeaderboard', JSON.stringify(lb));
   currentPage = 1;
 }
 function updateLeaderboardDisplay() {
   const lb = getLeaderboard();
-  const listDiv = document.getElementById('leaderboardList');
-  listDiv.innerHTML = '';
+  const tableBody = document.getElementById('leaderboardTableBody');
+  tableBody.innerHTML = '';
 
   const totalPages = Math.ceil(lb.length / entriesPerPage);
   const start = (currentPage - 1) * entriesPerPage;
@@ -1112,14 +1142,14 @@ function updateLeaderboardDisplay() {
 
   pageEntries.forEach((entry, i) => {
     const rank = start + i + 1;
-    const row = document.createElement('div');
-    row.className = 'score-entry';
+    const row = document.createElement('tr');
     row.innerHTML = `
-      <span class="rank">#${rank}</span>
-      <span class="name">${entry.name}</span>
-      <span class="score">${entry.score}</span>
+      <td>#${rank}</td>
+      <td>${entry.name}</td>
+      <td>${entry.score}</td>
+      <td>${entry.time || 0}</td>
     `;
-    listDiv.appendChild(row);
+    tableBody.appendChild(row);
   });
 
   document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages}`;
@@ -1136,6 +1166,26 @@ function changePage(delta) {
     currentPage = newPage;
     updateLeaderboardDisplay();
   }
+}
+
+/* ============== EXPORT LEADERBOARD AS MARKDOWN ============== */
+function exportMarkdown() {
+  const lb = getLeaderboard();
+  let md = '# Leaderboard\n\n';
+  md += '| Rank | Name | Score | Time (s) | Date |\n';
+  md += '| ---- | ---- | ----- | -------- | ---- |\n';
+
+  lb.forEach((entry, index) => {
+    md += `| ${index+1} | ${entry.name} | ${entry.score} | ${entry.time || 0} | ${entry.date} |\n`;
+  });
+
+  const blob = new Blob([md], { type: 'text/markdown' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'leaderboard.md';
+  a.click();
+  URL.revokeObjectURL(url);
 }
 </script>
 </body>
