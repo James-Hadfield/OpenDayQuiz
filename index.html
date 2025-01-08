@@ -245,7 +245,7 @@ html, body {
 
     /* Gradient bar for score (now also shows time) */
     .score-bar-container {
-      width: 80%;
+      width: 90%; /* Increased from 80% */
       max-width: 500px;
       margin: 0 auto 15px auto;
       background: #ddd;
@@ -275,6 +275,17 @@ html, body {
          0 0 4px rgba(255, 255, 255, 0.7);
       z-index: 1;
       user-select: none;
+      white-space: nowrap; /* Prevent wrapping */
+      font-size: 14px; /* Base font size */
+    }
+
+    @media (max-width: 360px) {
+      .score-bar-container {
+        width: 95%; /* Even wider on very small screens */
+      }
+      .score-bar-label {
+        font-size: 12px; /* Smaller font on very narrow screens */
+      }
     }
 
     /* Hints layout */
@@ -340,26 +351,7 @@ html, body {
       color: #fff;
       padding: 5px 10px;
       border-radius: 15px;
-      font-size: 0.9em;
-      display: none;
-      white-space: nowrap;
-      z-index: 1;
-    }
-
-    @media (max-width: 768px) {
-      .hints-row {
-        gap: 25px;
-      }
-      .hint-block {
-        flex: 1 1 100%;
-        max-width: none;
-        min-height: 130px;
-      }
-      .hint-block p {
-        font-size: 1.1em;
-      }
-    }
-
+      font-size: 0.9
     /* Hamburger Menu */
     .hamburger-menu {
       position: fixed;
@@ -449,6 +441,45 @@ html, body {
       border-color: #4CAF50;
     }
 
+    /* Add these media queries for narrow screens */
+    @media (max-width: 768px) {
+      .options {
+        gap: 10px;
+        margin: 10px 0;
+      }
+      .option {
+        padding: 8px;
+        gap: 5px;
+      }
+      .option img {
+        max-height: 120px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .option img {
+        max-height: 100px;
+      }
+      .option {
+        font-size: 0.9em;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .options {
+        gap: 8px;
+      }
+      .option {
+        padding: 5px;
+      }
+      .option img {
+        max-height: 80px;
+      }
+      .option {
+        font-size: 0.8em;
+      }
+    }
+
     /* "Help me!" button */
     #hintButton {
       background: linear-gradient(45deg, #ff9800, #ff5722);
@@ -464,24 +495,23 @@ html, body {
       margin: 0 auto 15px auto;
       display: block;
     }
-    #hintButton::before {
-      content: "-3 points";
-      background: rgba(255, 255, 255, 0.2);
-      padding: 4px 8px;
-      border-radius: 12px;
-      font-size: 0.8em;
-      margin-right: 8px;
+
+    @media (max-width: 768px) {
+      #hintButton {
+        padding: 10px 25px;
+        font-size: 1em;
+        min-width: 130px;
+        margin: 0 auto 10px auto;
+      }
     }
-    #hintButton:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 8px rgba(0,0,0,0.15);
-      background: linear-gradient(45deg, #ff5722, #ff9800);
-    }
-    #hintButton:disabled {
-      background: #cccccc;
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
+
+    @media (max-width: 480px) {
+      #hintButton {
+        padding: 8px 20px;
+        font-size: 0.9em;
+        min-width: 120px;
+        margin: 0 auto 8px auto;
+      }
     }
 
     /* "Submit Answer" button */
@@ -602,6 +632,19 @@ html, body {
       
       .leaderboard-table {
         min-width: 300px;
+      }
+    }
+
+    /* Question tracker styling */
+    #questionTracker {
+      font-size: 1.2em;
+      margin: 10px 0;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 360px) {
+      #questionTracker {
+        font-size: 1em;
       }
     }
   </style>
