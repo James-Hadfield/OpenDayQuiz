@@ -5,18 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Character Riddle Quiz</title>
   <style>
-    /* Body and container styling */
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f0f0f0;
+    /* Base layout */
+    html, body {
+      height: 100%;
       margin: 0;
       padding: 0;
-      min-height: 100vh;
+      overflow: hidden; /* Minimises scrolling */
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+    }
+    body {
       display: flex;
       justify-content: center;
       align-items: center;
+      min-height: 100vh;
+      box-sizing: border-box;
     }
 
+    /* Our main quiz containers */
     .start-container,
     .quiz-container,
     .end-container {
@@ -36,7 +42,7 @@
       display: block;
     }
 
-    /* Name Prompt Modal */
+    /* Name Prompt Overlay (modal) */
     .name-prompt-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -82,69 +88,73 @@
       transform: scale(1.05);
     }
 
-    /* 2×2 grid for MC options */
-    .options {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 15px;
-      margin: 15px 0;
-    }
-    .option {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      padding: 10px;
-      background: #f8f8f8;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    .option img {
-      width: 100%;
-      max-height: 200px;
-      object-fit: contain;
-      border-radius: 4px;
-      border: 1px solid #ccc;
-    }
-    .option:hover {
-      background: #e8e8e8;
-    }
-    .option.selected {
-      background: #4CAF50;
-      color: white;
-      border-color: #4CAF50;
+    /* iPad portrait: scale things down a bit to fit better */
+    @media only screen 
+      and (orientation: portrait) 
+      and (min-device-width: 768px) 
+      and (max-device-width: 1024px) {
+
+      /* Try to fit fully in the viewport */
+      .start-container,
+      .quiz-container,
+      .end-container {
+        max-height: 100vh;
+        height: 100vh;
+        margin: 0;
+      }
+      .quiz-intro, .quiz-container .quiz-intro, #quiz-area {
+        max-height: calc(100vh - 40px);
+        overflow-y: auto;
+      }
     }
 
-    /* Cool style for the hints */
-    .hint {
-      margin: 10px 0;
-      padding: 10px 15px;
-      font-style: italic;
-      background: linear-gradient(145deg, #fff7cc, #fff3cd);
-      border-left: 5px solid #ffca28;
-      border-radius: 4px;
+    /* Toast message for correct/wrong feedback */
+    .toast {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #333;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 20px;
+      opacity: 0; /* Hidden by default */
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+      z-index: 5000;
+    }
+    .toast.show {
+      opacity: 0.9;
+    }
+
+    /* The main quiz sections can scroll internally if needed */
+    .start-container,
+    .quiz-container,
+    .end-container {
+      max-height: 98vh;
+      overflow-y: auto;
+    }
+    .quiz-intro {
+      max-height: calc(100vh - 40px);
+      overflow-y: auto;
+      scrollbar-width: none; 
+      -ms-overflow-style: none;
+    }
+    .quiz-intro::-webkit-scrollbar {
       display: none;
     }
 
-    /* Quiz and end page headings */
-    #endContainer h2, #quizContainer h1 {
-      margin-top: 0;
-    }
-
-    /* Intro Page custom styling */
+    /* Headings, logos, and general styling */
     .quiz-intro {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
+      padding: 10px;
       text-align: center;
     }
     .logo-container {
       width: 100%;
       margin-bottom: 20px;
       padding: 10px;
+      display: flex;
+      justify-content: center;
     }
     .ucc-logo {
       width: auto;
@@ -153,11 +163,16 @@
       max-height: 100px;
       object-fit: contain;
     }
-
     h1 {
       color: #2196F3;
       font-size: 2.5em;
       margin-bottom: 30px;
+    }
+    h2 {
+      margin-top: 0;
+    }
+    .score-info {
+      text-align: center;
     }
     .points-circle {
       background: linear-gradient(45deg, #2196F3, #21CBF3);
@@ -217,46 +232,120 @@
       font-size: 1.3em;
     }
 
-    /* Container heights for scrolling */
-    html, body {
-      height: 100%;
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
+    /* 2×2 grid for multiple-choice options */
+    .options {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin: 15px 0;
     }
-    body {
+    .option {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 10px;
+      background: #f8f8f8;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .option img {
+      width: 100%;
+      max-height: 200px;
+      object-fit: contain;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    .option:hover {
+      background: #e8e8e8;
+    }
+    .option.selected {
+      background: #4CAF50;
+      color: white;
+      border-color: #4CAF50;
+    }
+
+    /* The “Help me!” button */
+    #hintButton {
+      background: linear-gradient(45deg, #ff9800, #ff5722);
+      color: white;
+      border: none;
+      border-radius: 25px;
+      padding: 12px 30px;
+      font-size: 1.1em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      margin: 15px 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 100vh;
-      padding: 10px;
-      box-sizing: border-box;
+      gap: 8px;
+      min-width: 150px;
     }
-    .start-container,
-    .quiz-container,
-    .end-container {
-      max-height: 98vh;
-      overflow-y: auto;
-      width: 100%;
-      box-sizing: border-box;
-      margin: 0;
+    #hintButton::before {
+      content: "-3 points";
+      background: rgba(255, 255, 255, 0.2);
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 0.8em;
+      margin-right: 8px;
     }
-    .quiz-intro {
-      padding: 10px;
-      max-height: calc(100vh - 40px);
-      overflow-y: auto;
+    #hintButton:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+      background: linear-gradient(45deg, #ff5722, #ff9800);
+    }
+    #hintButton:disabled {
+      background: #cccccc;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    #hintButton:disabled::before {
+      background: rgba(255, 255, 255, 0.1);
     }
 
-    /* Hide scrollbar but keep functionality */
-    .quiz-intro::-webkit-scrollbar {
+    /* The “Submit Answer” button */
+    #submitButton {
+      background: linear-gradient(45deg, #4CAF50, #45a049);
+      color: white;
+      border: none;
+      border-radius: 25px;
+      padding: 15px 40px;
+      font-size: 1.2em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      margin: 20px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-width: 200px;
+      font-weight: bold;
+    }
+    #submitButton:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+      background: linear-gradient(45deg, #45a049, #4CAF50);
+    }
+
+    /* The hints styling */
+    .hint {
+      margin: 10px 0;
+      padding: 10px 15px;
+      font-style: italic;
+      background: linear-gradient(145deg, #fff7cc, #fff3cd);
+      border-left: 5px solid #ffca28;
+      border-radius: 4px;
       display: none;
     }
-    .quiz-intro {
-      scrollbar-width: none;
-      -ms-overflow-style: none;
-    }
 
-    /* Leaderboard style */
+    /* Leaderboard styling */
     .leaderboard {
       margin-top: 20px;
       padding: 15px;
@@ -309,81 +398,12 @@
     .score-entry:nth-child(n+11):nth-child(-n+20) .rank { color: #4CAF50; } /* Top 20 */
     .score-entry:nth-child(n+21) .rank { color: #666; } /* Rest */
 
-    /* Submit and hint buttons */
-    #submitButton {
-      background: linear-gradient(45deg, #4CAF50, #45a049);
-      color: white;
-      border: none;
-      border-radius: 25px;
-      padding: 15px 40px;
-      font-size: 1.2em;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-      margin: 20px 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      min-width: 200px;
-      font-weight: bold;
-    }
-    #submitButton:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 8px rgba(0,0,0,0.15);
-      background: linear-gradient(45deg, #45a049, #4CAF50);
-    }
-    #quiz-area {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    #hintButton {
-      background: linear-gradient(45deg, #ff9800, #ff5722);
-      color: white;
-      border: none;
-      border-radius: 25px;
-      padding: 12px 30px;
-      font-size: 1.1em;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-      margin: 15px 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      min-width: 150px;
-    }
-    #hintButton::before {
-      content: "-3 points";
-      background: rgba(255, 255, 255, 0.2);
-      padding: 4px 8px;
-      border-radius: 12px;
-      font-size: 0.8em;
-      margin-right: 8px;
-    }
-    #hintButton:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 8px rgba(0,0,0,0.15);
-      background: linear-gradient(45deg, #ff5722, #ff9800);
-    }
-    #hintButton:disabled {
-      background: #cccccc;
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-    }
-    #hintButton:disabled::before {
-      background: rgba(255, 255, 255, 0.1);
-    }
-
     /* Hamburger Menu */
     .hamburger-menu {
       position: fixed;
       top: 20px; 
       right: 20px;
-      z-index: 9999; /* Make sure it stays on top */
+      z-index: 9999;
     }
     .hamburger-icon {
       width: 30px;
@@ -407,10 +427,10 @@
       list-style: none;
       padding: 10px;
       margin: 0;
-      display: none; /* Hidden by default */
+      display: none;
     }
     .hamburger-links.active {
-      display: block; /* Toggle this to show/hide */
+      display: block; 
     }
     .hamburger-links li {
       margin: 0;
@@ -430,9 +450,26 @@
     .hamburger-links button:hover {
       background: #f0f0f0;
     }
+
+    /* Minor responsive tweaks */
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2em;
+      }
+      .points-circle {
+        width: 120px;
+        height: 120px;
+      }
+      .big-number {
+        font-size: 2.5em;
+      }
+    }
   </style>
 </head>
 <body>
+
+<!-- Toast for correct/wrong answer feedback -->
+<div class="toast" id="toastMsg"></div>
 
 <!-- HAMBURGER MENU -->
 <div class="hamburger-menu">
@@ -449,15 +486,11 @@
 </div>
 <!-- END HAMBURGER MENU -->
 
-<!-- NAME PROMPT OVERLAY (MODAL) -->
+<!-- NAME PROMPT OVERLAY -->
 <div class="name-prompt-overlay" id="namePromptOverlay">
   <div class="name-prompt-box">
     <h3>Please enter your name to begin!</h3>
-    <input 
-      type="text" 
-      id="promptName" 
-      placeholder="Your name..." 
-    />
+    <input type="text" id="promptName" placeholder="Your name..."/>
     <br>
     <button onclick="actuallyStartQuiz()">Begin!</button>
   </div>
@@ -490,7 +523,7 @@
         </div>
         <div class="rule-item">
           <span class="rule-icon">💡</span>
-          <span>Click “Help me!” for extra clues (–3 points each time).</span>
+          <span>Click "Help me!" for more clues (-3 points each time).</span>
         </div>
       </div>
     </div>
@@ -505,14 +538,16 @@
 
 <!-- QUIZ PAGE -->
 <div class="quiz-container" id="quizContainer">
-  <h1>Character Riddle Quiz</h1>
-  <div class="score">Score: <span id="score">0</span></div>
-  <div id="quiz-area">
-    <h3>Question <span id="questionNumber">1</span></h3>
-    <div id="hints"></div>
-    <button onclick="showNextHint()" id="hintButton">Help me!</button>
-    <div class="options" id="options"></div>
-    <button onclick="submitAnswer()" id="submitButton">Submit Answer</button>
+  <div class="quiz-intro">
+    <h1>Character Riddle Quiz</h1>
+    <div class="score">Score: <span id="score">0</span></div>
+    <div id="quiz-area">
+      <h3>Question <span id="questionNumber">1</span></h3>
+      <div id="hints"></div>
+      <button onclick="showNextHint()" id="hintButton">Help me!</button>
+      <div class="options" id="options"></div>
+      <button onclick="submitAnswer()" id="submitButton">Submit Answer</button>
+    </div>
   </div>
 </div>
 <!-- END QUIZ PAGE -->
@@ -540,7 +575,7 @@
         </div>
       </div>
     </div>
-    <!-- Prominent Leaderboard -->
+    <!-- Leaderboard -->
     <div class="leaderboard">
       <h3>🏆 Top 50 Scores</h3>
       <div id="leaderboardList"></div>
@@ -560,385 +595,360 @@
 <!-- END END PAGE -->
 
 <script>
-  /* ====================== HAMBURGER MENU ====================== */
-  function toggleMenu() {
-    const links = document.getElementById('hamburgerLinks');
-    links.classList.toggle('active');
+/* ===================================================
+   HAMBURGER MENU & VIEW LOGIC
+   =================================================== */
+function toggleMenu() {
+  document.getElementById('hamburgerLinks').classList.toggle('active');
+}
+function showLeaderboardOnly() {
+  document.getElementById('startContainer').classList.remove('active');
+  document.getElementById('quizContainer').classList.remove('active');
+  document.getElementById('endContainer').classList.add('active');
+  updateLeaderboardDisplay();
+}
+function skipToEnd() {
+  showEndScreen();
+}
+
+/* ===================================================
+   NAME PROMPT & START LOGIC
+   =================================================== */
+let playerName = "";
+function showNamePrompt() {
+  // Show overlay, clear name
+  document.getElementById('namePromptOverlay').classList.add('active');
+  document.getElementById('promptName').value = "";
+}
+function actuallyStartQuiz() {
+  const input = document.getElementById('promptName').value.trim();
+  if (!input) {
+    showToast("Please enter your name first!");
+    return;
   }
-  function showLeaderboardOnly() {
-    document.getElementById('startContainer').classList.remove('active');
-    document.getElementById('quizContainer').classList.remove('active');
-    document.getElementById('endContainer').classList.add('active');
-    updateLeaderboardDisplay();
+  playerName = input;
+  // Hide overlay and start container
+  document.getElementById('namePromptOverlay').classList.remove('active');
+  document.getElementById('startContainer').classList.remove('active');
+  // Show quiz
+  document.getElementById('quizContainer').classList.add('active');
+  currentRiddle = 0;
+  score = 0;
+  document.getElementById('score').textContent = score;
+  loadRiddle();
+}
+
+/* ===================================================
+   QUIZ VARIABLES & DATA
+   =================================================== */
+let currentRiddle = 0;
+let score = 0;
+let hintsShown = 0;
+let selectedOptionIndex = null;
+let currentPage = 1;  // leaderboard pagination
+const entriesPerPage = 10;
+
+const riddles = [
+  {
+    hints: ["I have no heart inside me.","I am silver and shiny.","I look like a big robot."],
+    options: [
+      {text: "Captain America", img: "assets/images/cap.jpg"},
+      {text: "Tin Man", img: "assets/images/tinman.jpg"},
+      {text: "Harry Potter", img: "assets/images/potter.jpg"},
+      {text: "British Guardsman", img: "assets/images/guard.jpg"}
+    ],
+    answer: "Tin Man"
+  },
+  {
+    hints: ["I went to a place called Wonderland.","I have light-coloured hair and a headband.","I am a girl in a blue dress."],
+    options: [
+      {text: "Anna", img: "assets/images/anna.png"},
+      {text: "Alice", img: "assets/images/alice.png"},
+      {text: "Supergirl", img: "assets/images/supergirl.jpg"},
+      {text: "Willy Wonka", img: "assets/images/wonka.png"}
+    ],
+    answer: "Alice"
+  },
+  {
+    hints: ["I carry a round shield of red, white, and blue.","I wear a blue suit with a white star.","I am a strong superhero."],
+    options: [
+      {text: "Harry Potter", img: "assets/images/potter.jpg"},
+      {text: "Captain America", img: "assets/images/cap.jpg"},
+      {text: "Willy Wonka", img: "assets/images/wonka.png"},
+      {text: "Tin Man", img: "assets/images/tinman.jpg"}
+    ],
+    answer: "Captain America"
+  },
+  {
+    hints: ["I love candy and chocolate.","I have a big chocolate factory.","I wear a tall hat and a purple coat."],
+    options: [
+      {text: "Willy Wonka", img: "assets/images/wonka.png"},
+      {text: "Jack Sparrow", img: "assets/images/jack.jpg"},
+      {text: "British Guardsman", img: "assets/images/guard.jpg"},
+      {text: "Astronaut", img: "assets/images/astronaut.jpg"}
+    ],
+    answer: "Willy Wonka"
+  },
+  {
+    hints: ["I stand in front of the King of England's house.","I wear a tall, black hat.","I have a red coat."],
+    options: [
+      {text: "Tin Man", img: "assets/images/tinman.jpg"},
+      {text: "British Guardsman", img: "assets/images/guard.jpg"},
+      {text: "Anna", img: "assets/images/anna.png"},
+      {text: "Jack Sparrow", img: "assets/images/jack.jpg"}
+    ],
+    answer: "British Guardsman"
+  },
+  {
+    hints: ["I sail on a black ship.","I am a pirate.","I wear a black hat and have long hair."],
+    options: [
+      {text: "Willy Wonka", img: "assets/images/wonka.png"},
+      {text: "Jack Sparrow", img: "assets/images/jack.jpg"},
+      {text: "Harry Potter", img: "assets/images/potter.jpg"},
+      {text: "Astronaut", img: "assets/images/astronaut.jpg"}
+    ],
+    answer: "Jack Sparrow"
+  },
+  {
+    hints: ["I travel in a rocket.","I see the stars and the moon.","I wear a white suit and a big helmet."],
+    options: [
+      {text: "Captain America", img: "assets/images/cap.jpg"},
+      {text: "Astronaut", img: "assets/images/astronaut.jpg"},
+      {text: "Anna", img: "assets/images/anna.png"},
+      {text: "Supergirl", img: "assets/images/supergirl.jpg"}
+    ],
+    answer: "Astronaut"
+  },
+  {
+    hints: ["My home is in Arendelle.","I wear warm clothes and a cape.","I have red-brown hair in braids."],
+    options: [
+      {text: "Anna", img: "assets/images/anna.png"},
+      {text: "Alice", img: "assets/images/alice.png"},
+      {text: "Willy Wonka", img: "assets/images/wonka.png"},
+      {text: "Harry Potter", img: "assets/images/potter.jpg"}
+    ],
+    answer: "Anna"
+  },
+  {
+    hints: ["I am super strong and can fly in the sky.","I have an 'S' on my chest.","I wear a blue suit and a red cape."],
+    options: [
+      {text: "Astronaut", img: "assets/images/astronaut.jpg"},
+      {text: "Captain America", img: "assets/images/cap.jpg"},
+      {text: "Supergirl", img: "assets/images/supergirl.jpg"},
+      {text: "Tin Man", img: "assets/images/tinman.jpg"}
+    ],
+    answer: "Supergirl"
+  },
+  {
+    hints: ["I have a lightning scar on my forehead.","I hold a magic wand.","I am a boy with glasses."],
+    options: [
+      {text: "Harry Potter", img: "assets/images/potter.jpg"},
+      {text: "Anna", img: "assets/images/anna.png"},
+      {text: "British Guardsman", img: "assets/images/guard.jpg"},
+      {text: "Supergirl", img: "assets/images/supergirl.jpg"}
+    ],
+    answer: "Harry Potter"
   }
-  function skipToEnd() {
-    showEndScreen();
+];
+
+/* ===================================================
+   QUIZ FUNCTIONS
+   =================================================== */
+function loadRiddle() {
+  document.getElementById('questionNumber').textContent = currentRiddle + 1;
+  hintsShown = 0;
+  selectedOptionIndex = null;
+
+  // Clear old hints
+  const hintsDiv = document.getElementById('hints');
+  hintsDiv.innerHTML = '';
+
+  // Create 3 hints
+  riddles[currentRiddle].hints.forEach((hintText, i) => {
+    const hintDiv = document.createElement('div');
+    hintDiv.className = 'hint';
+    hintDiv.id = `hint${i+1}`;
+    hintDiv.textContent = hintText;
+    hintsDiv.appendChild(hintDiv);
+  });
+
+  document.getElementById('hintButton').disabled = false;
+
+  // Load options
+  const optionsDiv = document.getElementById('options');
+  optionsDiv.innerHTML = '';
+  riddles[currentRiddle].options.forEach((optionObj, index) => {
+    const optionDiv = document.createElement('div');
+    optionDiv.className = 'option';
+
+    const imgElement = document.createElement('img');
+    imgElement.src = optionObj.img; 
+    imgElement.alt = optionObj.text;
+
+    const textSpan = document.createElement('span');
+    textSpan.textContent = optionObj.text;
+
+    optionDiv.onclick = () => selectOption(index);
+
+    optionDiv.appendChild(imgElement);
+    optionDiv.appendChild(textSpan);
+    optionsDiv.appendChild(optionDiv);
+  });
+
+  // Show first hint automatically
+  showNextHint();
+}
+
+function selectOption(index) {
+  selectedOptionIndex = index;
+  document.querySelectorAll('.option').forEach((opt, i) => {
+    opt.classList.toggle('selected', i === index);
+  });
+}
+
+function showNextHint() {
+  hintsShown++;
+  const hintToShow = document.getElementById(`hint${hintsShown}`);
+  if (hintToShow) {
+    hintToShow.style.display = 'block';
+  }
+  if (hintsShown === 3) {
+    document.getElementById('hintButton').disabled = true;
+  }
+}
+
+function submitAnswer() {
+  if (selectedOptionIndex === null) {
+    showToast("Please select an answer first!");
+    return;
   }
 
-  /* ====================== NAME PROMPT LOGIC ====================== */
-  let playerName = "";
+  const userAnswer = riddles[currentRiddle].options[selectedOptionIndex].text;
+  const correctAnswer = riddles[currentRiddle].answer;
 
-  function showNamePrompt() {
-    // Show the overlay, clear any old input
-    document.getElementById('namePromptOverlay').classList.add('active');
-    document.getElementById('promptName').value = "";
-  }
-
-  function actuallyStartQuiz() {
-    const nameField = document.getElementById('promptName');
-    const userInput = nameField.value.trim();
-
-    if (!userInput) {
-      alert('Please enter your name to begin.');
-      return;
-    }
-    playerName = userInput;
-
-    // Hide the overlay and the start container
-    document.getElementById('namePromptOverlay').classList.remove('active');
-    document.getElementById('startContainer').classList.remove('active');
-
-    // Now show the quiz container
-    document.getElementById('quizContainer').classList.add('active');
-    currentRiddle = 0;
-    score = 0;
+  if (userAnswer === correctAnswer) {
+    // 10 minus 3 points per extra hint
+    const pointsEarned = 10 - 3 * (hintsShown - 1);
+    score += pointsEarned;
     document.getElementById('score').textContent = score;
-    loadRiddle();
+    showToast(`Correct! You earned ${pointsEarned} points.`, true);
+  } else {
+    showToast("Wrong answer. Keep trying!", false);
   }
 
-  /* ====================== QUIZ LOGIC ====================== */
-  let currentRiddle = 0;
-  let score = 0;
-  let hintsShown = 0;
-  let selectedOptionIndex = null;
-  let currentPage = 1;
-  const entriesPerPage = 10;
-
-  const riddles = [
-    {
-      hints: [
-        "I have no heart inside me.",
-        "I am silver and shiny.",
-        "I look like a big robot."
-      ],
-      options: [
-        {text: "Captain America", img: "assets/images/cap.jpg"},
-        {text: "Tin Man", img: "assets/images/tinman.jpg"},
-        {text: "Harry Potter", img: "assets/images/potter.jpg"},
-        {text: "British Guardsman", img: "assets/images/guard.jpg"}
-      ],
-      answer: "Tin Man"
-    },
-    {
-      hints: [
-        "I went to a place called Wonderland.",
-        "I have light-coloured hair and a headband.",
-        "I am a girl in a blue dress."
-      ],
-      options: [
-        {text: "Anna", img: "assets/images/anna.png"},
-        {text: "Alice", img: "assets/images/alice.png"},
-        {text: "Supergirl", img: "assets/images/supergirl.jpg"},
-        {text: "Willy Wonka", img: "assets/images/wonka.png"}
-      ],
-      answer: "Alice"
-    },
-    {
-      hints: [
-        "I carry a round shield of red, white, and blue.",
-        "I wear a blue suit with a white star.",
-        "I am a strong superhero."
-      ],
-      options: [
-        {text: "Harry Potter", img: "assets/images/potter.jpg"},
-        {text: "Captain America", img: "assets/images/cap.jpg"},
-        {text: "Willy Wonka", img: "assets/images/wonka.png"},
-        {text: "Tin Man", img: "assets/images/tinman.jpg"}
-      ],
-      answer: "Captain America"
-    },
-    {
-      hints: [
-        "I love candy and chocolate.",
-        "I have a big chocolate factory.",
-        "I wear a tall hat and a purple coat."
-      ],
-      options: [
-        {text: "Willy Wonka", img: "assets/images/wonka.png"},
-        {text: "Jack Sparrow", img: "assets/images/jack.jpg"},
-        {text: "British Guardsman", img: "assets/images/guard.jpg"},
-        {text: "Astronaut", img: "assets/images/astronaut.jpg"}
-      ],
-      answer: "Willy Wonka"
-    },
-    {
-      hints: [
-        "I stand in front of the King of England's house.",
-        "I wear a tall, black hat.",
-        "I have a red coat."
-      ],
-      options: [
-        {text: "Tin Man", img: "assets/images/tinman.jpg"},
-        {text: "British Guardsman", img: "assets/images/guard.jpg"},
-        {text: "Anna", img: "assets/images/anna.png"},
-        {text: "Jack Sparrow", img: "assets/images/jack.jpg"}
-      ],
-      answer: "British Guardsman"
-    },
-    {
-      hints: [
-        "I sail on a black ship.",
-        "I am a pirate.",
-        "I wear a black hat and have long hair."
-      ],
-      options: [
-        {text: "Willy Wonka", img: "assets/images/wonka.png"},
-        {text: "Jack Sparrow", img: "assets/images/jack.jpg"},
-        {text: "Harry Potter", img: "assets/images/potter.jpg"},
-        {text: "Astronaut", img: "assets/images/astronaut.jpg"}
-      ],
-      answer: "Jack Sparrow"
-    },
-    {
-      hints: [
-        "I travel in a rocket.",
-        "I see the stars and the moon.",
-        "I wear a white suit and a big helmet."
-      ],
-      options: [
-        {text: "Captain America", img: "assets/images/cap.jpg"},
-        {text: "Astronaut", img: "assets/images/astronaut.jpg"},
-        {text: "Anna", img: "assets/images/anna.png"},
-        {text: "Supergirl", img: "assets/images/supergirl.jpg"}
-      ],
-      answer: "Astronaut"
-    },
-    {
-      hints: [
-        "My home is in Arendelle.",
-        "I wear warm clothes and a cape.",
-        "I have red-brown hair in braids."
-      ],
-      options: [
-        {text: "Anna", img: "assets/images/anna.png"},
-        {text: "Alice", img: "assets/images/alice.png"},
-        {text: "Willy Wonka", img: "assets/images/wonka.png"},
-        {text: "Harry Potter", img: "assets/images/potter.jpg"}
-      ],
-      answer: "Anna"
-    },
-    {
-      hints: [
-        "I am super strong and can fly in the sky.",
-        "I have an 'S' on my chest.",
-        "I wear a blue suit and a red cape."
-      ],
-      options: [
-        {text: "Astronaut", img: "assets/images/astronaut.jpg"},
-        {text: "Captain America", img: "assets/images/cap.jpg"},
-        {text: "Supergirl", img: "assets/images/supergirl.jpg"},
-        {text: "Tin Man", img: "assets/images/tinman.jpg"}
-      ],
-      answer: "Supergirl"
-    },
-    {
-      hints: [
-        "I have a lightning scar on my forehead.",
-        "I hold a magic wand.",
-        "I am a boy with glasses."
-      ],
-      options: [
-        {text: "Harry Potter", img: "assets/images/potter.jpg"},
-        {text: "Anna", img: "assets/images/anna.png"},
-        {text: "British Guardsman", img: "assets/images/guard.jpg"},
-        {text: "Supergirl", img: "assets/images/supergirl.jpg"}
-      ],
-      answer: "Harry Potter"
-    }
-  ];
-
-  function loadRiddle() {
-    document.getElementById('questionNumber').textContent = currentRiddle + 1;
-    hintsShown = 0;
-    selectedOptionIndex = null;
-
-    const hintsDiv = document.getElementById('hints');
-    hintsDiv.innerHTML = '';
-    for (let i = 0; i < 3; i++) {
-      const hintDiv = document.createElement('div');
-      hintDiv.className = 'hint';
-      hintDiv.id = `hint${i+1}`;
-      hintDiv.textContent = riddles[currentRiddle].hints[i];
-      hintsDiv.appendChild(hintDiv);
-    }
-    document.getElementById('hintButton').disabled = false;
-
-    const optionsDiv = document.getElementById('options');
-    optionsDiv.innerHTML = '';
-    riddles[currentRiddle].options.forEach((optionObj, index) => {
-      const optionDiv = document.createElement('div');
-      optionDiv.className = 'option';
-
-      const imgElement = document.createElement('img');
-      imgElement.src = optionObj.img; 
-      imgElement.alt = optionObj.text;
-
-      const textSpan = document.createElement('span');
-      textSpan.textContent = optionObj.text;
-
-      optionDiv.onclick = () => selectOption(index);
-      optionDiv.appendChild(imgElement);
-      optionDiv.appendChild(textSpan);
-      optionsDiv.appendChild(optionDiv);
-    });
-
-    // Show the first hint automatically
-    showNextHint();
+  currentRiddle++;
+  if (currentRiddle < riddles.length) {
+    setTimeout(loadRiddle, 1200); // short delay to let the toast show
+  } else {
+    setTimeout(showEndScreen, 1200);
   }
+}
 
-  function selectOption(index) {
-    selectedOptionIndex = index;
-    document.querySelectorAll('.option').forEach((opt, i) => {
-      opt.classList.toggle('selected', i === index);
-    });
+function showEndScreen() {
+  document.getElementById('quizContainer').classList.remove('active');
+  document.getElementById('endContainer').classList.add('active');
+  document.getElementById('finalScore').textContent = score;
+
+  const descriptor = getScoreDescription(score);
+  document.getElementById('scoreDescription').textContent = descriptor;
+  // Auto-save to leaderboard
+  saveScore();
+  updateLeaderboardDisplay();
+}
+
+function getScoreDescription(finalScore) {
+  if (finalScore >= 80) {
+    return "You are an English story master! Keep reading and watching – your understanding is top-notch.";
+  } else if (finalScore >= 60) {
+    return "Awesome job! You’ve got some great knowledge. Keep exploring more English stories to level up.";
+  } else if (finalScore >= 40) {
+    return "Nice attempt! With some more practice and reading, you’ll become a story expert in no time.";
+  } else {
+    return "Don’t worry, practice makes perfect! Keep reading and watching English content to improve.";
   }
+}
 
-  function showNextHint() {
-    hintsShown++;
-    const hintToShow = document.getElementById(`hint${hintsShown}`);
-    if (hintToShow) {
-      hintToShow.style.display = 'block';
-    }
-    if (hintsShown === 3) {
-      document.getElementById('hintButton').disabled = true;
-    }
+/* ===================================================
+   RESTART & TOAST
+   =================================================== */
+function restartQuiz() {
+  document.getElementById('endContainer').classList.remove('active');
+  document.getElementById('startContainer').classList.add('active');
+  document.getElementById('score').textContent = 0;
+  currentPage = 1;
+  playerName = ""; // Clear old name for next user
+}
+function showToast(message, isCorrect) {
+  const toast = document.getElementById('toastMsg');
+  toast.innerText = message;
+  toast.style.backgroundColor = isCorrect ? "#4CAF50" : "#333";
+  toast.classList.add('show');
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, 1000);
+}
+
+/* ===================================================
+   LEADERBOARD
+   =================================================== */
+function getLeaderboard() {
+  const raw = localStorage.getItem('quizLeaderboard');
+  const leaderboard = raw ? JSON.parse(raw) : [];
+  return leaderboard.sort((a, b) => b.score - a.score).slice(0, 50);
+}
+function saveScore() {
+  if (!playerName) return;
+  const newScore = {
+    name: playerName,
+    score: score,
+    date: new Date().toISOString()
+  };
+  const leaderboard = getLeaderboard();
+  leaderboard.push(newScore);
+  leaderboard.sort((a, b) => b.score - a.score);
+  while (leaderboard.length > 50) {
+    leaderboard.pop();
   }
+  localStorage.setItem('quizLeaderboard', JSON.stringify(leaderboard));
+  currentPage = 1;
+}
+function updateLeaderboardDisplay() {
+  const leaderboard = getLeaderboard();
+  const listDiv = document.getElementById('leaderboardList');
+  listDiv.innerHTML = '';
 
-  function submitAnswer() {
-    if (selectedOptionIndex === null) {
-      alert('Please select an answer!');
-      return;
-    }
-    const userAnswer = riddles[currentRiddle].options[selectedOptionIndex].text;
-    const correctAnswer = riddles[currentRiddle].answer;
+  const totalPages = Math.ceil(leaderboard.length / entriesPerPage);
+  const start = (currentPage - 1) * entriesPerPage;
+  const end = start + entriesPerPage;
+  const pageEntries = leaderboard.slice(start, end);
 
-    if (userAnswer === correctAnswer) {
-      // 10 minus 3 points per extra hint
-      const pointsEarned = 10 - 3 * (hintsShown - 1);
-      score += pointsEarned;
-      document.getElementById('score').textContent = score;
-      alert(`Correct! You earned ${pointsEarned} points.`);
-    } else {
-      alert('Wrong answer, try the next one!');
-    }
+  pageEntries.forEach((entry, index) => {
+    const globalRank = start + index + 1;
+    const scoreEntry = document.createElement('div');
+    scoreEntry.className = 'score-entry';
+    scoreEntry.innerHTML = `
+      <span class="rank">#${globalRank}</span>
+      <span class="name">${entry.name}</span>
+      <span class="score">${entry.score}</span>
+    `;
+    listDiv.appendChild(scoreEntry);
+  });
 
-    currentRiddle++;
-    if (currentRiddle < riddles.length) {
-      loadRiddle();
-    } else {
-      showEndScreen();
-    }
-  }
-
-  function showEndScreen() {
-    document.getElementById('quizContainer').classList.remove('active');
-    document.getElementById('endContainer').classList.add('active');
-    document.getElementById('finalScore').textContent = score;
-
-    const descriptor = getScoreDescription(score);
-    document.getElementById('scoreDescription').textContent = descriptor;
-    
-    // Save score to leaderboard
-    saveScore();
+  document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages}`;
+  const prevBtn = document.querySelector('.leaderboard-pagination button:first-child');
+  const nextBtn = document.querySelector('.leaderboard-pagination button:last-child');
+  prevBtn.disabled = (currentPage === 1);
+  nextBtn.disabled = (currentPage === totalPages);
+}
+function changePage(delta) {
+  const leaderboard = getLeaderboard();
+  const totalPages = Math.ceil(leaderboard.length / entriesPerPage);
+  const newPage = currentPage + delta;
+  if (newPage >= 1 && newPage <= totalPages) {
+    currentPage = newPage;
     updateLeaderboardDisplay();
   }
-
-  function getScoreDescription(finalScore) {
-    if (finalScore >= 80) {
-      return "You are an English story master! Keep reading and watching – your understanding is top-notch.";
-    } else if (finalScore >= 60) {
-      return "Awesome job! You’ve got some great knowledge. Keep exploring more English stories to level up.";
-    } else if (finalScore >= 40) {
-      return "Nice attempt! With some more practice and reading, you’ll become a story expert in no time.";
-    } else {
-      return "Don’t worry, practice makes perfect! Keep reading and watching English content to improve.";
-    }
-  }
-
-  /* ====================== RESTART QUIZ ====================== */
-  function restartQuiz() {
-    // Return to start container
-    document.getElementById('endContainer').classList.remove('active');
-    document.getElementById('startContainer').classList.add('active');
-    document.getElementById('score').textContent = 0;
-    currentPage = 1;
-    playerName = ""; // Clear old name so new user can enter
-  }
-
-  /* ====================== LEADERBOARD FUNCTIONS ====================== */
-  function getLeaderboard() {
-    const leaderboard = JSON.parse(localStorage.getItem('quizLeaderboard')) || [];
-    return leaderboard.sort((a, b) => b.score - a.score).slice(0, 50); // Keep top 50
-  }
-
-  function saveScore() {
-    if (!playerName) return; // If somehow no name, skip
-
-    const newScore = {
-      name: playerName,
-      score: score,
-      date: new Date().toISOString()
-    };
-    const leaderboard = getLeaderboard();
-    leaderboard.push(newScore);
-    leaderboard.sort((a, b) => b.score - a.score);
-
-    while (leaderboard.length > 50) {
-      leaderboard.pop();
-    }
-    localStorage.setItem('quizLeaderboard', JSON.stringify(leaderboard));
-    currentPage = 1; // Reset to first page
-  }
-
-  function updateLeaderboardDisplay() {
-    const leaderboard = getLeaderboard();
-    const leaderboardList = document.getElementById('leaderboardList');
-    leaderboardList.innerHTML = '';
-
-    const totalPages = Math.ceil(leaderboard.length / entriesPerPage);
-    const start = (currentPage - 1) * entriesPerPage;
-    const end = start + entriesPerPage;
-    const pageEntries = leaderboard.slice(start, end);
-
-    pageEntries.forEach((entry, index) => {
-      const globalRank = start + index + 1;
-      const scoreEntry = document.createElement('div');
-      scoreEntry.className = 'score-entry';
-      scoreEntry.innerHTML = `
-        <span class="rank">#${globalRank}</span>
-        <span class="name">${entry.name}</span>
-        <span class="score">${entry.score}</span>
-      `;
-      leaderboardList.appendChild(scoreEntry);
-    });
-
-    document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages}`;
-    const prevButton = document.querySelector('.leaderboard-pagination button:first-child');
-    const nextButton = document.querySelector('.leaderboard-pagination button:last-child');
-    prevButton.disabled = (currentPage === 1);
-    nextButton.disabled = (currentPage === totalPages);
-  }
-
-  function changePage(delta) {
-    const leaderboard = getLeaderboard();
-    const totalPages = Math.ceil(leaderboard.length / entriesPerPage);
-    const newPage = currentPage + delta;
-
-    if (newPage >= 1 && newPage <= totalPages) {
-      currentPage = newPage;
-      updateLeaderboardDisplay();
-    }
-  }
+}
 </script>
 </body>
 </html>
