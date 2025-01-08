@@ -83,12 +83,27 @@
       transform: scale(1.05);
     }
     .name-prompt-box input {
-      width: 80%;
-      max-width: 300px;
-      padding: 10px;
-      margin: 15px 0;
-      font-size: 1em;
-    }
+  width: 80%;
+  max-width: 300px;
+  padding: 15px;
+  margin: 15px 0;
+  font-size: 1.1em;
+  border: 2px solid #2196F3;
+  border-radius: 8px;
+  outline: none;
+}
+
+.name-prompt-box input:focus {
+  border-color: #1976D2;
+  box-shadow: 0 0 5px rgba(33, 150, 243, 0.3);
+}
+
+/* Prevent zoom on focus in iOS */
+@media screen and (max-width: 768px) {
+  .name-prompt-box input {
+    font-size: 16px;
+  }
+}
 
     /* iPad portrait styling */
     @media only screen 
@@ -550,7 +565,13 @@
 <div class="name-prompt-overlay" id="namePromptOverlay">
   <div class="name-prompt-box">
     <h3>Please enter your name to begin!</h3>
-    <input type="text" id="promptName" placeholder="Your name..."/>
+    <input type="text" 
+           id="promptName" 
+           placeholder="Your name..."
+           autofocus
+           autocomplete="off"
+           inputmode="text"
+           onkeypress="handleNameInputKeypress(event)"/>
     <br>
     <button onclick="actuallyStartQuiz()">Begin!</button>
   </div>
@@ -683,7 +704,20 @@ function skipToEnd() {
 let playerName = "";
 function showNamePrompt() {
   document.getElementById('namePromptOverlay').classList.add('active');
-  document.getElementById('promptName').value = "";
+  const inputField = document.getElementById('promptName');
+  inputField.value = "";
+  
+  // Focus the input field with a slight delay to ensure it works on iOS
+  setTimeout(() => {
+    inputField.focus();
+  }, 100);
+}
+
+// Add this new function right after showNamePrompt
+function handleNameInputKeypress(event) {
+  if (event.key === 'Enter') {
+    actuallyStartQuiz();
+  }
 }
 function actuallyStartQuiz() {
   const input = document.getElementById('promptName').value.trim();
