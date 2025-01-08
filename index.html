@@ -275,52 +275,114 @@
     }
 
     /* Hints layout */
+/* Hints layout */
+.hints-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    margin: 30px 0;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.hint-block {
+    flex: 1 1 200px;
+    max-width: 250px;
+    min-height: 150px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    background: #fff3cd;
+    padding: 20px 15px 35px 15px;
+    box-sizing: border-box;
+    position: relative;
+    
+    /* Initial display state */
+    display: none;
+    
+    /* When active */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.hint-block p {
+    margin: 0;
+    padding: 0;
+    font-size: 1.2em;
+    font-style: italic;
+    text-align: center;
+    color: #664d03;
+    width: calc(100% - 30px);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    
+    /* Centering */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    
+    /* Text properties */
+    line-height: 1.4; /* Normal line spacing */
+    min-height: 3em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Add paragraph spacing between multiple paragraphs */
+.hint-block p + p {
+    margin-top: 2em; /* Double spacing between paragraphs */
+}
+
+/* Style for line breaks */
+.hint-block p br {
+    display: block;
+    content: "";
+    margin-top: 2em; /* Double spacing for hard breaks */
+}
+
+.hint-badge {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #4CAF50;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.9em;
+    display: none;
+    white-space: nowrap;
+    z-index: 1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
     .hints-row {
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      gap: 15px;
-      margin: 15px 0;
-      flex-wrap: wrap;
+        gap: 25px;
     }
+
     .hint-block {
-      flex: 1 1 200px;
-      max-width: 250px;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      background: #fff3cd; 
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      min-height: 120px;
-      padding: 10px;
-      box-sizing: border-box;
-      /* Hidden by default */
-      display: none; 
+        flex: 1 1 100%;
+        max-width: none;
+        min-height: 130px;
     }
-    /* Ensures hint text neatly fits the box */
+    
     .hint-block p {
-      margin: 0;
-      font-style: italic;
-      text-align: center;
-      word-wrap: break-word;
-      max-width: 100%; /* Fill up the container */
+        font-size: 1.1em;
     }
-    .hint-badge {
-      position: absolute;
-      bottom: 5px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #4CAF50;
-      color: #fff;
-      padding: 5px 10px;
-      border-radius: 15px;
-      font-size: 0.9em;
-      display: none;
-      white-space: nowrap;
-    }
+}
+
+/* Ensure hamburger menu stays on top */
+.hamburger-menu {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+}
 
     /* Options grid */
     .options {
