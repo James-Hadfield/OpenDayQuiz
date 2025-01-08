@@ -64,6 +64,24 @@
       box-shadow: 0 0 15px rgba(0,0,0,0.3);
       text-align: center;
     }
+    .name-prompt-box h3 {
+      margin-top: 0;
+    }
+    /* Styled "Begin!" like the main quiz button */
+    .name-prompt-box button {
+      background: linear-gradient(45deg, #2196F3, #21CBF3);
+      border: none;
+      border-radius: 25px;
+      padding: 15px 40px;
+      font-size: 1.2em;
+      color: white;
+      cursor: pointer;
+      transition: transform 0.2s;
+      margin-top: 15px;
+    }
+    .name-prompt-box button:hover {
+      transform: scale(1.05);
+    }
     .name-prompt-box input {
       width: 80%;
       max-width: 300px;
@@ -72,7 +90,7 @@
       font-size: 1em;
     }
 
-    /* iPad portrait attempt to fit well */
+    /* iPad portrait styling */
     @media only screen 
       and (orientation: portrait) 
       and (min-device-width: 768px) 
@@ -84,7 +102,7 @@
         height: 100vh;
         margin: 0;
       }
-      .quiz-intro, #quiz-area {
+      .quiz-intro {
         max-height: calc(100vh - 40px);
         overflow-y: auto;
       }
@@ -211,7 +229,7 @@
       font-size: 1.3em;
     }
 
-    /* The fancy gradient bar for the score at the top */
+    /* Gradient bar for score */
     .score-bar-container {
       width: 80%;
       max-width: 500px;
@@ -251,29 +269,36 @@
       max-width: 250px;
       border: 1px solid #ddd;
       border-radius: 10px;
-      padding: 10px;
-      text-align: center;
       background: #fff3cd; 
-      display: none; 
+      display: none; /* Hidden by default; appear only after "Help me!" */
       position: relative;
-      min-height: 80px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 120px;
+      padding: 10px;
+      box-sizing: border-box;
     }
     .hint-block p {
       margin: 0;
       font-style: italic;
-      margin-bottom: 10px;
+      text-align: center;
     }
-    /* The “Potential Points” badge in top-left corner */
+
+    /* The “Potential Points” badge is pinned at bottom-centre */
     .hint-badge {
       position: absolute;
-      top: 10px;
-      left: 10px;
+      bottom: 5px;
+      left: 50%;
+      transform: translateX(-50%);
       background: #4CAF50;
       color: #fff;
-      padding: 5px 8px;
+      padding: 5px 10px;
       border-radius: 15px;
       font-size: 0.9em;
       display: none;
+      white-space: nowrap;
     }
 
     /* Options grid */
@@ -312,7 +337,7 @@
       border-color: #4CAF50;
     }
 
-    /* Buttons under the question */
+    /* Center "Help me!" button in original position (above the options). */
     #hintButton {
       background: linear-gradient(45deg, #ff9800, #ff5722);
       color: white;
@@ -323,12 +348,9 @@
       cursor: pointer;
       transition: all 0.3s ease;
       box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-      margin: 15px 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
       min-width: 150px;
+      margin: 0 auto 15px auto; /* Center the button horizontally */
+      display: block;
     }
     #hintButton::before {
       content: "-3 points";
@@ -350,6 +372,7 @@
       box-shadow: none;
     }
 
+    /* The "Submit Answer" button after the options */
     #submitButton {
       background: linear-gradient(45deg, #4CAF50, #45a049);
       color: white;
@@ -360,13 +383,9 @@
       cursor: pointer;
       transition: all 0.3s ease;
       box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-      margin: 20px 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      min-width: 200px;
       font-weight: bold;
+      margin: 15px auto 0 auto; /* Center horizontally */
+      display: block;
     }
     #submitButton:hover {
       transform: translateY(-2px);
@@ -546,11 +565,11 @@
         </div>
         <div class="rule-item">
           <span class="rule-icon">✅</span>
-          <span>Each correct answer = 10 points, minus 3 per hint used.</span>
+          <span>Each correct answer = 10 points</span>
         </div>
         <div class="rule-item">
           <span class="rule-icon">💡</span>
-          <span>You’ll see the available points in a small badge on the active hint!</span>
+          <span>“Help me!” to another clue. Each extra clue costs 3 points.</span>
         </div>
       </div>
     </div>
@@ -572,16 +591,18 @@
       <div class="score-bar-label" id="scoreBarLabel">Score: 0</div>
     </div>
 
-    <!-- We show question number in a cooler style: "Question X of 10" -->
+    <!-- "Question X of 10" -->
     <h2 id="questionTracker">Question 1 of 10</h2>
 
     <!-- 3 Blocks horizontally for hints -->
-    <div class="hints-row" id="hintsRow">
-      <!-- built dynamically -->
-    </div>
+    <div class="hints-row" id="hintsRow"></div>
 
+    <!-- Centered "Help me!" button above the options -->
     <button onclick="showNextHint()" id="hintButton">Help me!</button>
+
     <div class="options" id="options"></div>
+
+    <!-- Submit Answer button, centred below the options -->
     <button onclick="submitAnswer()" id="submitButton">Submit Answer</button>
   </div>
 </div>
@@ -630,7 +651,7 @@
 <!-- END END PAGE -->
 
 <script>
-/* ================== HAMBURGER MENU & SHOW/HIDE ================== */
+/* ============== HAMBURGER MENU ============== */
 function toggleMenu() {
   document.getElementById('hamburgerLinks').classList.toggle('active');
 }
@@ -644,7 +665,7 @@ function skipToEnd() {
   showEndScreen();
 }
 
-/* ================== NAME PROMPT ================== */
+/* ============== NAME PROMPT ============== */
 let playerName = "";
 function showNamePrompt() {
   document.getElementById('namePromptOverlay').classList.add('active');
@@ -667,7 +688,7 @@ function actuallyStartQuiz() {
   loadRiddle();
 }
 
-/* ================== TOAST ================== */
+/* ============== TOAST ============== */
 function showToast(message, isCorrect) {
   const toast = document.getElementById('toastMsg');
   toast.innerText = message;
@@ -678,7 +699,7 @@ function showToast(message, isCorrect) {
   }, 1000);
 }
 
-/* ================== QUIZ DATA ================== */
+/* ============== QUIZ DATA ============== */
 let currentRiddle = 0;
 let score = 0;
 let hintsShown = 0;
@@ -686,7 +707,6 @@ let selectedOptionIndex = null;
 let currentPage = 1;
 const entriesPerPage = 10;
 
-// We'll have 10 riddles total:
 const riddles = [
   {
     hints: ["I have no heart inside me.","I am silver and shiny.","I look like a big robot."],
@@ -790,16 +810,15 @@ const riddles = [
   }
 ];
 
-/* ================== LOAD RIDDLE ================== */
+/* ============== LOAD RIDDLE ============== */
 function loadRiddle() {
-  // "Question 1 of 10" style
   document.getElementById('questionTracker').textContent = `Question ${currentRiddle+1} of ${riddles.length}`;
 
   hintsShown = 0;
   selectedOptionIndex = null;
   document.getElementById('hintButton').disabled = false;
 
-  // Build hint blocks
+  // Build hint blocks (all hidden initially)
   const hintsRow = document.getElementById('hintsRow');
   hintsRow.innerHTML = '';
 
@@ -808,18 +827,21 @@ function loadRiddle() {
     const block = document.createElement('div');
     block.className = 'hint-block';
     block.id = `hintBlock${i+1}`;
+    block.style.display = 'none'; // Initially hidden
 
     const badge = document.createElement('span');
     badge.className = 'hint-badge';
-    // Potential: 10 => 7 => 4
-    const potential = 10 - 3*i; 
+    badge.id = `hintBadge${i+1}`;
+    // Points available decrease by 3 for each hint
+    const potential = 10 - (3 * i);
     badge.textContent = `+${potential}`;
+    badge.style.display = 'none'; // Initially hidden
 
     const hintPara = document.createElement('p');
     hintPara.textContent = curHints[i];
 
-    block.appendChild(badge);
     block.appendChild(hintPara);
+    block.appendChild(badge);
     hintsRow.appendChild(block);
   }
 
@@ -843,39 +865,38 @@ function loadRiddle() {
     optionsDiv.appendChild(optionDiv);
   });
 
-  // Show first hint
-  showNextHint();
+  // Show first hint automatically
+  showNextHint(); // This will show the first hint
 }
 
-/* ================== SHOW NEXT HINT ================== */
 function showNextHint() {
-  if (hintsShown === 3) return; 
+  // Hide badge from previous hint if exists
+  if (hintsShown > 0) {
+    const prevBadge = document.getElementById(`hintBadge${hintsShown}`);
+    if (prevBadge) {
+      prevBadge.style.display = 'none';
+    }
+  }
+  
+  // Show next hint
   hintsShown++;
-
-  // Hide the "potential points" badge on the *previous* hint
-  if (hintsShown > 1) {
-    const oldBlock = document.getElementById(`hintBlock${hintsShown-1}`);
-    if (oldBlock) {
-      const oldBadge = oldBlock.querySelector('.hint-badge');
-      if (oldBadge) oldBadge.style.display = 'none';
+  const currentBlock = document.getElementById(`hintBlock${hintsShown}`);
+  const currentBadge = document.getElementById(`hintBadge${hintsShown}`);
+  
+  if (currentBlock) {
+    currentBlock.style.display = 'flex';
+    if (currentBadge) {
+      currentBadge.style.display = 'block';
     }
   }
 
-  // Show the new hint block
-  const block = document.getElementById(`hintBlock${hintsShown}`);
-  if (block) {
-    block.style.display = 'block';
-    // Also show the badge
-    const badge = block.querySelector('.hint-badge');
-    if (badge) badge.style.display = 'inline-block';
-  }
-
+  // Disable button if all hints shown
   if (hintsShown === 3) {
     document.getElementById('hintButton').disabled = true;
   }
 }
 
-/* ================== SELECT & SUBMIT ================== */
+/* ============== SELECT & SUBMIT ============== */
 function selectOption(idx) {
   selectedOptionIndex = idx;
   document.querySelectorAll('.option').forEach((opt, i) => {
@@ -891,14 +912,13 @@ function submitAnswer() {
   const userAnswer = riddles[currentRiddle].options[selectedOptionIndex].text;
   const correct = riddles[currentRiddle].answer;
   if (userAnswer === correct) {
-    const pointsEarned = 10 - 3*(hintsShown-1);
+    const pointsEarned = 10 - 3*(hintsShown - 1);
     score += pointsEarned;
     showToast(`Correct! You earned +${pointsEarned} points.`, true);
   } else {
     showToast("Wrong answer. Keep trying!", false);
   }
 
-  // Update score bar
   updateScoreBar();
 
   currentRiddle++;
@@ -909,13 +929,11 @@ function submitAnswer() {
   }
 }
 
-/* ================== SCORE BAR ================== */
+/* ============== SCORE BAR ============== */
 function updateScoreBar() {
-  // We'll presume a "max" possible is 100 (10 questions * 10 points if zero hints used).
-  // But if you want a dynamic max, you'd recalc it differently.
   const maxScore = riddles.length * 10;
   let percent = (score / maxScore) * 100;
-  if (percent > 100) percent = 100; // just in case
+  if (percent > 100) percent = 100;
 
   const fill = document.getElementById('scoreBarFill');
   fill.style.width = `${percent}%`;
@@ -924,7 +942,7 @@ function updateScoreBar() {
   label.textContent = `Score: ${score}`;
 }
 
-/* ================== END SCREEN ================== */
+/* ============== END SCREEN ============== */
 function showEndScreen() {
   document.getElementById('quizContainer').classList.remove('active');
   document.getElementById('endContainer').classList.add('active');
@@ -936,7 +954,6 @@ function showEndScreen() {
   saveScore();
   updateLeaderboardDisplay();
 }
-
 function getScoreDescription(finalScore) {
   if (finalScore >= 80) {
     return "You are an English story master! Keep reading and watching – your understanding is top-notch.";
@@ -949,17 +966,18 @@ function getScoreDescription(finalScore) {
   }
 }
 
-/* ================== RESTART ================== */
+/* ============== RESTART ============== */
 function restartQuiz() {
   document.getElementById('endContainer').classList.remove('active');
   document.getElementById('startContainer').classList.add('active');
+  // Reset score bar
   document.getElementById('scoreBarFill').style.width = '0%';
   document.getElementById('scoreBarLabel').textContent = 'Score: 0';
   currentPage = 1;
   playerName = "";
 }
 
-/* ================== LEADERBOARD ================== */
+/* ============== LEADERBOARD ============== */
 function getLeaderboard() {
   const raw = localStorage.getItem('quizLeaderboard');
   const arr = raw ? JSON.parse(raw) : [];
