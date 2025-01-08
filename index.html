@@ -702,10 +702,76 @@ h1 {
         width: 100%;
     }
 }
+
+/* HAMBURGER MENU STYLES */
+.hamburger-menu {
+      position: fixed;
+      top: 20px; 
+      right: 20px;
+      z-index: 9999; /* Make sure it stays on top */
+    }
+    .hamburger-icon {
+      width: 30px;
+      height: 22px;
+      cursor: pointer;
+      position: relative;
+    }
+    .hamburger-icon span {
+      display: block;
+      height: 4px;
+      background: #333;
+      margin: 4px 0;
+      transition: 0.3s ease;
+    }
+    .hamburger-links {
+      position: absolute;
+      top: 40px;
+      right: 0;
+      background: white;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      list-style: none;
+      padding: 10px;
+      margin: 0;
+      display: none; /* Hidden by default */
+    }
+    .hamburger-links.active {
+      display: block; /* Toggle this to show/hide */
+    }
+    .hamburger-links li {
+      margin: 0;
+      padding: 5px 0;
+      text-align: right;
+    }
+    .hamburger-links button {
+      background: none;
+      border: none;
+      font-size: 16px;
+      color: #333;
+      cursor: pointer;
+      width: 100%;
+      text-align: right;
+      padding: 5px;
+    }
+    .hamburger-links button:hover {
+      background: #f0f0f0;
+    }
   </style>
 </head>
 <body>
-
+<!-- HAMBURGER MENU -->
+<div class="hamburger-menu">
+  <div class="hamburger-icon" onclick="toggleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+  <ul class="hamburger-links" id="hamburgerLinks">
+    <li><button onclick="restartQuiz()">Restart Game</button></li>
+    <li><button onclick="showLeaderboardOnly()">See Leaderboard</button></li>
+    <li><button onclick="skipToEnd()">Skip to Final Page</button></li>
+  </ul>
+</div>
+<!-- END HAMBURGER MENU -->
 <!-- START PAGE -->
 <div class="start-container active" id="startContainer">
   <div class="quiz-intro">
@@ -814,6 +880,39 @@ h1 {
 </div>
 
 <script>
+/* ============== HAMBURGER MENU LOGIC ============== */
+function toggleMenu() {
+    const links = document.getElementById('hamburgerLinks');
+    links.classList.toggle('active');
+  }
+
+  // Show the existing end container for the leaderboard,
+  // but don’t override final score text unless you want to.
+  function showLeaderboardOnly() {
+    // Hide the other containers
+    document.getElementById('startContainer').classList.remove('active');
+    document.getElementById('quizContainer').classList.remove('active');
+    // Show the end container
+    document.getElementById('endContainer').classList.add('active');
+
+    // Make sure we display the current scoreboard
+    document.getElementById('playerNameInput').style.display = 'block';
+    updateLeaderboardDisplay();
+  }
+
+  function skipToEnd() {
+    // Immediately jump to end of quiz
+    showEndScreen();
+  }
+  
+  let currentRiddle = 0;
+  let score = 0;
+  let hintsShown = 0;
+  let selectedOptionIndex = null;
+  let currentPage = 1;
+  const entriesPerPage = 10;
+
+  
   /* EXACT SAME SCRIPT AS BEFORE */
   const riddles = [
     {
@@ -958,17 +1057,11 @@ h1 {
     }
   ];
 
-  let currentRiddle = 0;
-  let score = 0;
-  let hintsShown = 0;
-  let selectedOptionIndex = null;
+
 
   function startQuiz() {
-    // Hide start container, show quiz container
     document.getElementById('startContainer').classList.remove('active');
     document.getElementById('quizContainer').classList.add('active');
-
-    // Reset quiz progress
     currentRiddle = 0;
     score = 0;
     document.getElementById('score').textContent = score;
@@ -1083,10 +1176,9 @@ h1 {
     document.getElementById('endContainer').classList.remove('active');
     document.getElementById('startContainer').classList.add('active');
     document.getElementById('score').textContent = 0;
+    document.getElementById('playerNameInput').style.display = 'block';
+    currentPage = 1;
   }
-
-  let currentPage = 1;
-const entriesPerPage = 10;
 
 // Leaderboard functions
 function getLeaderboard() {
