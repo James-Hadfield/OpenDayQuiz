@@ -3,26 +3,27 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <title>Story Character Quiz</title>
+  <title>Story Character Challenge</title>
   <style>
-    /* Base layout */
-    html, body {
+/* Base layout */
+html, body {
       height: 100%;
       margin: 0;
       padding: 0;
-      overflow: hidden; 
+      overflow-y: auto;
       font-family: Comic Sans MS, sans-serif;
       background-color: #f0f0f0; 
     }
     body {
       display: flex;
       justify-content: center;
-      align-items: center;
+      align-items: flex-start;
       min-height: 100vh;
       box-sizing: border-box;
+      padding: 10px;
     }
 
-    /* Main quiz containers */
+/* Main quiz containers */
     .start-container,
     .quiz-container,
     .end-container {
@@ -33,8 +34,10 @@
       display: none;
       width: 100%;
       max-width: 800px;
-      margin: 20px;
+      margin: 10px;
       box-sizing: border-box;
+      overflow-y: auto;
+      min-height: min-content;
     }
     .start-container.active,
     .quiz-container.active,
@@ -142,12 +145,12 @@
     .start-container,
     .quiz-container,
     .end-container {
-      max-height: 98vh;
-      overflow-y: auto;
+      max-height: none;
+      overflow-y: visible;
     }
     .quiz-intro {
-      max-height: calc(100vh - 40px);
-      overflow-y: auto;
+      max-height: none;
+      overflow-y: visible;
       scrollbar-width: none; 
       -ms-overflow-style: none;
       text-align: center;
@@ -579,6 +582,28 @@
         font-size: 2.5em;
       }
     }
+
+    @media (max-width: 768px) {
+      body {
+        align-items: flex-start;
+        padding: 5px;
+      }
+      
+      .start-container,
+      .quiz-container,
+      .end-container {
+        margin: 5px;
+        padding: 15px;
+      }
+      
+      .leaderboard {
+        overflow-x: auto;
+      }
+      
+      .leaderboard-table {
+        min-width: 300px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -637,7 +662,7 @@
         <h3>How to Play 🎮</h3>
         <div class="rule-item">
           <span class="rule-icon">🤔</span>
-          <span>Read the clues and choose the correct character.</span>
+          <span>Read the clues and choose the answer.</span>
         </div>
         <div class="rule-item">
           <span class="rule-icon">✅</span>
