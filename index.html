@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <title>Character Riddle Quiz</title>
+  <title>Story Character Quiz</title>
   <style>
     /* Base layout */
     html, body {
@@ -11,8 +11,8 @@
       margin: 0;
       padding: 0;
       overflow: hidden; 
-      font-family: Arial, sans-serif;
-      background-color: #f0f0f0;
+      font-family: Comic Sans MS, sans-serif;
+      background-color: #f0f0f0; /* Back to original light grey */
     }
     body {
       display: flex;
@@ -26,7 +26,7 @@
     .start-container,
     .quiz-container,
     .end-container {
-      background: white;
+      background: #ffffff;
       padding: 20px;
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
@@ -67,9 +67,8 @@
     .name-prompt-box h3 {
       margin-top: 0;
     }
-    /* Styled "Begin!" like the main quiz button */
     .name-prompt-box button {
-      background: linear-gradient(45deg, #2196F3, #21CBF3);
+      background: linear-gradient(45deg, #2196F3, #21CBF3); /* Blue gradient restored */
       border: none;
       border-radius: 25px;
       padding: 15px 40px;
@@ -95,29 +94,12 @@
       border-radius: 8px;
       outline: none;
       cursor: text;
-
-      /* Force hardware acceleration */
-      -webkit-transform: translateZ(0);
       transform: translateZ(0);
-}
-
-/* Add this new viewport rule after the input styles */
-@viewport {
-    width: device-width;
-    zoom: 1;
-}
-
-.name-prompt-box input:focus {
-  border-color: #1976D2;
-  box-shadow: 0 0 5px rgba(33, 150, 243, 0.3);
-}
-
-/* Prevent zoom on focus in iOS */
-@media screen and (max-width: 768px) {
-  .name-prompt-box input {
-    font-size: 16px;
-  }
-}
+    }
+    .name-prompt-box input:focus {
+      border-color: #1976D2;
+      box-shadow: 0 0 5px rgba(33, 150, 243, 0.3);
+    }
 
     /* iPad portrait styling */
     @media only screen 
@@ -201,7 +183,7 @@
       text-align: center;
     }
     .points-circle {
-      background: linear-gradient(45deg, #2196F3, #21CBF3);
+      background: linear-gradient(45deg, #2196F3, #21CBF3); /* Blue gradient circle */
       width: 150px;
       height: 150px;
       border-radius: 50%;
@@ -260,45 +242,39 @@
 
     /* Gradient bar for score */
     .score-bar-container {
-    width: 80%;
-    max-width: 500px;
-    margin: 0 auto 15px auto;
-    background: #ddd;
-    border-radius: 15px;
-    overflow: hidden;
-    height: 25px;
-    position: relative;
-}
-
-.score-bar-fill {
-    background: linear-gradient(90deg, #4CAF50, #8BC34A);
-    width: 0%;
-    height: 100%;
-    transition: width 0.4s ease;
-}
-
-.score-bar-label {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    color: #000;
-    font-weight: bold;
-    text-shadow: 
+      width: 80%;
+      max-width: 500px;
+      margin: 0 auto 15px auto;
+      background: #ddd;
+      border-radius: 15px;
+      overflow: hidden;
+      height: 25px;
+      position: relative;
+    }
+    .score-bar-fill {
+      background: linear-gradient(90deg, #4CAF50, #8BC34A);
+      width: 0%;
+      height: 100%;
+      transition: width 0.4s ease;
+    }
+    .score-bar-label {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      color: #000;
+      font-weight: bold;
+      text-shadow: 
         -1px -1px 0 #fff,
          1px -1px 0 #fff,
         -1px  1px 0 #fff,
          1px  1px 0 #fff,
          0 0 4px rgba(255, 255, 255, 0.7);
-    z-index: 1;
-    /* Prevent text selection */
-    user-select: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-}
+      z-index: 1;
+      user-select: none;
+    }
 
-    /* 3-block horizontally for hints */
+    /* Hints layout */
     .hints-row {
       display: flex;
       justify-content: center;
@@ -313,7 +289,6 @@
       border: 1px solid #ddd;
       border-radius: 10px;
       background: #fff3cd; 
-      display: none; /* Hidden by default; appear only after "Help me!" */
       position: relative;
       display: flex;
       flex-direction: column;
@@ -322,14 +297,17 @@
       min-height: 120px;
       padding: 10px;
       box-sizing: border-box;
+      /* Hidden by default */
+      display: none; 
     }
+    /* Ensures hint text neatly fits the box */
     .hint-block p {
       margin: 0;
       font-style: italic;
       text-align: center;
+      word-wrap: break-word;
+      max-width: 100%; /* Fill up the container */
     }
-
-    /* The “Potential Points” badge is pinned at bottom-centre */
     .hint-badge {
       position: absolute;
       bottom: 5px;
@@ -380,7 +358,7 @@
       border-color: #4CAF50;
     }
 
-    /* Center "Help me!" button in original position (above the options). */
+    /* "Help me!" button */
     #hintButton {
       background: linear-gradient(45deg, #ff9800, #ff5722);
       color: white;
@@ -392,7 +370,7 @@
       transition: all 0.3s ease;
       box-shadow: 0 4px 6px rgba(0,0,0,0.1);
       min-width: 150px;
-      margin: 0 auto 15px auto; /* Center the button horizontally */
+      margin: 0 auto 15px auto;
       display: block;
     }
     #hintButton::before {
@@ -415,7 +393,7 @@
       box-shadow: none;
     }
 
-    /* The "Submit Answer" button after the options */
+    /* "Submit Answer" button */
     #submitButton {
       background: linear-gradient(45deg, #4CAF50, #45a049);
       color: white;
@@ -427,7 +405,7 @@
       transition: all 0.3s ease;
       box-shadow: 0 4px 6px rgba(0,0,0,0.1);
       font-weight: bold;
-      margin: 15px auto 0 auto; /* Center horizontally */
+      margin: 15px auto 0 auto;
       display: block;
     }
     #submitButton:hover {
@@ -481,6 +459,12 @@
     #pageInfo {
       font-size: 0.9em;
       color: #666;
+    }
+    .score-entry {
+      display: flex;
+      justify-content: space-between;
+      padding: 5px 0;
+      border-bottom: 1px dotted #ccc;
     }
     .score-entry:nth-child(1) .rank { color: #FFD700; }
     .score-entry:nth-child(2) .rank { color: #C0C0C0; }
@@ -597,7 +581,7 @@
     <div class="logo-container">
       <img src="assets/images/logo.jpg" alt="UCC Logo" class="ucc-logo">
     </div>
-    <h1>English Story Character Quiz</h1>
+    <h1>English Story Challenge</h1>
     <div class="welcome-card">
       <div class="score-info">
         <h2>Can you get the high score? 🚀</h2>
@@ -651,7 +635,7 @@
 
     <div class="options" id="options"></div>
 
-    <!-- Submit Answer button, centred below the options -->
+    <!-- Submit Answer button -->
     <button onclick="submitAnswer()" id="submitButton">Submit Answer</button>
   </div>
 </div>
@@ -721,25 +705,21 @@ function showNamePrompt() {
     const inputField = document.getElementById('promptName');
     inputField.value = "";
     
-    // More aggressive approach to focus and show keyboard
+    // Attempt to focus and show keyboard
     setTimeout(() => {
         inputField.focus();
-        inputField.click(); // Simulate a click
-        inputField.focus(); // Focus again
-        // Try to show keyboard explicitly
+        inputField.click(); 
+        inputField.focus();
         if (typeof inputField.select === 'function') {
             inputField.select();
         }
-    }, 300); // Longer delay for iOS
+    }, 300);
 }
-
-// Add this new function right after showNamePrompt
 function handleNameInputKeypress(event) {
     if (event.key === 'Enter') {
         actuallyStartQuiz();
     }
 }
-
 function actuallyStartQuiz() {
   const input = document.getElementById('promptName').value.trim();
   if (!input) {
@@ -887,7 +867,7 @@ function loadRiddle() {
   selectedOptionIndex = null;
   document.getElementById('hintButton').disabled = false;
 
-  // Build hint blocks (all hidden initially)
+  // Build hint blocks
   const hintsRow = document.getElementById('hintsRow');
   hintsRow.innerHTML = '';
 
@@ -896,15 +876,14 @@ function loadRiddle() {
     const block = document.createElement('div');
     block.className = 'hint-block';
     block.id = `hintBlock${i+1}`;
-    block.style.display = 'none'; // Initially hidden
+    block.style.display = 'none';
 
     const badge = document.createElement('span');
     badge.className = 'hint-badge';
     badge.id = `hintBadge${i+1}`;
-    // Points available decrease by 3 for each hint
     const potential = 10 - (3 * i);
     badge.textContent = `+${potential}`;
-    badge.style.display = 'none'; // Initially hidden
+    badge.style.display = 'none';
 
     const hintPara = document.createElement('p');
     hintPara.textContent = curHints[i];
@@ -935,11 +914,10 @@ function loadRiddle() {
   });
 
   // Show first hint automatically
-  showNextHint(); // This will show the first hint
+  showNextHint();
 }
 
 function showNextHint() {
-  // Hide badge from previous hint if exists
   if (hintsShown > 0) {
     const prevBadge = document.getElementById(`hintBadge${hintsShown}`);
     if (prevBadge) {
@@ -947,7 +925,6 @@ function showNextHint() {
     }
   }
   
-  // Show next hint
   hintsShown++;
   const currentBlock = document.getElementById(`hintBlock${hintsShown}`);
   const currentBadge = document.getElementById(`hintBadge${hintsShown}`);
@@ -959,7 +936,6 @@ function showNextHint() {
     }
   }
 
-  // Disable button if all hints shown
   if (hintsShown === 3) {
     document.getElementById('hintButton').disabled = true;
   }
@@ -1100,24 +1076,5 @@ function changePage(delta) {
   }
 }
 </script>
-
-<!-- NAME PROMPT OVERLAY -->
-<div class="name-prompt-overlay" id="namePromptOverlay">
-  <div class="name-prompt-box">
-      <h3>Please enter your name to begin!</h3>
-      <input type="text" 
-             id="promptName" 
-             placeholder="Your name..."
-             autofocus="autofocus"
-             autocomplete="off"
-             inputmode="text"
-             enterkeyhint="done"
-             onkeypress="handleNameInputKeypress(event)"
-             onclick="this.focus();"
-             onfocus="this.click()"/>
-      <br>
-      <button onclick="actuallyStartQuiz()">Begin!</button>
-  </div>
-</div>
 </body>
 </html>
