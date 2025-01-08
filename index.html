@@ -231,29 +231,43 @@
 
     /* Gradient bar for score */
     .score-bar-container {
-      width: 80%;
-      max-width: 500px;
-      margin: 0 auto 15px auto;
-      background: #ddd;
-      border-radius: 15px;
-      overflow: hidden;
-      height: 25px;
-      position: relative;
-    }
-    .score-bar-fill {
-      background: linear-gradient(90deg, #4CAF50, #8BC34A);
-      width: 0%;
-      height: 100%;
-      transition: width 0.4s ease;
-    }
-    .score-bar-label {
-      position: absolute;
-      left: 50%;
-      top: 2px;
-      transform: translateX(-50%);
-      color: #fff;
-      font-weight: bold;
-    }
+    width: 80%;
+    max-width: 500px;
+    margin: 0 auto 15px auto;
+    background: #ddd;
+    border-radius: 15px;
+    overflow: hidden;
+    height: 25px;
+    position: relative;
+}
+
+.score-bar-fill {
+    background: linear-gradient(90deg, #4CAF50, #8BC34A);
+    width: 0%;
+    height: 100%;
+    transition: width 0.4s ease;
+}
+
+.score-bar-label {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: #000;
+    font-weight: bold;
+    text-shadow: 
+        -1px -1px 0 #fff,
+         1px -1px 0 #fff,
+        -1px  1px 0 #fff,
+         1px  1px 0 #fff,
+         0 0 4px rgba(255, 255, 255, 0.7);
+    z-index: 1;
+    /* Prevent text selection */
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
 
     /* 3-block horizontally for hints */
     .hints-row {
