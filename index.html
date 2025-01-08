@@ -10,7 +10,7 @@
       height: 100%;
       margin: 0;
       padding: 0;
-      overflow: hidden; /* Minimises scrolling */
+      overflow: hidden; 
       font-family: Arial, sans-serif;
       background-color: #f0f0f0;
     }
@@ -22,7 +22,7 @@
       box-sizing: border-box;
     }
 
-    /* Our main quiz containers */
+    /* Main quiz containers */
     .start-container,
     .quiz-container,
     .end-container {
@@ -42,15 +42,15 @@
       display: block;
     }
 
-    /* Name Prompt Overlay (modal) */
+    /* Name Prompt Overlay */
     .name-prompt-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0, 0, 0, 0.5);
-      display: none; /* Hidden by default */
+      display: none;
       justify-content: center;
       align-items: center;
-      z-index: 9999; /* Above everything else */
+      z-index: 9999;
     }
     .name-prompt-overlay.active {
       display: flex;
@@ -64,9 +64,6 @@
       box-shadow: 0 0 15px rgba(0,0,0,0.3);
       text-align: center;
     }
-    .name-prompt-box h3 {
-      margin-top: 0;
-    }
     .name-prompt-box input {
       width: 80%;
       max-width: 300px;
@@ -74,27 +71,12 @@
       margin: 15px 0;
       font-size: 1em;
     }
-    .name-prompt-box button {
-      background: linear-gradient(45deg, #2196F3, #21CBF3);
-      border: none;
-      border-radius: 25px;
-      padding: 12px 20px;
-      font-size: 1.1em;
-      color: white;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-    .name-prompt-box button:hover {
-      transform: scale(1.05);
-    }
 
-    /* iPad portrait: scale things down a bit to fit better */
+    /* iPad portrait attempt to fit well */
     @media only screen 
       and (orientation: portrait) 
       and (min-device-width: 768px) 
       and (max-device-width: 1024px) {
-
-      /* Try to fit fully in the viewport */
       .start-container,
       .quiz-container,
       .end-container {
@@ -102,7 +84,7 @@
         height: 100vh;
         margin: 0;
       }
-      .quiz-intro, .quiz-container .quiz-intro, #quiz-area {
+      .quiz-intro, #quiz-area {
         max-height: calc(100vh - 40px);
         overflow-y: auto;
       }
@@ -118,7 +100,7 @@
       color: #fff;
       padding: 10px 20px;
       border-radius: 20px;
-      opacity: 0; /* Hidden by default */
+      opacity: 0;
       pointer-events: none;
       transition: opacity 0.5s ease;
       z-index: 5000;
@@ -127,7 +109,7 @@
       opacity: 0.9;
     }
 
-    /* The main quiz sections can scroll internally if needed */
+    /* Container heights for scrolling */
     .start-container,
     .quiz-container,
     .end-container {
@@ -139,16 +121,13 @@
       overflow-y: auto;
       scrollbar-width: none; 
       -ms-overflow-style: none;
+      text-align: center;
     }
     .quiz-intro::-webkit-scrollbar {
       display: none;
     }
 
-    /* Headings, logos, and general styling */
-    .quiz-intro {
-      padding: 10px;
-      text-align: center;
-    }
+    /* Logo, headings, styling */
     .logo-container {
       width: 100%;
       margin-bottom: 20px;
@@ -232,7 +211,72 @@
       font-size: 1.3em;
     }
 
-    /* 2×2 grid for multiple-choice options */
+    /* The fancy gradient bar for the score at the top */
+    .score-bar-container {
+      width: 80%;
+      max-width: 500px;
+      margin: 0 auto 15px auto;
+      background: #ddd;
+      border-radius: 15px;
+      overflow: hidden;
+      height: 25px;
+      position: relative;
+    }
+    .score-bar-fill {
+      background: linear-gradient(90deg, #4CAF50, #8BC34A);
+      width: 0%;
+      height: 100%;
+      transition: width 0.4s ease;
+    }
+    .score-bar-label {
+      position: absolute;
+      left: 50%;
+      top: 2px;
+      transform: translateX(-50%);
+      color: #fff;
+      font-weight: bold;
+    }
+
+    /* 3-block horizontally for hints */
+    .hints-row {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 15px;
+      margin: 15px 0;
+      flex-wrap: wrap;
+    }
+    .hint-block {
+      flex: 1 1 200px;
+      max-width: 250px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+      background: #fff3cd; 
+      display: none; 
+      position: relative;
+      min-height: 80px;
+    }
+    .hint-block p {
+      margin: 0;
+      font-style: italic;
+      margin-bottom: 10px;
+    }
+    /* The “Potential Points” badge in top-left corner */
+    .hint-badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: #4CAF50;
+      color: #fff;
+      padding: 5px 8px;
+      border-radius: 15px;
+      font-size: 0.9em;
+      display: none;
+    }
+
+    /* Options grid */
     .options {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -254,7 +298,7 @@
     }
     .option img {
       width: 100%;
-      max-height: 200px;
+      max-height: 180px;
       object-fit: contain;
       border-radius: 4px;
       border: 1px solid #ccc;
@@ -268,7 +312,7 @@
       border-color: #4CAF50;
     }
 
-    /* The “Help me!” button */
+    /* Buttons under the question */
     #hintButton {
       background: linear-gradient(45deg, #ff9800, #ff5722);
       color: white;
@@ -305,11 +349,7 @@
       transform: none;
       box-shadow: none;
     }
-    #hintButton:disabled::before {
-      background: rgba(255, 255, 255, 0.1);
-    }
 
-    /* The “Submit Answer” button */
     #submitButton {
       background: linear-gradient(45deg, #4CAF50, #45a049);
       color: white;
@@ -334,18 +374,7 @@
       background: linear-gradient(45deg, #45a049, #4CAF50);
     }
 
-    /* The hints styling */
-    .hint {
-      margin: 10px 0;
-      padding: 10px 15px;
-      font-style: italic;
-      background: linear-gradient(145deg, #fff7cc, #fff3cd);
-      border-left: 5px solid #ffca28;
-      border-radius: 4px;
-      display: none;
-    }
-
-    /* Leaderboard styling */
+    /* Leaderboard style */
     .leaderboard {
       margin-top: 20px;
       padding: 15px;
@@ -391,12 +420,12 @@
       font-size: 0.9em;
       color: #666;
     }
-    .score-entry:nth-child(1) .rank { color: #FFD700; } /* Gold */
-    .score-entry:nth-child(2) .rank { color: #C0C0C0; } /* Silver */
-    .score-entry:nth-child(3) .rank { color: #CD7F32; } /* Bronze */
-    .score-entry:nth-child(n+4):nth-child(-n+10) .rank { color: #2196F3; } /* Top 10 */
-    .score-entry:nth-child(n+11):nth-child(-n+20) .rank { color: #4CAF50; } /* Top 20 */
-    .score-entry:nth-child(n+21) .rank { color: #666; } /* Rest */
+    .score-entry:nth-child(1) .rank { color: #FFD700; }
+    .score-entry:nth-child(2) .rank { color: #C0C0C0; }
+    .score-entry:nth-child(3) .rank { color: #CD7F32; }
+    .score-entry:nth-child(n+4):nth-child(-n+10) .rank { color: #2196F3; }
+    .score-entry:nth-child(n+11):nth-child(-n+20) .rank { color: #4CAF50; }
+    .score-entry:nth-child(n+21) .rank { color: #666; }
 
     /* Hamburger Menu */
     .hamburger-menu {
@@ -451,7 +480,6 @@
       background: #f0f0f0;
     }
 
-    /* Minor responsive tweaks */
     @media (max-width: 600px) {
       h1 {
         font-size: 2em;
@@ -468,7 +496,7 @@
 </head>
 <body>
 
-<!-- Toast for correct/wrong answer feedback -->
+<!-- Toast -->
 <div class="toast" id="toastMsg"></div>
 
 <!-- HAMBURGER MENU -->
@@ -484,7 +512,6 @@
     <li><button onclick="skipToEnd()">Skip to Final Page</button></li>
   </ul>
 </div>
-<!-- END HAMBURGER MENU -->
 
 <!-- NAME PROMPT OVERLAY -->
 <div class="name-prompt-overlay" id="namePromptOverlay">
@@ -515,19 +542,19 @@
         <h3>How to Play 🎮</h3>
         <div class="rule-item">
           <span class="rule-icon">🤔</span>
-          <span>Read the clue and choose the correct character.</span>
+          <span>Read the clues and choose the correct character.</span>
         </div>
         <div class="rule-item">
           <span class="rule-icon">✅</span>
-          <span>Each correct answer = 10 points!</span>
+          <span>Each correct answer = 10 points, minus 3 per hint used.</span>
         </div>
         <div class="rule-item">
           <span class="rule-icon">💡</span>
-          <span>Click "Help me!" for more clues (-3 points each time).</span>
+          <span>You’ll see the available points in a small badge on the active hint!</span>
         </div>
       </div>
     </div>
-    <!-- Button to open the name prompt -->
+
     <button class="start-button" onclick="showNamePrompt()">
       <span class="button-text">START THE QUIZ</span>
       <span class="button-icon">🎮</span>
@@ -539,15 +566,23 @@
 <!-- QUIZ PAGE -->
 <div class="quiz-container" id="quizContainer">
   <div class="quiz-intro">
-    <h1>Character Riddle Quiz</h1>
-    <div class="score">Score: <span id="score">0</span></div>
-    <div id="quiz-area">
-      <h3>Question <span id="questionNumber">1</span></h3>
-      <div id="hints"></div>
-      <button onclick="showNextHint()" id="hintButton">Help me!</button>
-      <div class="options" id="options"></div>
-      <button onclick="submitAnswer()" id="submitButton">Submit Answer</button>
+    <!-- Fancy Score Bar at top -->
+    <div class="score-bar-container" id="scoreBarContainer">
+      <div class="score-bar-fill" id="scoreBarFill" style="width:0%"></div>
+      <div class="score-bar-label" id="scoreBarLabel">Score: 0</div>
     </div>
+
+    <!-- We show question number in a cooler style: "Question X of 10" -->
+    <h2 id="questionTracker">Question 1 of 10</h2>
+
+    <!-- 3 Blocks horizontally for hints -->
+    <div class="hints-row" id="hintsRow">
+      <!-- built dynamically -->
+    </div>
+
+    <button onclick="showNextHint()" id="hintButton">Help me!</button>
+    <div class="options" id="options"></div>
+    <button onclick="submitAnswer()" id="submitButton">Submit Answer</button>
   </div>
 </div>
 <!-- END QUIZ PAGE -->
@@ -575,7 +610,7 @@
         </div>
       </div>
     </div>
-    <!-- Leaderboard -->
+
     <div class="leaderboard">
       <h3>🏆 Top 50 Scores</h3>
       <div id="leaderboardList"></div>
@@ -585,7 +620,7 @@
         <button onclick="changePage(1)">Next</button>
       </div>
     </div>
-    <!-- Restart button -->
+
     <button class="start-button" onclick="restartQuiz()">
       <span class="button-text">Play Again?</span>
       <span class="button-icon">🎮</span>
@@ -595,9 +630,7 @@
 <!-- END END PAGE -->
 
 <script>
-/* ===================================================
-   HAMBURGER MENU & VIEW LOGIC
-   =================================================== */
+/* ================== HAMBURGER MENU & SHOW/HIDE ================== */
 function toggleMenu() {
   document.getElementById('hamburgerLinks').classList.toggle('active');
 }
@@ -611,12 +644,9 @@ function skipToEnd() {
   showEndScreen();
 }
 
-/* ===================================================
-   NAME PROMPT & START LOGIC
-   =================================================== */
+/* ================== NAME PROMPT ================== */
 let playerName = "";
 function showNamePrompt() {
-  // Show overlay, clear name
   document.getElementById('namePromptOverlay').classList.add('active');
   document.getElementById('promptName').value = "";
 }
@@ -627,27 +657,36 @@ function actuallyStartQuiz() {
     return;
   }
   playerName = input;
-  // Hide overlay and start container
   document.getElementById('namePromptOverlay').classList.remove('active');
   document.getElementById('startContainer').classList.remove('active');
-  // Show quiz
   document.getElementById('quizContainer').classList.add('active');
+  
   currentRiddle = 0;
   score = 0;
-  document.getElementById('score').textContent = score;
+  updateScoreBar();
   loadRiddle();
 }
 
-/* ===================================================
-   QUIZ VARIABLES & DATA
-   =================================================== */
+/* ================== TOAST ================== */
+function showToast(message, isCorrect) {
+  const toast = document.getElementById('toastMsg');
+  toast.innerText = message;
+  toast.style.backgroundColor = isCorrect ? "#4CAF50" : "#333";
+  toast.classList.add('show');
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, 1000);
+}
+
+/* ================== QUIZ DATA ================== */
 let currentRiddle = 0;
 let score = 0;
 let hintsShown = 0;
 let selectedOptionIndex = null;
-let currentPage = 1;  // leaderboard pagination
+let currentPage = 1;
 const entriesPerPage = 10;
 
+// We'll have 10 riddles total:
 const riddles = [
   {
     hints: ["I have no heart inside me.","I am silver and shiny.","I look like a big robot."],
@@ -751,107 +790,149 @@ const riddles = [
   }
 ];
 
-/* ===================================================
-   QUIZ FUNCTIONS
-   =================================================== */
+/* ================== LOAD RIDDLE ================== */
 function loadRiddle() {
-  document.getElementById('questionNumber').textContent = currentRiddle + 1;
+  // "Question 1 of 10" style
+  document.getElementById('questionTracker').textContent = `Question ${currentRiddle+1} of ${riddles.length}`;
+
   hintsShown = 0;
   selectedOptionIndex = null;
-
-  // Clear old hints
-  const hintsDiv = document.getElementById('hints');
-  hintsDiv.innerHTML = '';
-
-  // Create 3 hints
-  riddles[currentRiddle].hints.forEach((hintText, i) => {
-    const hintDiv = document.createElement('div');
-    hintDiv.className = 'hint';
-    hintDiv.id = `hint${i+1}`;
-    hintDiv.textContent = hintText;
-    hintsDiv.appendChild(hintDiv);
-  });
-
   document.getElementById('hintButton').disabled = false;
 
-  // Load options
+  // Build hint blocks
+  const hintsRow = document.getElementById('hintsRow');
+  hintsRow.innerHTML = '';
+
+  const curHints = riddles[currentRiddle].hints;
+  for (let i = 0; i < 3; i++) {
+    const block = document.createElement('div');
+    block.className = 'hint-block';
+    block.id = `hintBlock${i+1}`;
+
+    const badge = document.createElement('span');
+    badge.className = 'hint-badge';
+    // Potential: 10 => 7 => 4
+    const potential = 10 - 3*i; 
+    badge.textContent = `+${potential}`;
+
+    const hintPara = document.createElement('p');
+    hintPara.textContent = curHints[i];
+
+    block.appendChild(badge);
+    block.appendChild(hintPara);
+    hintsRow.appendChild(block);
+  }
+
+  // Build options
   const optionsDiv = document.getElementById('options');
   optionsDiv.innerHTML = '';
-  riddles[currentRiddle].options.forEach((optionObj, index) => {
+  riddles[currentRiddle].options.forEach((optObj, idx) => {
     const optionDiv = document.createElement('div');
     optionDiv.className = 'option';
 
-    const imgElement = document.createElement('img');
-    imgElement.src = optionObj.img; 
-    imgElement.alt = optionObj.text;
+    const imgEl = document.createElement('img');
+    imgEl.src = optObj.img;
+    imgEl.alt = optObj.text;
 
     const textSpan = document.createElement('span');
-    textSpan.textContent = optionObj.text;
+    textSpan.textContent = optObj.text;
 
-    optionDiv.onclick = () => selectOption(index);
-
-    optionDiv.appendChild(imgElement);
+    optionDiv.onclick = () => selectOption(idx);
+    optionDiv.appendChild(imgEl);
     optionDiv.appendChild(textSpan);
     optionsDiv.appendChild(optionDiv);
   });
 
-  // Show first hint automatically
+  // Show first hint
   showNextHint();
 }
 
-function selectOption(index) {
-  selectedOptionIndex = index;
-  document.querySelectorAll('.option').forEach((opt, i) => {
-    opt.classList.toggle('selected', i === index);
-  });
-}
-
+/* ================== SHOW NEXT HINT ================== */
 function showNextHint() {
+  if (hintsShown === 3) return; 
   hintsShown++;
-  const hintToShow = document.getElementById(`hint${hintsShown}`);
-  if (hintToShow) {
-    hintToShow.style.display = 'block';
+
+  // Hide the "potential points" badge on the *previous* hint
+  if (hintsShown > 1) {
+    const oldBlock = document.getElementById(`hintBlock${hintsShown-1}`);
+    if (oldBlock) {
+      const oldBadge = oldBlock.querySelector('.hint-badge');
+      if (oldBadge) oldBadge.style.display = 'none';
+    }
   }
+
+  // Show the new hint block
+  const block = document.getElementById(`hintBlock${hintsShown}`);
+  if (block) {
+    block.style.display = 'block';
+    // Also show the badge
+    const badge = block.querySelector('.hint-badge');
+    if (badge) badge.style.display = 'inline-block';
+  }
+
   if (hintsShown === 3) {
     document.getElementById('hintButton').disabled = true;
   }
 }
 
+/* ================== SELECT & SUBMIT ================== */
+function selectOption(idx) {
+  selectedOptionIndex = idx;
+  document.querySelectorAll('.option').forEach((opt, i) => {
+    opt.classList.toggle('selected', i === idx);
+  });
+}
+
 function submitAnswer() {
   if (selectedOptionIndex === null) {
-    showToast("Please select an answer first!");
+    showToast("Please select an answer first!", false);
     return;
   }
-
   const userAnswer = riddles[currentRiddle].options[selectedOptionIndex].text;
-  const correctAnswer = riddles[currentRiddle].answer;
-
-  if (userAnswer === correctAnswer) {
-    // 10 minus 3 points per extra hint
-    const pointsEarned = 10 - 3 * (hintsShown - 1);
+  const correct = riddles[currentRiddle].answer;
+  if (userAnswer === correct) {
+    const pointsEarned = 10 - 3*(hintsShown-1);
     score += pointsEarned;
-    document.getElementById('score').textContent = score;
-    showToast(`Correct! You earned ${pointsEarned} points.`, true);
+    showToast(`Correct! You earned +${pointsEarned} points.`, true);
   } else {
     showToast("Wrong answer. Keep trying!", false);
   }
 
+  // Update score bar
+  updateScoreBar();
+
   currentRiddle++;
   if (currentRiddle < riddles.length) {
-    setTimeout(loadRiddle, 1200); // short delay to let the toast show
+    setTimeout(loadRiddle, 1200);
   } else {
     setTimeout(showEndScreen, 1200);
   }
 }
 
+/* ================== SCORE BAR ================== */
+function updateScoreBar() {
+  // We'll presume a "max" possible is 100 (10 questions * 10 points if zero hints used).
+  // But if you want a dynamic max, you'd recalc it differently.
+  const maxScore = riddles.length * 10;
+  let percent = (score / maxScore) * 100;
+  if (percent > 100) percent = 100; // just in case
+
+  const fill = document.getElementById('scoreBarFill');
+  fill.style.width = `${percent}%`;
+
+  const label = document.getElementById('scoreBarLabel');
+  label.textContent = `Score: ${score}`;
+}
+
+/* ================== END SCREEN ================== */
 function showEndScreen() {
   document.getElementById('quizContainer').classList.remove('active');
   document.getElementById('endContainer').classList.add('active');
   document.getElementById('finalScore').textContent = score;
 
-  const descriptor = getScoreDescription(score);
-  document.getElementById('scoreDescription').textContent = descriptor;
-  // Auto-save to leaderboard
+  const desc = getScoreDescription(score);
+  document.getElementById('scoreDescription').textContent = desc;
+
   saveScore();
   updateLeaderboardDisplay();
 }
@@ -868,81 +949,63 @@ function getScoreDescription(finalScore) {
   }
 }
 
-/* ===================================================
-   RESTART & TOAST
-   =================================================== */
+/* ================== RESTART ================== */
 function restartQuiz() {
   document.getElementById('endContainer').classList.remove('active');
   document.getElementById('startContainer').classList.add('active');
-  document.getElementById('score').textContent = 0;
+  document.getElementById('scoreBarFill').style.width = '0%';
+  document.getElementById('scoreBarLabel').textContent = 'Score: 0';
   currentPage = 1;
-  playerName = ""; // Clear old name for next user
-}
-function showToast(message, isCorrect) {
-  const toast = document.getElementById('toastMsg');
-  toast.innerText = message;
-  toast.style.backgroundColor = isCorrect ? "#4CAF50" : "#333";
-  toast.classList.add('show');
-  setTimeout(() => {
-    toast.classList.remove('show');
-  }, 1000);
+  playerName = "";
 }
 
-/* ===================================================
-   LEADERBOARD
-   =================================================== */
+/* ================== LEADERBOARD ================== */
 function getLeaderboard() {
   const raw = localStorage.getItem('quizLeaderboard');
-  const leaderboard = raw ? JSON.parse(raw) : [];
-  return leaderboard.sort((a, b) => b.score - a.score).slice(0, 50);
+  const arr = raw ? JSON.parse(raw) : [];
+  return arr.sort((a, b) => b.score - a.score).slice(0, 50);
 }
 function saveScore() {
   if (!playerName) return;
-  const newScore = {
-    name: playerName,
-    score: score,
-    date: new Date().toISOString()
-  };
-  const leaderboard = getLeaderboard();
-  leaderboard.push(newScore);
-  leaderboard.sort((a, b) => b.score - a.score);
-  while (leaderboard.length > 50) {
-    leaderboard.pop();
-  }
-  localStorage.setItem('quizLeaderboard', JSON.stringify(leaderboard));
+  const newScore = { name: playerName, score, date: new Date().toISOString() };
+  const lb = getLeaderboard();
+  lb.push(newScore);
+  lb.sort((a, b) => b.score - a.score);
+  while (lb.length > 50) lb.pop();
+  localStorage.setItem('quizLeaderboard', JSON.stringify(lb));
   currentPage = 1;
 }
 function updateLeaderboardDisplay() {
-  const leaderboard = getLeaderboard();
+  const lb = getLeaderboard();
   const listDiv = document.getElementById('leaderboardList');
   listDiv.innerHTML = '';
 
-  const totalPages = Math.ceil(leaderboard.length / entriesPerPage);
+  const totalPages = Math.ceil(lb.length / entriesPerPage);
   const start = (currentPage - 1) * entriesPerPage;
   const end = start + entriesPerPage;
-  const pageEntries = leaderboard.slice(start, end);
+  const pageEntries = lb.slice(start, end);
 
-  pageEntries.forEach((entry, index) => {
-    const globalRank = start + index + 1;
-    const scoreEntry = document.createElement('div');
-    scoreEntry.className = 'score-entry';
-    scoreEntry.innerHTML = `
-      <span class="rank">#${globalRank}</span>
+  pageEntries.forEach((entry, i) => {
+    const rank = start + i + 1;
+    const row = document.createElement('div');
+    row.className = 'score-entry';
+    row.innerHTML = `
+      <span class="rank">#${rank}</span>
       <span class="name">${entry.name}</span>
       <span class="score">${entry.score}</span>
     `;
-    listDiv.appendChild(scoreEntry);
+    listDiv.appendChild(row);
   });
 
   document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages}`;
-  const prevBtn = document.querySelector('.leaderboard-pagination button:first-child');
-  const nextBtn = document.querySelector('.leaderboard-pagination button:last-child');
-  prevBtn.disabled = (currentPage === 1);
-  nextBtn.disabled = (currentPage === totalPages);
+  const prev = document.querySelector('.leaderboard-pagination button:first-child');
+  const nxt = document.querySelector('.leaderboard-pagination button:last-child');
+  prev.disabled = (currentPage === 1);
+  nxt.disabled = (currentPage === totalPages);
 }
 function changePage(delta) {
-  const leaderboard = getLeaderboard();
-  const totalPages = Math.ceil(leaderboard.length / entriesPerPage);
+  const lb = getLeaderboard();
+  const totalPages = Math.ceil(lb.length / entriesPerPage);
   const newPage = currentPage + delta;
   if (newPage >= 1 && newPage <= totalPages) {
     currentPage = newPage;
