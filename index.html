@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <title>Character Riddle Quiz</title>
   <style>
     /* Base layout */
@@ -83,14 +83,28 @@
       transform: scale(1.05);
     }
     .name-prompt-box input {
-  width: 80%;
-  max-width: 300px;
-  padding: 15px;
-  margin: 15px 0;
-  font-size: 1.1em;
-  border: 2px solid #2196F3;
-  border-radius: 8px;
-  outline: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      width: 80%;
+      max-width: 300px;
+      padding: 15px;
+      margin: 15px 0;
+      font-size: 16px;
+      border: 2px solid #2196F3;
+      border-radius: 8px;
+      outline: none;
+      cursor: text;
+
+      /* Force hardware acceleration */
+      -webkit-transform: translateZ(0);
+      transform: translateZ(0);
+}
+
+/* Add this new viewport rule after the input styles */
+@viewport {
+    width: device-width;
+    zoom: 1;
 }
 
 .name-prompt-box input:focus {
@@ -703,22 +717,29 @@ function skipToEnd() {
 /* ============== NAME PROMPT ============== */
 let playerName = "";
 function showNamePrompt() {
-  document.getElementById('namePromptOverlay').classList.add('active');
-  const inputField = document.getElementById('promptName');
-  inputField.value = "";
-  
-  // Focus the input field with a slight delay to ensure it works on iOS
-  setTimeout(() => {
-    inputField.focus();
-  }, 100);
+    document.getElementById('namePromptOverlay').classList.add('active');
+    const inputField = document.getElementById('promptName');
+    inputField.value = "";
+    
+    // More aggressive approach to focus and show keyboard
+    setTimeout(() => {
+        inputField.focus();
+        inputField.click(); // Simulate a click
+        inputField.focus(); // Focus again
+        // Try to show keyboard explicitly
+        if (typeof inputField.select === 'function') {
+            inputField.select();
+        }
+    }, 300); // Longer delay for iOS
 }
 
 // Add this new function right after showNamePrompt
 function handleNameInputKeypress(event) {
-  if (event.key === 'Enter') {
-    actuallyStartQuiz();
-  }
+    if (event.key === 'Enter') {
+        actuallyStartQuiz();
+    }
 }
+
 function actuallyStartQuiz() {
   const input = document.getElementById('promptName').value.trim();
   if (!input) {
@@ -1079,5 +1100,24 @@ function changePage(delta) {
   }
 }
 </script>
+
+<!-- NAME PROMPT OVERLAY -->
+<div class="name-prompt-overlay" id="namePromptOverlay">
+  <div class="name-prompt-box">
+      <h3>Please enter your name to begin!</h3>
+      <input type="text" 
+             id="promptName" 
+             placeholder="Your name..."
+             autofocus="autofocus"
+             autocomplete="off"
+             inputmode="text"
+             enterkeyhint="done"
+             onkeypress="handleNameInputKeypress(event)"
+             onclick="this.focus();"
+             onfocus="this.click()"/>
+      <br>
+      <button onclick="actuallyStartQuiz()">Begin!</button>
+  </div>
+</div>
 </body>
 </html>
