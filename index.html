@@ -4,25 +4,28 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="color-scheme" content="light">
-  <title>Open Day Quiz | Story Characters</title>
+  <title>🎮 Story Character Challenge | Can You Beat It?</title>
   <style>
     :root {
       color-scheme: light;
-      --bg: #f5f7fb;
-      --bg-accent: #e8eef9;
-      --surface: #ffffff;
-      --surface-muted: #f7f9fc;
-      --text: #1b2330;
-      --text-muted: #516176;
-      --primary: #2d6cdf;
-      --primary-dark: #1d4ea8;
-      --success: #2e7d32;
-      --warning: #e67e22;
-      --border: #d9e2f1;
-      --shadow: 0 18px 40px rgba(20, 35, 70, 0.12);
-      --radius-lg: 20px;
-      --radius-md: 14px;
-      --radius-sm: 10px;
+      --bg: #1a1a2e;
+      --bg-accent: #16213e;
+      --surface: #0f0f23;
+      --surface-muted: #1a1a2e;
+      --text: #eaf0ff;
+      --text-muted: #a0a8c0;
+      --primary: #00d4ff;
+      --primary-dark: #0099cc;
+      --secondary: #ff6b9d;
+      --accent: #c56cff;
+      --success: #00ff88;
+      --warning: #ffcc00;
+      --border: #2a2a4a;
+      --shadow: 0 20px 60px rgba(0, 212, 255, 0.15);
+      --glow: 0 0 30px rgba(0, 212, 255, 0.3);
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
       --safe-top: env(safe-area-inset-top, 0px);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
       --safe-left: env(safe-area-inset-left, 0px);
@@ -43,9 +46,13 @@
       padding: 0;
       min-height: 100%;
       min-height: 100dvh;
-      font-family: "Segoe UI", "Inter", "Helvetica Neue", Arial, sans-serif;
+      font-family: 'Segoe UI', 'Inter', system-ui, sans-serif;
       color: var(--text);
-      background: radial-gradient(circle at top, var(--bg-accent), var(--bg));
+      background: var(--bg);
+      background-image: 
+        radial-gradient(ellipse at top, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(ellipse at bottom right, rgba(197, 108, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(ellipse at bottom left, rgba(255, 107, 157, 0.1) 0%, transparent 50%);
       display: flex;
       justify-content: center;
       align-items: flex-start;
@@ -54,12 +61,54 @@
       overflow-y: auto;
     }
 
-    /* Main quiz containers */
+    /* Animated stars background */
+    .stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .star {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 2s infinite;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    /* Floating emojis */
+    .floating-emoji {
+      position: fixed;
+      font-size: 2rem;
+      pointer-events: none;
+      z-index: 0;
+      animation: float 6s ease-in-out infinite;
+      opacity: 0.6;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      25% { transform: translateY(-20px) rotate(5deg); }
+      75% { transform: translateY(10px) rotate(-5deg); }
+    }
+
+    /* Main containers */
     .start-container,
     .quiz-container,
     .end-container {
-      background: var(--surface);
-      padding: clamp(16px, 4vw, 28px);
+      background: linear-gradient(135deg, var(--surface) 0%, var(--surface-muted) 100%);
+      padding: clamp(20px, 5vw, 32px);
       border-radius: var(--radius-lg);
       box-shadow: var(--shadow);
       display: none;
@@ -67,12 +116,45 @@
       max-width: 960px;
       margin: 10px auto;
       overflow-y: visible;
+      border: 1px solid var(--border);
+      position: relative;
+      z-index: 1;
     }
 
     .start-container.active,
     .quiz-container.active,
     .end-container.active {
       display: block;
+      animation: slideUp 0.5s ease-out;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Glowing border effect */
+    .start-container::before,
+    .quiz-container::before,
+    .end-container::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, var(--primary), var(--accent), var(--secondary), var(--primary));
+      border-radius: calc(var(--radius-lg) + 2px);
+      z-index: -1;
+      opacity: 0.5;
+      background-size: 300% 300%;
+      animation: gradientBorder 4s ease infinite;
+    }
+
+    @keyframes gradientBorder {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
 
     /* Name Prompt Overlay */
@@ -82,7 +164,8 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
       display: none;
       justify-content: center;
       align-items: center;
@@ -92,40 +175,72 @@
 
     .name-prompt-overlay.active {
       display: flex;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
     .name-prompt-box {
-      background: var(--surface);
-      padding: clamp(20px, 5vw, 30px);
-      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, var(--surface) 0%, var(--surface-muted) 100%);
+      padding: clamp(24px, 6vw, 36px);
+      border-radius: var(--radius-lg);
       width: 100%;
-      max-width: 400px;
-      box-shadow: 0 0 30px rgba(10, 20, 40, 0.2);
+      max-width: 420px;
+      box-shadow: var(--glow);
       text-align: center;
+      border: 2px solid var(--primary);
+      animation: popIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
     }
 
     .name-prompt-box h3 {
       margin-top: 0;
-      font-size: clamp(1.1rem, 4vw, 1.3rem);
+      font-size: clamp(1.2rem, 4vw, 1.5rem);
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .name-prompt-box .emoji-row {
+      font-size: 2rem;
+      margin-bottom: 10px;
+      animation: bounce 1s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
     }
 
     .name-prompt-box button {
-      background: linear-gradient(135deg, var(--primary), #5fa1ff);
+      background: linear-gradient(135deg, var(--primary), var(--accent));
       border: none;
-      border-radius: 25px;
-      padding: 15px 40px;
-      font-size: clamp(1rem, 3vw, 1.2em);
-      color: white;
+      border-radius: 50px;
+      padding: 16px 48px;
+      font-size: clamp(1.1rem, 3vw, 1.3rem);
+      font-weight: bold;
+      color: var(--bg);
       cursor: pointer;
-      transition: transform 0.2s;
-      margin-top: 15px;
-      min-height: 48px;
+      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      margin-top: 20px;
+      min-height: 56px;
       touch-action: manipulation;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     .name-prompt-box button:hover,
     .name-prompt-box button:active {
-      transform: scale(1.05);
+      transform: scale(1.1) rotate(-2deg);
+      box-shadow: 0 10px 40px rgba(0, 212, 255, 0.4);
     }
 
     .name-prompt-box input {
@@ -134,77 +249,145 @@
       appearance: none;
       width: 100%;
       max-width: 300px;
-      padding: 15px;
-      margin: 15px 0;
-      font-size: 16px;
+      padding: 16px 20px;
+      margin: 20px 0;
+      font-size: 18px;
       border: 2px solid var(--border);
-      border-radius: var(--radius-sm);
+      border-radius: var(--radius-md);
       outline: none;
-      cursor: text;
-      background: var(--surface-muted);
+      background: var(--bg);
+      color: var(--text);
+      text-align: center;
+      transition: all 0.3s ease;
     }
 
     .name-prompt-box input:focus {
       border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(45, 108, 223, 0.2);
+      box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+    }
+
+    .name-prompt-box input::placeholder {
+      color: var(--text-muted);
     }
 
     /* Toast message */
     .toast {
       position: fixed;
-      top: calc(10px + var(--safe-top));
+      top: calc(20px + var(--safe-top));
       left: 50%;
       transform: translateX(-50%);
-      background: #1f2a3a;
-      color: #fff;
-      padding: 10px 20px;
-      border-radius: 20px;
+      background: linear-gradient(135deg, var(--surface), var(--surface-muted));
+      color: var(--text);
+      padding: 16px 28px;
+      border-radius: 50px;
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.5s ease;
+      transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
       z-index: 10000;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+      box-shadow: var(--glow);
       max-width: calc(100% - 40px);
       text-align: center;
+      font-weight: bold;
+      font-size: 1.1rem;
+      border: 2px solid var(--primary);
     }
 
     .toast.show {
-      opacity: 0.9;
+      opacity: 1;
+      transform: translateX(-50%) scale(1.05);
+    }
+
+    .toast.correct {
+      border-color: var(--success);
+      box-shadow: 0 0 30px rgba(0, 255, 136, 0.4);
+    }
+
+    .toast.wrong {
+      border-color: var(--secondary);
+      box-shadow: 0 0 30px rgba(255, 107, 157, 0.4);
+      animation: shake 0.5s ease;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(-50%) rotate(0); }
+      25% { transform: translateX(-50%) rotate(-5deg); }
+      75% { transform: translateX(-50%) rotate(5deg); }
     }
 
     .quiz-intro {
       text-align: center;
     }
 
-    /* Logo, headings, styling */
+    /* Logo styling */
     .logo-container {
       width: 100%;
       margin-bottom: 20px;
       padding: 10px;
       display: flex;
       justify-content: center;
+      flex-direction: column;
+      align-items: center;
     }
 
     .ucc-logo {
       width: auto;
       height: auto;
-      max-width: 80px;
-      max-height: 80px;
+      max-width: 100px;
+      max-height: 100px;
       object-fit: contain;
-      filter: drop-shadow(0 8px 12px rgba(0,0,0,0.12));
+      filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.5));
+      transition: transform 0.3s ease;
+    }
+
+    .ucc-logo:hover {
+      transform: rotate(360deg) scale(1.1);
+    }
+
+    .gaming-badge {
+      background: linear-gradient(135deg, var(--warning), #ff9500);
+      color: var(--bg);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      margin-top: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
     }
 
     h1 {
-      color: var(--primary);
-      font-size: clamp(1.5rem, 5vw, 2.8rem);
-      margin-bottom: 20px;
+      font-size: clamp(1.8rem, 6vw, 3.2rem);
+      margin-bottom: 10px;
       letter-spacing: -0.02em;
+      background: linear-gradient(135deg, var(--primary), var(--accent), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: none;
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      from { filter: drop-shadow(0 0 5px rgba(0, 212, 255, 0.5)); }
+      to { filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.8)); }
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+      margin-bottom: 20px;
     }
 
     h2 {
       margin-top: 0;
       color: var(--text);
-      font-size: clamp(1.1rem, 4vw, 1.5rem);
+      font-size: clamp(1.2rem, 4vw, 1.6rem);
     }
 
     .score-info {
@@ -212,104 +395,279 @@
     }
 
     .points-circle {
-      background: linear-gradient(135deg, var(--primary), #5fa1ff);
-      width: clamp(100px, 25vw, 150px);
-      height: clamp(100px, 25vw, 150px);
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      width: clamp(120px, 30vw, 180px);
+      height: clamp(120px, 30vw, 180px);
       border-radius: 50%;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      margin: 20px auto;
-      color: white;
-      box-shadow: 0 12px 22px rgba(45, 108, 223, 0.3);
+      margin: 24px auto;
+      color: var(--bg);
+      box-shadow: 0 0 50px rgba(0, 212, 255, 0.4);
+      position: relative;
+      animation: floatCircle 3s ease-in-out infinite;
+    }
+
+    @keyframes floatCircle {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .points-circle::before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 3px solid var(--primary);
+      animation: ripple 2s infinite;
+    }
+
+    @keyframes ripple {
+      0% { transform: scale(1); opacity: 1; }
+      100% { transform: scale(1.5); opacity: 0; }
     }
 
     .big-number {
-      font-size: clamp(2em, 8vw, 3em);
-      font-weight: bold;
+      font-size: clamp(2.5em, 10vw, 4em);
+      font-weight: 900;
     }
 
     .points-text {
       font-size: clamp(0.9em, 3vw, 1.2em);
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 2px;
     }
 
     .rules-box {
-      background: var(--surface-muted);
+      background: rgba(0, 212, 255, 0.05);
       border-radius: var(--radius-md);
-      padding: clamp(15px, 4vw, 20px);
-      margin-top: 20px;
+      padding: clamp(20px, 5vw, 28px);
+      margin-top: 24px;
       border: 1px solid var(--border);
       text-align: left;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .rules-box::before {
+      content: '📋';
+      position: absolute;
+      top: -20px;
+      right: -20px;
+      font-size: 80px;
+      opacity: 0.1;
     }
 
     .rules-box h3 {
       text-align: center;
       margin-top: 0;
+      color: var(--primary);
+      font-size: clamp(1.1rem, 3vw, 1.4rem);
     }
 
     .rule-item {
       display: flex;
       align-items: flex-start;
-      margin: 12px 0;
-      font-size: clamp(0.9em, 2.5vw, 1.05em);
+      margin: 16px 0;
+      font-size: clamp(0.95em, 2.5vw, 1.1em);
       color: var(--text);
-      gap: 10px;
+      gap: 14px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: var(--radius-sm);
+      transition: all 0.3s ease;
+    }
+
+    .rule-item:hover {
+      background: rgba(0, 212, 255, 0.1);
+      transform: translateX(5px);
     }
 
     .rule-icon {
-      font-size: 1.3em;
+      font-size: 1.5em;
       flex-shrink: 0;
     }
 
-    .start-button {
-      background: linear-gradient(135deg, var(--primary), #5fa1ff);
-      border: none;
-      border-radius: 25px;
-      padding: 15px 40px;
-      font-size: clamp(1rem, 3vw, 1.2em);
-      color: white;
+    /* Easter egg counter */
+    .easter-egg-counter {
+      position: fixed;
+      bottom: calc(20px + var(--safe-bottom));
+      left: calc(20px + var(--safe-left));
+      background: linear-gradient(135deg, var(--surface), var(--surface-muted));
+      border: 2px solid var(--warning);
+      border-radius: 50px;
+      padding: 10px 20px;
+      font-size: 0.9rem;
+      color: var(--warning);
+      z-index: 100;
+      display: none;
       cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-      margin: 20px auto;
+      transition: all 0.3s ease;
+    }
+
+    .easter-egg-counter.show {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      animation: popIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    .easter-egg-counter:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 20px rgba(255, 204, 0, 0.4);
+    }
+
+    /* Secret achievements panel */
+    .achievements-panel {
+      position: fixed;
+      bottom: calc(80px + var(--safe-bottom));
+      left: calc(20px + var(--safe-left));
+      background: linear-gradient(135deg, var(--surface), var(--surface-muted));
+      border: 2px solid var(--accent);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      max-width: 280px;
+      z-index: 100;
+      display: none;
+      box-shadow: var(--glow);
+    }
+
+    .achievements-panel.show {
+      display: block;
+      animation: slideUp 0.4s ease;
+    }
+
+    .achievements-panel h4 {
+      margin: 0 0 12px 0;
+      color: var(--accent);
+      font-size: 1rem;
+    }
+
+    .achievement-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+
+    .achievement-item:last-child {
+      border-bottom: none;
+    }
+
+    .achievement-item.locked {
+      opacity: 0.4;
+      filter: grayscale(1);
+    }
+
+    .achievement-item .emoji {
+      font-size: 1.5rem;
+    }
+
+    .start-button {
+      background: linear-gradient(135deg, var(--success), #00cc6a);
+      border: none;
+      border-radius: 50px;
+      padding: 18px 48px;
+      font-size: clamp(1.1rem, 3.5vw, 1.4rem);
+      font-weight: bold;
+      color: var(--bg);
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      margin: 28px auto;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      gap: 12px;
       width: fit-content;
-      box-shadow: 0 12px 20px rgba(45, 108, 223, 0.25);
-      min-height: 48px;
+      box-shadow: 0 10px 40px rgba(0, 255, 136, 0.3);
+      min-height: 60px;
       touch-action: manipulation;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     .start-button:hover,
     .start-button:active {
-      transform: scale(1.05);
-      box-shadow: 0 16px 28px rgba(45, 108, 223, 0.3);
+      transform: scale(1.1) rotate(-1deg);
+      box-shadow: 0 15px 50px rgba(0, 255, 136, 0.5);
     }
 
     .button-icon {
-      font-size: 1.3em;
+      font-size: 1.5em;
+      animation: bounce 1s infinite;
+    }
+
+    /* Combo meter */
+    .combo-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+
+    .combo-meter {
+      background: rgba(255, 107, 157, 0.1);
+      border: 2px solid var(--secondary);
+      border-radius: 50px;
+      padding: 8px 20px;
+      font-size: 1rem;
+      font-weight: bold;
+      color: var(--secondary);
+      display: none;
+    }
+
+    .combo-meter.active {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      animation: popIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    .combo-meter.fire {
+      border-color: #ff6b00;
+      color: #ff6b00;
+      background: rgba(255, 107, 0, 0.1);
+      animation: fire 0.5s infinite alternate;
+    }
+
+    @keyframes fire {
+      from { box-shadow: 0 0 10px rgba(255, 107, 0, 0.5); }
+      to { box-shadow: 0 0 30px rgba(255, 107, 0, 0.8); }
     }
 
     /* Score bar */
     .score-bar-container {
       width: 100%;
       max-width: 500px;
-      margin: 0 auto 15px auto;
+      margin: 0 auto 20px auto;
       background: var(--surface-muted);
-      border-radius: 15px;
+      border-radius: 20px;
       overflow: hidden;
-      height: 30px;
+      height: 36px;
       position: relative;
-      border: 1px solid var(--border);
+      border: 2px solid var(--border);
     }
 
     .score-bar-fill {
-      background: linear-gradient(90deg, #2e7d32, #66bb6a);
+      background: linear-gradient(90deg, var(--primary), var(--accent), var(--secondary));
+      background-size: 200% 100%;
       width: 0%;
       height: 100%;
-      transition: width 0.4s ease;
+      transition: width 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      animation: gradientMove 2s linear infinite;
+    }
+
+    @keyframes gradientMove {
+      0% { background-position: 0% 0%; }
+      100% { background-position: 200% 0%; }
     }
 
     .score-bar-label {
@@ -317,18 +675,13 @@
       left: 50%;
       top: 50%;
       transform: translate(-50%, -50%);
-      color: #000;
+      color: var(--text);
       font-weight: bold;
-      font-size: clamp(0.75rem, 2.5vw, 0.9rem);
-      text-shadow: 
-        -1px -1px 0 #fff,
-         1px -1px 0 #fff,
-        -1px  1px 0 #fff,
-         1px  1px 0 #fff,
-         0 0 4px rgba(255, 255, 255, 0.7);
+      font-size: clamp(0.8rem, 2.5vw, 1rem);
       z-index: 1;
       user-select: none;
       white-space: nowrap;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
     }
 
     /* Hints layout */
@@ -336,47 +689,54 @@
       display: flex;
       justify-content: center;
       align-items: stretch;
-      gap: 15px;
-      margin: 20px 0;
+      gap: 16px;
+      margin: 24px 0;
       flex-wrap: wrap;
       width: 100%;
     }
 
     .hint-block {
-      flex: 1 1 150px;
-      max-width: 250px;
-      min-height: 100px;
-      border: 1px solid #f1e1b8;
-      border-radius: var(--radius-sm);
-      background: #fff4d6;
-      padding: 15px 10px 35px 10px;
+      flex: 1 1 160px;
+      max-width: 280px;
+      min-height: 110px;
+      border: 2px solid var(--accent);
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, rgba(197, 108, 255, 0.1), rgba(0, 212, 255, 0.05));
+      padding: 18px 14px 40px 14px;
       position: relative;
       display: none;
       flex-direction: column;
       justify-content: center;
       align-items: center;
+      animation: hintAppear 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    @keyframes hintAppear {
+      from { transform: scale(0.8) rotateY(-20deg); opacity: 0; }
+      to { transform: scale(1) rotateY(0); opacity: 1; }
     }
 
     .hint-block p {
       margin: 0;
       padding: 0;
-      font-size: clamp(0.95em, 2.5vw, 1.1em);
+      font-size: clamp(1em, 2.8vw, 1.2em);
       font-style: italic;
       text-align: center;
-      color: #6d4c02;
-      line-height: 1.4;
+      color: var(--text);
+      line-height: 1.5;
     }
 
     .hint-badge {
       position: absolute;
-      bottom: 8px;
+      bottom: 10px;
       left: 50%;
       transform: translateX(-50%);
-      background: var(--success);
-      color: #fff;
-      padding: 4px 10px;
-      border-radius: 15px;
-      font-size: 0.8em;
+      background: linear-gradient(135deg, var(--success), #00cc6a);
+      color: var(--bg);
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 0.85em;
+      font-weight: bold;
       display: none;
       white-space: nowrap;
       z-index: 1;
@@ -391,12 +751,12 @@
     }
 
     .hamburger-icon {
-      width: 44px;
-      height: 44px;
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+      border: 2px solid var(--border);
+      background: linear-gradient(135deg, var(--surface), var(--surface-muted));
+      box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -404,42 +764,48 @@
       align-items: center;
       cursor: pointer;
       position: relative;
-      transition: transform 0.2s, box-shadow 0.2s;
+      transition: all 0.3s ease;
       touch-action: manipulation;
     }
 
     .hamburger-icon span {
       display: block;
       height: 3px;
-      width: 22px;
-      background: var(--text);
+      width: 24px;
+      background: var(--primary);
       margin: 0;
       transition: 0.3s ease;
       border-radius: 4px;
     }
 
     .hamburger-icon:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 12px 18px rgba(0,0,0,0.12);
+      transform: rotate(90deg);
+      box-shadow: 0 0 30px rgba(0, 212, 255, 0.4);
     }
 
     .hamburger-links {
       position: absolute;
-      top: 50px;
+      top: 58px;
       right: 0;
-      background: var(--surface);
-      box-shadow: 0 18px 30px rgba(0,0,0,0.15);
+      background: linear-gradient(135deg, var(--surface), var(--surface-muted));
+      box-shadow: var(--glow);
       list-style: none;
-      padding: 10px;
+      padding: 12px;
       margin: 0;
       display: none;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border);
-      min-width: 180px;
+      border-radius: var(--radius-md);
+      border: 2px solid var(--border);
+      min-width: 200px;
     }
 
     .hamburger-links.active {
       display: block;
+      animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .hamburger-links li {
@@ -450,28 +816,34 @@
     .hamburger-links button {
       background: none;
       border: none;
-      font-size: 14px;
+      font-size: 15px;
       color: var(--text);
       cursor: pointer;
       width: 100%;
-      text-align: right;
-      padding: 12px 10px;
+      text-align: left;
+      padding: 14px 12px;
       font-weight: 500;
-      border-radius: 6px;
+      border-radius: var(--radius-sm);
       touch-action: manipulation;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
     .hamburger-links button:hover,
     .hamburger-links button:active {
-      background: var(--surface-muted);
+      background: rgba(0, 212, 255, 0.1);
+      color: var(--primary);
+      transform: translateX(5px);
     }
 
     /* Options grid */
     .options {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin: 15px 0;
+      gap: 14px;
+      margin: 20px 0;
     }
 
     .option {
@@ -479,206 +851,289 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      padding: 10px;
-      background: var(--surface-muted);
+      gap: 10px;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--surface-muted), var(--surface));
       border: 2px solid var(--border);
-      border-radius: var(--radius-sm);
+      border-radius: var(--radius-md);
       cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
       touch-action: manipulation;
-      min-height: 48px;
+      min-height: 60px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .option::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .option:hover::before {
+      left: 100%;
     }
 
     .option img {
       width: 100%;
-      max-height: clamp(100px, 20vw, 180px);
+      max-height: clamp(100px, 22vw, 180px);
       object-fit: contain;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background: #fff;
+      border-radius: var(--radius-sm);
+      border: 2px solid var(--border);
+      background: var(--bg);
+      transition: all 0.3s ease;
     }
 
     .option span {
-      font-size: clamp(0.85em, 2.5vw, 1em);
+      font-size: clamp(0.9em, 2.8vw, 1.1em);
       text-align: center;
       word-break: break-word;
+      font-weight: 600;
     }
 
     .option:hover,
     .option:active {
-      background: #eef2f9;
-      transform: translateY(-2px);
-      box-shadow: 0 10px 16px rgba(0,0,0,0.08);
+      border-color: var(--primary);
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
+    }
+
+    .option:hover img {
+      transform: scale(1.05);
     }
 
     .option.selected {
-      background: linear-gradient(135deg, #2e7d32, #66bb6a);
-      color: white;
-      border-color: #2e7d32;
-      box-shadow: 0 12px 20px rgba(46, 125, 50, 0.25);
+      background: linear-gradient(135deg, var(--success), #00cc6a);
+      color: var(--bg);
+      border-color: var(--success);
+      box-shadow: 0 10px 40px rgba(0, 255, 136, 0.3);
+      animation: selected 0.4s ease;
+    }
+
+    @keyframes selected {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
     }
 
     .option.selected img {
-      border-color: rgba(255, 255, 255, 0.6);
+      border-color: rgba(255, 255, 255, 0.5);
     }
 
-    /* "Help me!" button */
+    /* Help button */
     #hintButton {
-      background: linear-gradient(135deg, #f39c12, #e67e22);
-      color: white;
+      background: linear-gradient(135deg, var(--warning), #ff9500);
+      color: var(--bg);
       border: none;
-      border-radius: 25px;
-      padding: 12px 24px;
-      font-size: clamp(0.95em, 2.5vw, 1.1em);
+      border-radius: 50px;
+      padding: 14px 28px;
+      font-size: clamp(1em, 2.8vw, 1.15em);
+      font-weight: bold;
       cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-      min-width: 140px;
-      margin: 0 auto 15px auto;
+      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      box-shadow: 0 8px 25px rgba(255, 204, 0, 0.3);
+      min-width: 160px;
+      margin: 0 auto 20px auto;
       display: block;
-      min-height: 48px;
+      min-height: 52px;
       touch-action: manipulation;
     }
 
     #hintButton::before {
-      content: "-3 pts ";
-      background: rgba(255, 255, 255, 0.2);
-      padding: 3px 6px;
-      border-radius: 12px;
-      font-size: 0.8em;
-      margin-right: 6px;
+      content: "💡 ";
+    }
+
+    #hintButton::after {
+      content: " (-3 pts)";
+      opacity: 0.8;
+      font-size: 0.85em;
     }
 
     #hintButton:hover:not(:disabled),
     #hintButton:active:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 8px rgba(0,0,0,0.15);
-      background: linear-gradient(135deg, #e67e22, #f39c12);
+      transform: scale(1.1) rotate(-2deg);
+      box-shadow: 0 12px 35px rgba(255, 204, 0, 0.5);
     }
 
     #hintButton:disabled {
-      background: #cccccc;
+      background: var(--border);
       cursor: not-allowed;
       transform: none;
       box-shadow: none;
+      opacity: 0.5;
     }
 
-    /* "Submit Answer" button */
+    #hintButton:disabled::before {
+      content: "🔒 ";
+    }
+
+    /* Submit button */
     #submitButton {
-      background: linear-gradient(135deg, #2e7d32, #43a047);
-      color: white;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: var(--bg);
       border: none;
-      border-radius: 25px;
-      padding: 15px 40px;
-      font-size: clamp(1rem, 3vw, 1.2em);
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 10px 18px rgba(46, 125, 50, 0.2);
+      border-radius: 50px;
+      padding: 18px 48px;
+      font-size: clamp(1.1rem, 3.2vw, 1.3rem);
       font-weight: bold;
-      margin: 15px auto 0 auto;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      box-shadow: 0 10px 40px rgba(0, 212, 255, 0.3);
+      margin: 20px auto 0 auto;
       display: block;
-      min-height: 48px;
+      min-height: 60px;
       touch-action: manipulation;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     #submitButton:hover,
     #submitButton:active {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 22px rgba(46, 125, 50, 0.25);
-      background: linear-gradient(135deg, #43a047, #2e7d32);
+      transform: scale(1.1);
+      box-shadow: 0 15px 50px rgba(0, 212, 255, 0.5);
     }
 
     /* Welcome card */
     .welcome-card {
-      background: var(--surface);
+      background: rgba(255, 255, 255, 0.02);
       border-radius: var(--radius-md);
-      padding: clamp(16px, 4vw, 24px);
+      padding: clamp(20px, 5vw, 28px);
       border: 1px solid var(--border);
-      box-shadow: 0 12px 24px rgba(15, 30, 60, 0.08);
+      position: relative;
+      overflow: hidden;
     }
 
-    .quiz-intro > p {
-      color: var(--text-muted);
+    .welcome-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: conic-gradient(from 0deg, transparent, rgba(0, 212, 255, 0.03), transparent 30%);
+      animation: rotate 10s linear infinite;
     }
 
-    /* Leaderboard style */
+    @keyframes rotate {
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Leaderboard */
     .leaderboard {
-      margin-top: 20px;
-      padding: 15px;
-      background: linear-gradient(135deg, #fff3e0, #ffe8cc);
-      border: 1px solid #f4c97c;
+      margin-top: 24px;
+      padding: 20px;
+      background: linear-gradient(135deg, rgba(255, 204, 0, 0.05), rgba(255, 107, 0, 0.05));
+      border: 2px solid var(--warning);
       border-radius: var(--radius-md);
       display: flex;
       flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .leaderboard::before {
+      content: '🏆';
+      position: absolute;
+      top: -30px;
+      right: -30px;
+      font-size: 120px;
+      opacity: 0.1;
     }
 
     .leaderboard h3 {
-      color: #c0561a;
-      font-size: clamp(1.1em, 3vw, 1.4em);
+      color: var(--warning);
+      font-size: clamp(1.2em, 3.5vw, 1.5em);
       text-align: center;
-      margin-bottom: 10px;
+      margin-bottom: 16px;
       margin-top: 0;
     }
 
     #leaderboardList {
-      max-height: 250px;
+      max-height: 280px;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
+      position: relative;
+      z-index: 1;
     }
 
     .leaderboard-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: clamp(0.8em, 2.5vw, 1em);
+      font-size: clamp(0.85em, 2.5vw, 1em);
     }
 
     .leaderboard-table th,
     .leaderboard-table td {
       text-align: left;
-      padding: 8px 6px;
-      border-bottom: 1px dotted #ccc;
+      padding: 12px 8px;
+      border-bottom: 1px solid var(--border);
     }
 
     .leaderboard-table th {
-      color: #874c0d;
-      font-weight: 600;
+      color: var(--warning);
+      font-weight: 700;
       position: sticky;
       top: 0;
-      background: #ffe8cc;
+      background: var(--surface);
+      z-index: 1;
     }
 
-    /* Leaderboard pagination */
+    .leaderboard-table tr:hover td {
+      background: rgba(255, 204, 0, 0.05);
+    }
+
+    .leaderboard-table td:first-child {
+      font-weight: bold;
+    }
+
+    .rank-1 { color: #ffd700; }
+    .rank-2 { color: #c0c0c0; }
+    .rank-3 { color: #cd7f32; }
+
     .leaderboard-pagination {
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 10px;
-      margin: 10px 0 0 0;
-      padding: 10px 0 0 0;
-      border-top: 1px solid rgba(0,0,0,0.1);
+      gap: 12px;
+      margin: 16px 0 0 0;
+      padding: 16px 0 0 0;
+      border-top: 1px solid var(--border);
       flex-wrap: wrap;
+      position: relative;
+      z-index: 1;
     }
 
     .leaderboard-pagination button {
-      padding: 8px 16px;
-      background: var(--primary);
-      color: white;
+      padding: 10px 20px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: var(--bg);
       border: none;
-      border-radius: 5px;
+      border-radius: 25px;
       cursor: pointer;
-      min-height: 40px;
+      min-height: 44px;
       touch-action: manipulation;
-      font-size: 0.9em;
+      font-size: 0.95em;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    .leaderboard-pagination button:hover:not(:disabled) {
+      transform: scale(1.05);
     }
 
     .leaderboard-pagination button:disabled {
-      background: #ccc;
+      background: var(--border);
       cursor: not-allowed;
+      opacity: 0.5;
     }
 
     #pageInfo {
-      font-size: 0.9em;
+      font-size: 0.95em;
       color: var(--text-muted);
     }
 
@@ -696,8 +1151,116 @@
     button:focus-visible,
     .option:focus-visible,
     input:focus-visible {
-      outline: 3px solid rgba(45, 108, 223, 0.4);
-      outline-offset: 2px;
+      outline: 3px solid var(--primary);
+      outline-offset: 3px;
+    }
+
+    /* Confetti container */
+    .confetti-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 9998;
+      overflow: hidden;
+    }
+
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      animation: confettiFall 3s linear forwards;
+    }
+
+    @keyframes confettiFall {
+      0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+    }
+
+    /* Meme popup */
+    .meme-popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--surface);
+      border: 3px solid var(--accent);
+      border-radius: var(--radius-lg);
+      padding: 30px;
+      z-index: 10001;
+      text-align: center;
+      display: none;
+      box-shadow: var(--glow);
+      max-width: 90%;
+    }
+
+    .meme-popup.show {
+      display: block;
+      animation: popIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    .meme-popup .emoji-big {
+      font-size: 4rem;
+      margin-bottom: 15px;
+    }
+
+    .meme-popup .meme-text {
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+
+    .meme-popup button {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border: none;
+      border-radius: 25px;
+      padding: 12px 30px;
+      color: var(--bg);
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    /* Secret mode indicator */
+    .secret-mode {
+      position: fixed;
+      top: calc(15px + var(--safe-top));
+      left: calc(15px + var(--safe-left));
+      background: linear-gradient(135deg, var(--accent), var(--secondary));
+      color: var(--bg);
+      padding: 8px 16px;
+      border-radius: 25px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      z-index: 100;
+      display: none;
+      animation: rainbow 2s linear infinite;
+    }
+
+    @keyframes rainbow {
+      0% { filter: hue-rotate(0deg); }
+      100% { filter: hue-rotate(360deg); }
+    }
+
+    .secret-mode.show {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Speed run timer */
+    .speedrun-display {
+      background: rgba(255, 0, 0, 0.1);
+      border: 2px solid #ff4444;
+      border-radius: 25px;
+      padding: 6px 16px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      color: #ff4444;
+      font-family: 'Courier New', monospace;
     }
 
     /* Small screens */
@@ -715,19 +1278,27 @@
 
       .options {
         grid-template-columns: 1fr 1fr;
-        gap: 8px;
+        gap: 10px;
       }
 
       .option {
-        padding: 8px;
+        padding: 10px;
       }
 
       .option img {
-        max-height: 80px;
+        max-height: 90px;
+      }
+
+      .floating-emoji {
+        display: none;
+      }
+
+      .easter-egg-counter {
+        font-size: 0.8rem;
+        padding: 8px 14px;
       }
     }
 
-    /* Very small screens */
     @media (max-width: 350px) {
       .options {
         grid-template-columns: 1fr;
@@ -736,18 +1307,18 @@
       .option {
         flex-direction: row;
         justify-content: flex-start;
-        gap: 12px;
+        gap: 14px;
       }
 
       .option img {
-        width: 60px;
-        height: 60px;
+        width: 70px;
+        height: 70px;
         max-height: none;
         flex-shrink: 0;
       }
     }
 
-    /* Landscape mode on phones */
+    /* Landscape on phones */
     @media (max-height: 500px) and (orientation: landscape) {
       body {
         padding: 10px calc(60px + var(--safe-right)) 10px calc(10px + var(--safe-left));
@@ -756,17 +1327,17 @@
       .start-container,
       .quiz-container,
       .end-container {
-        padding: 15px;
+        padding: 16px;
         margin: 5px auto;
       }
 
       .points-circle {
-        width: 80px;
-        height: 80px;
+        width: 90px;
+        height: 90px;
       }
 
       .big-number {
-        font-size: 1.8em;
+        font-size: 2em;
       }
 
       .points-text {
@@ -775,46 +1346,51 @@
 
       .hints-row {
         flex-direction: row;
-        margin: 10px 0;
+        margin: 12px 0;
       }
 
       .hint-block {
-        min-height: 70px;
-        padding: 10px 8px 28px 8px;
+        min-height: 80px;
+        padding: 12px 10px 32px 10px;
       }
 
       .options {
         grid-template-columns: repeat(4, 1fr);
-        gap: 8px;
+        gap: 10px;
       }
 
       .option img {
-        max-height: 60px;
+        max-height: 70px;
       }
 
       .rules-box {
-        margin-top: 10px;
-        padding: 10px;
+        margin-top: 12px;
+        padding: 12px;
       }
 
       .rule-item {
-        margin: 8px 0;
+        margin: 10px 0;
+        padding: 8px;
       }
 
       #leaderboardList {
-        max-height: 150px;
+        max-height: 160px;
+      }
+
+      .floating-emoji {
+        display: none;
       }
     }
 
-    /* Tablet portrait */
+    /* Tablet */
     @media (min-width: 600px) and (max-width: 900px) {
       .options {
         grid-template-columns: repeat(2, 1fr);
-        gap: 15px;
+        gap: 16px;
       }
 
       .option img {
-        max-height: 150px;
+        max-height: 160px;
       }
     }
 
@@ -825,16 +1401,71 @@
       }
 
       .ucc-logo {
-        max-width: 100px;
-        max-height: 100px;
+        max-width: 120px;
+        max-height: 120px;
       }
     }
   </style>
 </head>
 <body>
 
+<!-- Animated stars -->
+<div class="stars" id="starsContainer"></div>
+
+<!-- Floating emojis -->
+<div class="floating-emoji" style="top: 15%; left: 5%; animation-delay: 0s;">✨</div>
+<div class="floating-emoji" style="top: 25%; right: 8%; animation-delay: 1s;">🎮</div>
+<div class="floating-emoji" style="top: 60%; left: 3%; animation-delay: 2s;">🚀</div>
+<div class="floating-emoji" style="top: 75%; right: 5%; animation-delay: 0.5s;">⭐</div>
+<div class="floating-emoji" style="top: 40%; left: 8%; animation-delay: 1.5s;">🎯</div>
+
+<!-- Confetti container -->
+<div class="confetti-container" id="confettiContainer"></div>
+
 <!-- Toast -->
 <div class="toast" id="toastMsg" role="status" aria-live="polite"></div>
+
+<!-- Secret mode indicator -->
+<div class="secret-mode" id="secretMode">🌈 RAINBOW MODE</div>
+
+<!-- Easter egg counter -->
+<div class="easter-egg-counter" id="easterEggCounter" onclick="toggleAchievements()">
+  <span>🥚</span>
+  <span id="eggCount">0</span>
+  <span>/ 5</span>
+</div>
+
+<!-- Achievements panel -->
+<div class="achievements-panel" id="achievementsPanel">
+  <h4>🏅 Secret Achievements</h4>
+  <div class="achievement-item locked" id="ach1">
+    <span class="emoji">🖱️</span>
+    <span>Click the logo 5 times</span>
+  </div>
+  <div class="achievement-item locked" id="ach2">
+    <span class="emoji">⚡</span>
+    <span>Answer in under 3 seconds</span>
+  </div>
+  <div class="achievement-item locked" id="ach3">
+    <span class="emoji">🔥</span>
+    <span>Get a 5x combo streak</span>
+  </div>
+  <div class="achievement-item locked" id="ach4">
+    <span class="emoji">💯</span>
+    <span>Get a perfect score</span>
+  </div>
+  <div class="achievement-item locked" id="ach5">
+    <span class="emoji">🌈</span>
+    <span>Type "rainbow" on start</span>
+  </div>
+</div>
+
+<!-- Meme popup -->
+<div class="meme-popup" id="memePopup">
+  <div class="emoji-big" id="memeEmoji">😎</div>
+  <div class="meme-text" id="memeText">You're a legend!</div>
+  <button onclick="closeMemePopup()">Nice! 👍</button>
+</div>
 
 <!-- HAMBURGER MENU -->
 <div class="hamburger-menu">
@@ -844,26 +1475,29 @@
     <span></span>
   </button>
   <ul class="hamburger-links" id="hamburgerLinks">
-    <li><button onclick="restartQuiz()">Restart Game</button></li>
-    <li><button onclick="showLeaderboardOnly()">See Leaderboard</button></li>
-    <li><button onclick="skipToEnd()">Skip to Final Page</button></li>
-    <li><button onclick="exportMarkdown()">Export Leaderboard (MD)</button></li>
+    <li><button onclick="restartQuiz()">🔄 Restart Game</button></li>
+    <li><button onclick="showLeaderboardOnly()">🏆 Leaderboard</button></li>
+    <li><button onclick="skipToEnd()">⏭️ Skip to End</button></li>
+    <li><button onclick="exportMarkdown()">📥 Export Scores</button></li>
+    <li><button onclick="clearAllData()">🗑️ Clear All Data</button></li>
   </ul>
 </div>
 
 <!-- NAME PROMPT OVERLAY -->
 <div class="name-prompt-overlay" id="namePromptOverlay">
   <div class="name-prompt-box">
-    <h3>Please enter your name to begin!</h3>
+    <div class="emoji-row">🎮 🎯 🏆</div>
+    <h3>What's your gamer tag?</h3>
     <label for="promptName" class="sr-only">Your name</label>
     <input type="text" 
            id="promptName" 
-           placeholder="Your name..."
+           placeholder="Enter your epic name..."
            autocomplete="off"
            inputmode="text"
-           onkeypress="handleNameInputKeypress(event)"/>
+           onkeypress="handleNameInputKeypress(event)"
+           onkeydown="checkSecretCode(event)"/>
     <br>
-    <button onclick="actuallyStartQuiz()">Begin Quiz</button>
+    <button onclick="actuallyStartQuiz()">LET'S GOOO! 🚀</button>
   </div>
 </div>
 
@@ -871,47 +1505,67 @@
 <div class="start-container active" id="startContainer">
   <div class="quiz-intro">
     <div class="logo-container">
-      <img src="assets/images/logo.jpg" alt="UCC Logo" class="ucc-logo">
+      <img src="assets/images/logo.jpg" alt="UCC Logo" class="ucc-logo" id="mainLogo" onclick="logoClick()">
+      <div class="gaming-badge">🔥 Limited Time Event</div>
     </div>
     <h1>Story Character Challenge</h1>
+    <p class="subtitle">Can you identify all the legendary characters? 🤔</p>
     <div class="welcome-card">
       <div class="score-info">
-        <h2>Ready to top the leaderboard?</h2>
+        <h2>Ready to flex your brain? 💪🧠</h2>
         <div class="points-circle">
           <span class="big-number">100</span>
-          <span class="points-text">POINTS</span>
+          <span class="points-text">MAX POINTS</span>
         </div>
       </div>
       <div class="rules-box">
-        <h3>How to Play</h3>
+        <h3>⚔️ How to Play</h3>
         <div class="rule-item">
-          <span class="rule-icon">🤔</span>
-          <span>Answer 10 questions by reading the clues and picking the best match.</span>
+          <span class="rule-icon">🔍</span>
+          <span>Read the clues and pick the character. It's giving detective vibes! 🕵️</span>
         </div>
         <div class="rule-item">
           <span class="rule-icon">✅</span>
-          <span>Each correct answer is worth 10 points.</span>
+          <span>Each W (correct answer) = 10 points. No cap! 📈</span>
         </div>
         <div class="rule-item">
           <span class="rule-icon">💡</span>
-          <span>Need help? Each extra clue costs 3 points.</span>
+          <span>Need hints? They cost 3 points each. Choose wisely, bestie! 😬</span>
+        </div>
+        <div class="rule-item">
+          <span class="rule-icon">⚡</span>
+          <span>Build combos for extra clout! 🔥🔥🔥</span>
         </div>
       </div>
     </div>
 
     <button class="start-button" onclick="showNamePrompt()">
-      <span class="button-text">Start the Quiz</span>
+      <span class="button-text">Start Quiz</span>
       <span class="button-icon">🎮</span>
     </button>
+    <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0;">Psst... there are hidden easter eggs 🥚👀</p>
   </div>
 </div>
 
 <!-- QUIZ PAGE -->
 <div class="quiz-container" id="quizContainer">
   <div class="quiz-intro">
-    <div class="score-bar-container" id="scoreBarContainer">
-      <div class="score-bar-fill" id="scoreBarFill" style="width:0%"></div>
-      <div class="score-bar-label" id="scoreBarLabel">Score: 0 | Time: 0s</div>
+    <div class="combo-container">
+      <div class="score-bar-container" id="scoreBarContainer">
+        <div class="score-bar-fill" id="scoreBarFill" style="width:0%"></div>
+        <div class="score-bar-label" id="scoreBarLabel">Score: 0 | Time: 0s</div>
+      </div>
+    </div>
+
+    <div class="combo-container">
+      <div class="combo-meter" id="comboMeter">
+        <span>🔥</span>
+        <span id="comboCount">0</span>
+        <span>x COMBO</span>
+      </div>
+      <div class="speedrun-display" id="speedrunDisplay" style="display: none;">
+        ⏱️ <span id="questionTimer">0.0</span>s
+      </div>
     </div>
 
     <h2 id="questionTracker">Question 1 of 10</h2>
@@ -922,7 +1576,7 @@
 
     <div class="options" id="options"></div>
 
-    <button onclick="submitAnswer()" id="submitButton">Submit Answer</button>
+    <button onclick="submitAnswer()" id="submitButton">🎯 Lock In Answer</button>
   </div>
 </div>
 
@@ -932,26 +1586,34 @@
     <div class="logo-container">
       <img src="assets/images/logo.jpg" alt="UCC Logo" class="ucc-logo">
     </div>
-    <h1>Game Complete</h1>
+    <h1 id="endTitle">GG! 🎮</h1>
     <div class="welcome-card">
       <div class="score-info">
-        <h2>Final Score</h2>
+        <h2 id="scoreReaction">Final Score</h2>
         <div class="points-circle">
           <span id="finalScore" class="big-number">0</span>
           <span class="points-text">POINTS</span>
         </div>
       </div>
       <div class="rules-box">
-        <h3>Your Achievement</h3>
+        <h3>📊 Your Stats</h3>
         <div class="rule-item">
           <span class="rule-icon">⭐</span>
           <span id="scoreDescription" style="text-align: left;"></span>
+        </div>
+        <div class="rule-item">
+          <span class="rule-icon">⏱️</span>
+          <span id="timeDescription">Time: 0 seconds</span>
+        </div>
+        <div class="rule-item">
+          <span class="rule-icon">🔥</span>
+          <span id="comboDescription">Best combo: 0x</span>
         </div>
       </div>
     </div>
 
     <div class="leaderboard">
-      <h3>Top 50 Scores</h3>
+      <h3>🏆 Hall of Fame (Top 50)</h3>
       <div id="leaderboardList">
         <table class="leaderboard-table">
           <thead>
@@ -966,20 +1628,35 @@
         </table>
       </div>
       <div class="leaderboard-pagination">
-        <button onclick="changePage(-1)">Previous</button>
+        <button onclick="changePage(-1)">← Prev</button>
         <span id="pageInfo">Page 1 of 1</span>
-        <button onclick="changePage(1)">Next</button>
+        <button onclick="changePage(1)">Next →</button>
       </div>
     </div>
 
     <button class="start-button" onclick="restartQuiz()">
-      <span class="button-text">Play Again</span>
+      <span class="button-text">Run It Back! 🔄</span>
       <span class="button-icon">🎮</span>
     </button>
   </div>
 </div>
 
 <script>
+// Create stars
+function createStars() {
+  const container = document.getElementById('starsContainer');
+  for (let i = 0; i < 50; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    star.style.left = Math.random() * 100 + '%';
+    star.style.top = Math.random() * 100 + '%';
+    star.style.animationDelay = Math.random() * 2 + 's';
+    star.style.opacity = Math.random() * 0.5 + 0.3;
+    container.appendChild(star);
+  }
+}
+createStars();
+
 /* ============== HAMBURGER MENU ============== */
 function toggleMenu() {
   const links = document.getElementById('hamburgerLinks');
@@ -990,7 +1667,6 @@ function toggleMenu() {
   }
 }
 
-// Close menu when clicking outside
 document.addEventListener('click', function(e) {
   const menu = document.getElementById('hamburgerLinks');
   const menuButton = document.querySelector('.hamburger-icon');
@@ -1013,16 +1689,133 @@ function skipToEnd() {
   showEndScreen();
 }
 
+function clearAllData() {
+  if (confirm('Are you sure you want to delete ALL scores? This cannot be undone! 😱')) {
+    localStorage.removeItem('quizLeaderboard');
+    localStorage.removeItem('easterEggs');
+    showToast("All data cleared! Fresh start! 🧹", false);
+    easterEggsFound = [];
+    updateEasterEggDisplay();
+    document.getElementById('hamburgerLinks').classList.remove('active');
+  }
+}
+
+/* ============== EASTER EGGS ============== */
+let easterEggsFound = JSON.parse(localStorage.getItem('easterEggs') || '[]');
+let logoClicks = 0;
+let secretCode = '';
+let rainbowMode = false;
+
+function updateEasterEggDisplay() {
+  const counter = document.getElementById('easterEggCounter');
+  document.getElementById('eggCount').textContent = easterEggsFound.length;
+  if (easterEggsFound.length > 0) {
+    counter.classList.add('show');
+  } else {
+    counter.classList.remove('show');
+  }
+  
+  // Update achievement visuals
+  easterEggsFound.forEach(id => {
+    const ach = document.getElementById(id);
+    if (ach) ach.classList.remove('locked');
+  });
+}
+updateEasterEggDisplay();
+
+function unlockEasterEgg(id, message, emoji) {
+  if (easterEggsFound.includes(id)) return;
+  easterEggsFound.push(id);
+  localStorage.setItem('easterEggs', JSON.stringify(easterEggsFound));
+  updateEasterEggDisplay();
+  showMemePopup(emoji, message);
+  triggerConfetti();
+}
+
+function toggleAchievements() {
+  const panel = document.getElementById('achievementsPanel');
+  panel.classList.toggle('show');
+}
+
+document.addEventListener('click', function(e) {
+  const panel = document.getElementById('achievementsPanel');
+  const counter = document.getElementById('easterEggCounter');
+  if (panel.classList.contains('show') && !panel.contains(e.target) && !counter.contains(e.target)) {
+    panel.classList.remove('show');
+  }
+});
+
+function logoClick() {
+  logoClicks++;
+  const logo = document.getElementById('mainLogo');
+  logo.style.transform = `rotate(${logoClicks * 72}deg) scale(${1 + logoClicks * 0.05})`;
+  
+  if (logoClicks >= 5 && !easterEggsFound.includes('ach1')) {
+    unlockEasterEgg('ach1', 'You found the spinny logo secret! 🌀', '🖱️');
+  }
+  
+  setTimeout(() => {
+    logo.style.transform = '';
+  }, 300);
+}
+
+function checkSecretCode(e) {
+  secretCode += e.key.toLowerCase();
+  if (secretCode.length > 10) secretCode = secretCode.slice(-10);
+  
+  if (secretCode.includes('rainbow')) {
+    if (!rainbowMode) {
+      rainbowMode = true;
+      document.getElementById('secretMode').classList.add('show');
+      document.body.style.animation = 'rainbow 3s linear infinite';
+      if (!easterEggsFound.includes('ach5')) {
+        unlockEasterEgg('ach5', 'RAINBOW MODE ACTIVATED! 🌈✨', '🌈');
+      }
+    }
+  }
+}
+
+function showMemePopup(emoji, text) {
+  document.getElementById('memeEmoji').textContent = emoji;
+  document.getElementById('memeText').textContent = text;
+  document.getElementById('memePopup').classList.add('show');
+}
+
+function closeMemePopup() {
+  document.getElementById('memePopup').classList.remove('show');
+}
+
+function triggerConfetti() {
+  const container = document.getElementById('confettiContainer');
+  const colors = ['#00d4ff', '#ff6b9d', '#c56cff', '#00ff88', '#ffcc00'];
+  
+  for (let i = 0; i < 50; i++) {
+    const confetti = document.createElement('div');
+    confetti.className = 'confetti';
+    confetti.style.left = Math.random() * 100 + '%';
+    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+    confetti.style.animationDelay = Math.random() * 0.5 + 's';
+    confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+    container.appendChild(confetti);
+    
+    setTimeout(() => confetti.remove(), 3000);
+  }
+}
+
 /* ============== NAME PROMPT ============== */
 let playerName = "";
 let quizStartTime = 0; 
 let timerInterval = null;
 let elapsedSeconds = 0;
+let questionStartTime = 0;
+let combo = 0;
+let bestCombo = 0;
 
 function showNamePrompt() {
   document.getElementById('namePromptOverlay').classList.add('active');
   const inputField = document.getElementById('promptName');
   inputField.value = "";
+  secretCode = '';
   setTimeout(() => {
     inputField.focus();
   }, 100);
@@ -1037,7 +1830,7 @@ function handleNameInputKeypress(event) {
 function actuallyStartQuiz() {
   const input = document.getElementById('promptName').value.trim();
   if (!input) {
-    showToast("Please enter your name first!");
+    showToast("Bruh, enter your name first! 😅", false);
     return;
   }
   playerName = input;
@@ -1047,20 +1840,44 @@ function actuallyStartQuiz() {
 
   currentRiddle = 0;
   score = 0;
+  combo = 0;
+  bestCombo = 0;
   updateScoreBar();
+  updateComboDisplay();
   startTimer();
   loadRiddle();
 }
 
 /* ============== TOAST ============== */
+const funnyCorrectMessages = [
+  "SHEEEESH! 🔥",
+  "You're literally goated! 🐐",
+  "Big brain energy! 🧠",
+  "W! Massive W! 🏆",
+  "You ate that! 💅",
+  "No cap, you're cracked! ⚡",
+  "Slay! 👑",
+  "Built different! 💪",
+  "Main character energy! ✨"
+];
+
+const funnyWrongMessages = [
+  "Bruh moment... 💀",
+  "That ain't it, chief 😬",
+  "L + ratio 📉",
+  "Oof, skill issue 😅",
+  "Not the vibe... 🙃",
+  "We don't talk about that one 🤐",
+  "It's giving... wrong answer 😭"
+];
+
 function showToast(message, isCorrect) {
   const toast = document.getElementById('toastMsg');
   toast.innerText = message;
-  toast.style.backgroundColor = isCorrect ? "#4CAF50" : "#333";
-  toast.classList.add('show');
+  toast.className = 'toast show ' + (isCorrect ? 'correct' : 'wrong');
   setTimeout(() => {
-    toast.classList.remove('show');
-  }, 1000);
+    toast.className = 'toast';
+  }, 1500);
 }
 
 /* ============== QUIZ DATA ============== */
@@ -1196,6 +2013,49 @@ function stopTimer() {
   return elapsedSeconds; 
 }
 
+let questionTimerInterval = null;
+
+function startQuestionTimer() {
+  questionStartTime = new Date();
+  document.getElementById('speedrunDisplay').style.display = 'block';
+  
+  if (questionTimerInterval) clearInterval(questionTimerInterval);
+  questionTimerInterval = setInterval(() => {
+    const elapsed = ((new Date() - questionStartTime) / 1000).toFixed(1);
+    document.getElementById('questionTimer').textContent = elapsed;
+  }, 100);
+}
+
+function stopQuestionTimer() {
+  if (questionTimerInterval) {
+    clearInterval(questionTimerInterval);
+    questionTimerInterval = null;
+  }
+  return (new Date() - questionStartTime) / 1000;
+}
+
+/* ============== COMBO SYSTEM ============== */
+function updateComboDisplay() {
+  const meter = document.getElementById('comboMeter');
+  document.getElementById('comboCount').textContent = combo;
+  
+  if (combo >= 2) {
+    meter.classList.add('active');
+    if (combo >= 5) {
+      meter.classList.add('fire');
+      if (!easterEggsFound.includes('ach3')) {
+        unlockEasterEgg('ach3', "YOU'RE ON FIRE! 5x COMBO! 🔥🔥🔥", '🔥');
+      }
+    } else {
+      meter.classList.remove('fire');
+    }
+  } else {
+    meter.classList.remove('active', 'fire');
+  }
+  
+  if (combo > bestCombo) bestCombo = combo;
+}
+
 /* ============== LOAD RIDDLE ============== */
 function loadRiddle() {
   document.getElementById('questionTracker').textContent = `Question ${currentRiddle+1} of ${riddles.length}`;
@@ -1216,7 +2076,7 @@ function loadRiddle() {
     badge.className = 'hint-badge';
     badge.id = `hintBadge${i+1}`;
     const potential = 10 - (3 * i);
-    badge.textContent = `+${potential}`;
+    badge.textContent = `+${potential} pts`;
     badge.style.display = 'none';
 
     const hintPara = document.createElement('p');
@@ -1255,6 +2115,7 @@ function loadRiddle() {
   });
 
   showNextHint();
+  startQuestionTimer();
 }
 
 function showNextHint() {
@@ -1289,25 +2150,40 @@ function selectOption(idx) {
 
 function submitAnswer() {
   if (selectedOptionIndex === null) {
-    showToast("Please select an answer first!", false);
+    showToast("Pick something first, bestie! 🤷", false);
     return;
   }
+  
+  const answerTime = stopQuestionTimer();
   const userAnswer = riddles[currentRiddle].options[selectedOptionIndex].text;
   const correct = riddles[currentRiddle].answer;
+  
   if (userAnswer === correct) {
     const pointsEarned = 10 - 3*(hintsShown - 1);
     score += pointsEarned;
-    showToast(`Correct! +${pointsEarned} points`, true);
+    combo++;
+    updateComboDisplay();
+    
+    const msg = funnyCorrectMessages[Math.floor(Math.random() * funnyCorrectMessages.length)];
+    showToast(`${msg} +${pointsEarned}`, true);
+    
+    // Speed achievement
+    if (answerTime < 3 && !easterEggsFound.includes('ach2')) {
+      unlockEasterEgg('ach2', "SPEEDRUNNER! Under 3 seconds! ⚡", '⚡');
+    }
   } else {
-    showToast("Wrong answer!", false);
+    const msg = funnyWrongMessages[Math.floor(Math.random() * funnyWrongMessages.length)];
+    showToast(msg, false);
+    combo = 0;
+    updateComboDisplay();
   }
   updateScoreBar();
 
   currentRiddle++;
   if (currentRiddle < riddles.length) {
-    setTimeout(loadRiddle, 1200);
+    setTimeout(loadRiddle, 1500);
   } else {
-    setTimeout(showEndScreen, 1200);
+    setTimeout(showEndScreen, 1500);
   }
 }
 
@@ -1333,8 +2209,37 @@ function showEndScreen() {
 
   const totalTime = stopTimer();
 
-  const desc = getScoreDescription(score);
-  document.getElementById('scoreDescription').textContent = desc;
+  // Perfect score achievement
+  if (score === 100 && !easterEggsFound.includes('ach4')) {
+    unlockEasterEgg('ach4', "PERFECT SCORE! You're literally a genius! 💯", '💯');
+  }
+
+  // End screen reactions
+  let endTitle, reaction;
+  if (score === 100) {
+    endTitle = "FLAWLESS VICTORY! 👑";
+    reaction = "You're not just built different, you ARE different! 🔥";
+    triggerConfetti();
+  } else if (score >= 80) {
+    endTitle = "ABSOLUTE W! 🏆";
+    reaction = "You understood the assignment! Main character vibes! ✨";
+    triggerConfetti();
+  } else if (score >= 60) {
+    endTitle = "Solid Run! 💪";
+    reaction = "Not bad! You've got potential, keep grinding! 📈";
+  } else if (score >= 40) {
+    endTitle = "It's Giving... Effort 😅";
+    reaction = "We don't gatekeep learning! Try again? 🔄";
+  } else {
+    endTitle = "Bruh... 💀";
+    reaction = "Okay that was rough, BUT you can run it back! 🎮";
+  }
+
+  document.getElementById('endTitle').textContent = endTitle;
+  document.getElementById('scoreReaction').textContent = reaction;
+  document.getElementById('scoreDescription').textContent = getScoreDescription(score);
+  document.getElementById('timeDescription').textContent = `Time: ${totalTime} seconds ${totalTime < 60 ? '⚡ Speed demon!' : ''}`;
+  document.getElementById('comboDescription').textContent = `Best combo: ${bestCombo}x ${bestCombo >= 5 ? '🔥 ON FIRE!' : ''}`;
 
   saveScore(totalTime);
   updateLeaderboardDisplay();
@@ -1342,13 +2247,13 @@ function showEndScreen() {
 
 function getScoreDescription(finalScore) {
   if (finalScore >= 80) {
-    return "You are an English story master! Keep reading and watching – your understanding is top-notch.";
+    return "You're literally the main character of this quiz. English story master status unlocked! 📚✨";
   } else if (finalScore >= 60) {
-    return "Awesome job! You've got some great knowledge. Keep exploring more English stories to level up.";
+    return "You ate that! You've got some serious knowledge. Keep exploring more stories to reach legendary status! 🌟";
   } else if (finalScore >= 40) {
-    return "Nice attempt! With some more practice and reading, you'll become a story expert in no time.";
+    return "Not the vibe we wanted, but we respect the effort! More reading = more Ws! 📖";
   } else {
-    return "Don't worry, practice makes perfect! Keep reading and watching English content to improve.";
+    return "We don't talk about this one... BUT practice makes perfect! Run it back and show them who's boss! 💪";
   }
 }
 
@@ -1362,6 +2267,9 @@ function restartQuiz() {
   stopTimer();
   currentPage = 1;
   playerName = "";
+  combo = 0;
+  bestCombo = 0;
+  updateComboDisplay();
 }
 
 /* ============== LEADERBOARD ============== */
@@ -1406,15 +2314,21 @@ function updateLeaderboardDisplay() {
 
   if (lb.length === 0) {
     const row = document.createElement('tr');
-    row.innerHTML = '<td colspan="4">No scores yet. Be the first!</td>';
+    row.innerHTML = '<td colspan="4">No scores yet. Be the first legend! 🏆</td>';
     tableBody.appendChild(row);
   }
 
   pageEntries.forEach((entry, i) => {
     const rank = start + i + 1;
     const row = document.createElement('tr');
+    let rankClass = '';
+    let rankEmoji = '';
+    if (rank === 1) { rankClass = 'rank-1'; rankEmoji = '🥇'; }
+    else if (rank === 2) { rankClass = 'rank-2'; rankEmoji = '🥈'; }
+    else if (rank === 3) { rankClass = 'rank-3'; rankEmoji = '🥉'; }
+    
     row.innerHTML = `
-      <td>#${rank}</td>
+      <td class="${rankClass}">${rankEmoji} #${rank}</td>
       <td>${entry.name}</td>
       <td>${entry.score}</td>
       <td>${entry.time || 0}s</td>
@@ -1439,15 +2353,19 @@ function changePage(delta) {
   }
 }
 
-/* ============== EXPORT LEADERBOARD AS MARKDOWN ============== */
+/* ============== EXPORT ============== */
 function exportMarkdown() {
   const lb = getLeaderboard();
-  let md = '# Leaderboard\n\n';
+  let md = '# 🏆 Leaderboard\n\n';
   md += '| Rank | Name | Score | Time (s) | Date |\n';
   md += '| ---- | ---- | ----- | -------- | ---- |\n';
 
   lb.forEach((entry, index) => {
-    md += `| ${index+1} | ${entry.name} | ${entry.score} | ${entry.time || 0} | ${entry.date} |\n`;
+    let emoji = '';
+    if (index === 0) emoji = '🥇 ';
+    else if (index === 1) emoji = '🥈 ';
+    else if (index === 2) emoji = '🥉 ';
+    md += `| ${emoji}${index+1} | ${entry.name} | ${entry.score} | ${entry.time || 0} | ${entry.date.split('T')[0]} |\n`;
   });
 
   const blob = new Blob([md], { type: 'text/markdown' });
@@ -1458,6 +2376,7 @@ function exportMarkdown() {
   a.click();
   URL.revokeObjectURL(url);
   document.getElementById('hamburgerLinks').classList.remove('active');
+  showToast("Leaderboard exported! 📥", false);
 }
 </script>
 </body>
