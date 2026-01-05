@@ -30,7 +30,7 @@
       height: 100%;
       margin: 0;
       padding: 0;
-      overflow-y: auto;
+      overflow: hidden;
       font-family: "Segoe UI", "Inter", "Helvetica Neue", Arial, sans-serif;
       color: var(--text);
       background: radial-gradient(circle at top, var(--bg-accent), var(--bg));
@@ -38,10 +38,10 @@
     body {
       display: flex;
       justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
+      align-items: center;
+      min-height: 100dvh;
       box-sizing: border-box;
-      padding: 28px 16px 40px;
+      padding: clamp(12px, 2vw, 28px);
     }
     *, *::before, *::after {
       box-sizing: border-box;
@@ -52,21 +52,23 @@
     .quiz-container,
     .end-container {
       background: var(--surface);
-      padding: 28px;
+      padding: clamp(16px, 2.2vw, 28px);
       border-radius: var(--radius-lg);
       box-shadow: var(--shadow);
       display: none;
       width: 100%;
-      max-width: 960px;
-      margin: 10px;
+      max-width: 980px;
+      margin: 0;
       box-sizing: border-box;
-      overflow-y: auto;
-      min-height: min-content;
+      overflow: hidden;
+      height: min(92dvh, 980px);
+      flex-direction: column;
+      position: relative;
     }
     .start-container.active,
     .quiz-container.active,
     .end-container.active {
-      display: block;
+      display: flex;
     }
 
     /* Name Prompt Overlay */
@@ -137,13 +139,7 @@
       .start-container,
       .quiz-container,
       .end-container {
-        max-height: 100vh;
-        height: 100vh;
-        margin: 0;
-      }
-      .quiz-intro {
-        max-height: calc(100vh - 40px);
-        overflow-y: auto;
+        height: 94dvh;
       }
     }
 
@@ -167,19 +163,16 @@
       opacity: 0.9;
     }
 
-    /* Container heights for scrolling */
-    .start-container,
-    .quiz-container,
-    .end-container {
-      max-height: none;
-      overflow-y: visible;
-    }
     .quiz-intro {
-      max-height: none;
-      overflow-y: visible;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      min-height: 0;
+      overflow: hidden;
       scrollbar-width: none; 
       -ms-overflow-style: none;
       text-align: center;
+      gap: clamp(8px, 1.2vw, 16px);
     }
     .quiz-intro::-webkit-scrollbar {
       display: none;
@@ -188,7 +181,7 @@
     /* Logo, headings, styling */
     .logo-container {
       width: 100%;
-      margin-bottom: 20px;
+      margin-bottom: clamp(8px, 1.6vw, 20px);
       padding: 10px;
       display: flex;
       justify-content: center;
@@ -204,7 +197,7 @@
     h1 {
       color: var(--primary);
       font-size: clamp(2rem, 2.5vw, 2.8rem);
-      margin-bottom: 20px;
+      margin-bottom: clamp(10px, 1.8vw, 20px);
       letter-spacing: -0.02em;
     }
     h2 {
@@ -216,8 +209,8 @@
     }
     .points-circle {
       background: linear-gradient(135deg, var(--primary), #5fa1ff);
-      width: 150px;
-      height: 150px;
+      width: clamp(110px, 18vw, 150px);
+      height: clamp(110px, 18vw, 150px);
       border-radius: 50%;
       display: flex;
       flex-direction: column;
@@ -228,7 +221,7 @@
       box-shadow: 0 12px 22px rgba(45, 108, 223, 0.3);
     }
     .big-number {
-      font-size: 3em;
+      font-size: clamp(2.2em, 4vw, 3em);
       font-weight: bold;
     }
     .points-text {
@@ -238,7 +231,7 @@
       background: var(--surface-muted);
       border-radius: var(--radius-md);
       padding: 20px;
-      margin-top: 30px;
+      margin-top: clamp(16px, 2vw, 30px);
       border: 1px solid var(--border);
     }
     .rule-item {
@@ -256,8 +249,8 @@
       background: linear-gradient(135deg, var(--primary), #5fa1ff);
       border: none;
       border-radius: 25px;
-      padding: 15px 40px;
-      font-size: 1.2em;
+      padding: clamp(12px, 1.6vw, 15px) clamp(26px, 3vw, 40px);
+      font-size: clamp(1rem, 1.8vw, 1.2em);
       color: white;
       cursor: pointer;
       transition: transform 0.2s, box-shadow 0.2s;
@@ -279,7 +272,7 @@
 
     /* Gradient bar for score (now also shows time) */
     .score-bar-container {
-      width: 80%;
+      width: min(80%, 520px);
       max-width: 500px;
       margin: 0 auto 15px auto;
       background: var(--surface-muted);
@@ -317,15 +310,16 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 30px;
-      margin: 30px 0;
+      gap: clamp(14px, 2.4vw, 30px);
+      margin: clamp(12px, 2.2vw, 22px) 0;
       flex-wrap: wrap;
       width: 100%;
+      min-height: clamp(120px, 20vh, 180px);
     }
     .hint-block {
       flex: 1 1 200px;
-      max-width: 250px;
-      min-height: 150px;
+      max-width: 260px;
+      min-height: clamp(110px, 16vh, 150px);
       border: 1px solid #f1e1b8;
       border-radius: var(--radius-sm);
       background: #fff4d6;
@@ -471,8 +465,10 @@
     .options {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 15px;
-      margin: 15px 0;
+      gap: clamp(10px, 2vw, 18px);
+      margin: 0;
+      flex: 1;
+      min-height: 0;
     }
     .option {
       display: flex;
@@ -489,7 +485,7 @@
     }
     .option img {
       width: 100%;
-      max-height: 180px;
+      max-height: clamp(90px, 20vh, 170px);
       object-fit: contain;
       border-radius: 8px;
       border: 1px solid var(--border);
@@ -517,7 +513,7 @@
       border: none;
       border-radius: 25px;
       padding: 12px 30px;
-      font-size: 1.1em;
+      font-size: clamp(1rem, 1.6vw, 1.1em);
       cursor: pointer;
       transition: all 0.3s ease;
       box-shadow: 0 4px 6px rgba(0,0,0,0.1);
@@ -551,8 +547,8 @@
       color: white;
       border: none;
       border-radius: 25px;
-      padding: 15px 40px;
-      font-size: 1.2em;
+      padding: clamp(12px, 1.8vw, 15px) clamp(24px, 3vw, 40px);
+      font-size: clamp(1rem, 1.8vw, 1.2em);
       cursor: pointer;
       transition: all 0.3s ease;
       box-shadow: 0 10px 18px rgba(46, 125, 50, 0.2);
@@ -573,13 +569,14 @@
       background: linear-gradient(135deg, #fff3e0, #ffe8cc);
       border: 1px solid #f4c97c;
       border-radius: var(--radius-md);
-      /* ADDED: Make the leaderboard scrollable up to 300px */
-      max-height: 300px; /* ADDED */
-      overflow-y: auto;  /* ADDED */
+      max-height: clamp(180px, 32vh, 320px);
+      overflow-y: auto;
       display: flex;
       flex-direction: column;
-      position: relative; /* ADDED */
-      z-index: 1;         /* ADDED */
+      position: relative;
+      z-index: 1;
+      flex: 1;
+      min-height: 0;
     }
     .leaderboard h3 {
       color: #c0561a;
@@ -629,10 +626,8 @@
       color: var(--text-muted);
     }
 
-    /* ADDED: Ensure there's room below for the "Play Again?" button */
     .end-container {
-      position: relative; /* ADDED */
-      padding-bottom: 80px; /* ADDED */
+      position: relative;
     }
 
     @media (max-width: 600px) {
@@ -650,15 +645,14 @@
 
     @media (max-width: 768px) {
       body {
-        align-items: flex-start;
-        padding: 5px;
+        align-items: center;
+        padding: 8px;
       }
       
       .start-container,
       .quiz-container,
       .end-container {
-        margin: 5px;
-        padding: 15px;
+        height: 94dvh;
       }
       
       .leaderboard {
@@ -672,12 +666,81 @@
     .welcome-card {
       background: var(--surface);
       border-radius: var(--radius-md);
-      padding: 24px;
+      padding: clamp(16px, 2vw, 24px);
       border: 1px solid var(--border);
       box-shadow: 0 12px 24px rgba(15, 30, 60, 0.08);
     }
     .quiz-intro > p {
       color: var(--text-muted);
+    }
+    .welcome-card,
+    .rules-box {
+      backdrop-filter: blur(1px);
+    }
+    .sparkle-bg {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      border-radius: var(--radius-lg);
+    }
+    .sparkle {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      background: radial-gradient(circle, rgba(255, 205, 115, 0.9), rgba(255, 205, 115, 0));
+      animation: floaty 8s ease-in-out infinite;
+      opacity: 0.8;
+    }
+    .sparkle:nth-child(1) { top: 12%; left: 8%; animation-delay: 0s; }
+    .sparkle:nth-child(2) { top: 22%; right: 12%; animation-delay: 1s; }
+    .sparkle:nth-child(3) { bottom: 18%; left: 16%; animation-delay: 2s; }
+    .sparkle:nth-child(4) { bottom: 12%; right: 18%; animation-delay: 3s; }
+    .sparkle:nth-child(5) { top: 50%; left: 45%; animation-delay: 4s; }
+    @keyframes floaty {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-12px) scale(1.1); }
+    }
+    .quiz-container .quiz-intro,
+    .start-container .quiz-intro,
+    .end-container .quiz-intro {
+      position: relative;
+      z-index: 1;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+    #questionTracker::before {
+      content: "🧩";
+      font-size: 1.1em;
+    }
+    .badge-row {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .badge {
+      background: linear-gradient(135deg, #fce38a, #f38181);
+      color: #4a2c2c;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      box-shadow: 0 6px 12px rgba(243, 129, 129, 0.25);
+    }
+    .score-bar-container,
+    #questionTracker {
+      flex-shrink: 0;
+    }
+    .options,
+    .hints-row {
+      flex-shrink: 1;
     }
     .sr-only {
       position: absolute;
@@ -737,11 +800,23 @@
 
 <!-- START PAGE -->
 <div class="start-container active" id="startContainer">
+  <div class="sparkle-bg" aria-hidden="true">
+    <span class="sparkle"></span>
+    <span class="sparkle"></span>
+    <span class="sparkle"></span>
+    <span class="sparkle"></span>
+    <span class="sparkle"></span>
+  </div>
   <div class="quiz-intro">
     <div class="logo-container">
       <img src="assets/images/logo.jpg" alt="UCC Logo" class="ucc-logo">
     </div>
     <h1>Story Character Challenge</h1>
+    <div class="badge-row" aria-hidden="true">
+      <span class="badge">✨ Super Fun</span>
+      <span class="badge">🎯 Quick Play</span>
+      <span class="badge">🏆 Big Points</span>
+    </div>
     <div class="welcome-card">
       <div class="score-info">
         <h2>Ready to top the leaderboard?</h2>
@@ -777,6 +852,13 @@
 
 <!-- QUIZ PAGE -->
 <div class="quiz-container" id="quizContainer">
+  <div class="sparkle-bg" aria-hidden="true">
+    <span class="sparkle"></span>
+    <span class="sparkle"></span>
+    <span class="sparkle"></span>
+    <span class="sparkle"></span>
+    <span class="sparkle"></span>
+  </div>
   <div class="quiz-intro">
     <!-- Fancy Score Bar at top -->
     <div class="score-bar-container" id="scoreBarContainer">
@@ -786,7 +868,7 @@
     </div>
 
     <!-- "Question X of ..." -->
-    <h2 id="questionTracker">Question 1 of 10</h2>
+    <h2 id="questionTracker" class="section-header">Question 1 of 10</h2>
 
     <!-- Hints row -->
     <div class="hints-row" id="hintsRow"></div>
@@ -804,6 +886,13 @@
 
 <!-- END PAGE -->
 <div class="end-container" id="endContainer">
+  <div class="sparkle-bg" aria-hidden="true">
+    <span class="sparkle"></span>
+    <span class="sparkle"></span>
+    <span class="sparkle"></span>
+    <span class="sparkle"></span>
+    <span class="sparkle"></span>
+  </div>
   <div class="quiz-intro">
     <div class="logo-container">
       <img src="assets/images/logo.jpg" alt="UCC Logo" class="ucc-logo">
