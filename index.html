@@ -3,16 +3,37 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <title>Story Character Challenge</title>
+  <meta name="color-scheme" content="light">
+  <title>Open Day Quiz | Story Characters</title>
   <style>
-/* Base layout */
-html, body {
+    :root {
+      color-scheme: light;
+      --bg: #f5f7fb;
+      --bg-accent: #e8eef9;
+      --surface: #ffffff;
+      --surface-muted: #f7f9fc;
+      --text: #1b2330;
+      --text-muted: #516176;
+      --primary: #2d6cdf;
+      --primary-dark: #1d4ea8;
+      --success: #2e7d32;
+      --warning: #e67e22;
+      --border: #d9e2f1;
+      --shadow: 0 18px 40px rgba(20, 35, 70, 0.12);
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --radius-sm: 10px;
+    }
+
+    /* Base layout */
+    html, body {
       height: 100%;
       margin: 0;
       padding: 0;
       overflow-y: auto;
-      font-family: Comic Sans MS, sans-serif;
-      background-color: #f0f0f0; 
+      font-family: "Segoe UI", "Inter", "Helvetica Neue", Arial, sans-serif;
+      color: var(--text);
+      background: radial-gradient(circle at top, var(--bg-accent), var(--bg));
     }
     body {
       display: flex;
@@ -20,20 +41,23 @@ html, body {
       align-items: flex-start;
       min-height: 100vh;
       box-sizing: border-box;
-      padding: 10px;
+      padding: 28px 16px 40px;
+    }
+    *, *::before, *::after {
+      box-sizing: border-box;
     }
 
 /* Main quiz containers */
     .start-container,
     .quiz-container,
     .end-container {
-      background: #ffffff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      background: var(--surface);
+      padding: 28px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
       display: none;
       width: 100%;
-      max-width: 800px;
+      max-width: 960px;
       margin: 10px;
       box-sizing: border-box;
       overflow-y: auto;
@@ -59,19 +83,19 @@ html, body {
       display: flex;
     }
     .name-prompt-box {
-      background: #fff;
+      background: var(--surface);
       padding: 30px;
-      border-radius: 8px;
+      border-radius: var(--radius-md);
       width: 80%;
       max-width: 400px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+      box-shadow: 0 0 30px rgba(10, 20, 40, 0.2);
       text-align: center;
     }
     .name-prompt-box h3 {
       margin-top: 0;
     }
     .name-prompt-box button {
-      background: linear-gradient(45deg, #2196F3, #21CBF3);
+      background: linear-gradient(135deg, var(--primary), #5fa1ff);
       border: none;
       border-radius: 25px;
       padding: 15px 40px;
@@ -93,15 +117,16 @@ html, body {
       padding: 15px;
       margin: 15px 0;
       font-size: 16px;
-      border: 2px solid #2196F3;
-      border-radius: 8px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
       outline: none;
       cursor: text;
       transform: translateZ(0);
+      background: var(--surface-muted);
     }
     .name-prompt-box input:focus {
-      border-color: #1976D2;
-      box-shadow: 0 0 5px rgba(33, 150, 243, 0.3);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(45, 108, 223, 0.2);
     }
 
     /* iPad portrait styling */
@@ -128,7 +153,7 @@ html, body {
       top: 10px;
       left: 50%;
       transform: translateX(-50%);
-      background: #333;
+      background: #1f2a3a;
       color: #fff;
       padding: 10px 20px;
       border-radius: 20px;
@@ -136,6 +161,7 @@ html, body {
       pointer-events: none;
       transition: opacity 0.5s ease;
       z-index: 5000;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
     }
     .toast.show {
       opacity: 0.9;
@@ -173,20 +199,23 @@ html, body {
       max-width: 100px;
       max-height: 100px;
       object-fit: contain;
+      filter: drop-shadow(0 8px 12px rgba(0,0,0,0.12));
     }
     h1 {
-      color: #2196F3;
-      font-size: 2.5em;
-      margin-bottom: 30px;
+      color: var(--primary);
+      font-size: clamp(2rem, 2.5vw, 2.8rem);
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
     }
     h2 {
       margin-top: 0;
+      color: var(--text);
     }
     .score-info {
       text-align: center;
     }
     .points-circle {
-      background: linear-gradient(45deg, #2196F3, #21CBF3);
+      background: linear-gradient(135deg, var(--primary), #5fa1ff);
       width: 150px;
       height: 150px;
       border-radius: 50%;
@@ -196,6 +225,7 @@ html, body {
       align-items: center;
       margin: 20px auto;
       color: white;
+      box-shadow: 0 12px 22px rgba(45, 108, 223, 0.3);
     }
     .big-number {
       font-size: 3em;
@@ -205,39 +235,43 @@ html, body {
       font-size: 1.2em;
     }
     .rules-box {
-      background: rgba(255,255,255,0.9);
-      border-radius: 15px;
+      background: var(--surface-muted);
+      border-radius: var(--radius-md);
       padding: 20px;
       margin-top: 30px;
+      border: 1px solid var(--border);
     }
     .rule-item {
       display: flex;
       align-items: center;
       margin: 15px 0;
-      font-size: 1.1em;
+      font-size: 1.05em;
+      color: var(--text);
     }
     .rule-icon {
       margin-right: 15px;
       font-size: 1.5em;
     }
     .start-button {
-      background: linear-gradient(45deg, #2196F3, #21CBF3);
+      background: linear-gradient(135deg, var(--primary), #5fa1ff);
       border: none;
       border-radius: 25px;
       padding: 15px 40px;
       font-size: 1.2em;
       color: white;
       cursor: pointer;
-      transition: transform 0.2s;
+      transition: transform 0.2s, box-shadow 0.2s;
       margin: 20px auto;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 10px;
       width: fit-content;
+      box-shadow: 0 12px 20px rgba(45, 108, 223, 0.25);
     }
     .start-button:hover {
       transform: scale(1.05);
+      box-shadow: 0 16px 28px rgba(45, 108, 223, 0.3);
     }
     .button-icon {
       font-size: 1.3em;
@@ -248,14 +282,15 @@ html, body {
       width: 80%;
       max-width: 500px;
       margin: 0 auto 15px auto;
-      background: #ddd;
+      background: var(--surface-muted);
       border-radius: 15px;
       overflow: hidden;
       height: 25px;
       position: relative;
+      border: 1px solid var(--border);
     }
     .score-bar-fill {
-      background: linear-gradient(90deg, #4CAF50, #8BC34A);
+      background: linear-gradient(90deg, #2e7d32, #66bb6a);
       width: 0%;
       height: 100%;
       transition: width 0.4s ease;
@@ -291,9 +326,9 @@ html, body {
       flex: 1 1 200px;
       max-width: 250px;
       min-height: 150px;
-      border: 2px solid #e0e0e0;
-      border-radius: 10px;
-      background: #fff3cd;
+      border: 1px solid #f1e1b8;
+      border-radius: var(--radius-sm);
+      background: #fff4d6;
       padding: 20px 15px 35px 15px;
       box-sizing: border-box;
       position: relative;
@@ -308,7 +343,7 @@ html, body {
       font-size: 1.2em;
       font-style: italic;
       text-align: center;
-      color: #664d03;
+      color: #6d4c02;
       width: calc(100% - 30px);
       word-wrap: break-word;
       overflow-wrap: break-word;
@@ -336,7 +371,7 @@ html, body {
       bottom: 10px;
       left: 50%;
       transform: translateX(-50%);
-      background: #4CAF50;
+      background: var(--success);
       color: #fff;
       padding: 5px 10px;
       border-radius: 15px;
@@ -368,28 +403,46 @@ html, body {
       z-index: 9999;
     }
     .hamburger-icon {
-      width: 30px;
-      height: 22px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      align-items: center;
       cursor: pointer;
       position: relative;
+      transition: transform 0.2s, box-shadow 0.2s;
     }
     .hamburger-icon span {
       display: block;
-      height: 4px;
-      background: #333;
-      margin: 4px 0;
+      height: 3px;
+      width: 22px;
+      background: var(--text);
+      margin: 0;
       transition: 0.3s ease;
+      border-radius: 4px;
+    }
+    .hamburger-icon:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 18px rgba(0,0,0,0.12);
     }
     .hamburger-links {
       position: absolute;
       top: 40px;
       right: 0;
-      background: white;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      background: var(--surface);
+      box-shadow: 0 18px 30px rgba(0,0,0,0.15);
       list-style: none;
       padding: 10px;
       margin: 0;
       display: none;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
     }
     .hamburger-links.active {
       display: block; 
@@ -403,14 +456,15 @@ html, body {
       background: none;
       border: none;
       font-size: 16px;
-      color: #333;
+      color: var(--text);
       cursor: pointer;
       width: 100%;
       text-align: right;
       padding: 5px;
+      font-weight: 500;
     }
     .hamburger-links button:hover {
-      background: #f0f0f0;
+      background: var(--surface-muted);
     }
 
     /* Options grid */
@@ -427,31 +481,38 @@ html, body {
       justify-content: center;
       gap: 10px;
       padding: 10px;
-      background: #f8f8f8;
-      border: 1px solid #ddd;
-      border-radius: 5px;
+      background: var(--surface-muted);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
       cursor: pointer;
-      transition: background 0.3s;
+      transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
     }
     .option img {
       width: 100%;
       max-height: 180px;
       object-fit: contain;
-      border-radius: 4px;
-      border: 1px solid #ccc;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #fff;
     }
     .option:hover {
-      background: #e8e8e8;
+      background: #eef2f9;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 16px rgba(0,0,0,0.08);
     }
     .option.selected {
-      background: #4CAF50;
+      background: linear-gradient(135deg, #2e7d32, #66bb6a);
       color: white;
-      border-color: #4CAF50;
+      border-color: #2e7d32;
+      box-shadow: 0 12px 20px rgba(46, 125, 50, 0.25);
+    }
+    .option.selected img {
+      border-color: rgba(255, 255, 255, 0.6);
     }
 
     /* "Help me!" button */
     #hintButton {
-      background: linear-gradient(45deg, #ff9800, #ff5722);
+      background: linear-gradient(135deg, #f39c12, #e67e22);
       color: white;
       border: none;
       border-radius: 25px;
@@ -475,7 +536,7 @@ html, body {
     #hintButton:hover {
       transform: translateY(-2px);
       box-shadow: 0 6px 8px rgba(0,0,0,0.15);
-      background: linear-gradient(45deg, #ff5722, #ff9800);
+      background: linear-gradient(135deg, #e67e22, #f39c12);
     }
     #hintButton:disabled {
       background: #cccccc;
@@ -486,7 +547,7 @@ html, body {
 
     /* "Submit Answer" button */
     #submitButton {
-      background: linear-gradient(45deg, #4CAF50, #45a049);
+      background: linear-gradient(135deg, #2e7d32, #43a047);
       color: white;
       border: none;
       border-radius: 25px;
@@ -494,24 +555,24 @@ html, body {
       font-size: 1.2em;
       cursor: pointer;
       transition: all 0.3s ease;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      box-shadow: 0 10px 18px rgba(46, 125, 50, 0.2);
       font-weight: bold;
       margin: 15px auto 0 auto;
       display: block;
     }
     #submitButton:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 8px rgba(0,0,0,0.15);
-      background: linear-gradient(45deg, #45a049, #4CAF50);
+      box-shadow: 0 12px 22px rgba(46, 125, 50, 0.25);
+      background: linear-gradient(135deg, #43a047, #2e7d32);
     }
 
     /* Leaderboard style */
     .leaderboard {
       margin-top: 20px;
       padding: 15px;
-      background: linear-gradient(45deg, #fff3e0, #ffe0b2);
-      border: 2px solid #ffa726;
-      border-radius: 10px;
+      background: linear-gradient(135deg, #fff3e0, #ffe8cc);
+      border: 1px solid #f4c97c;
+      border-radius: var(--radius-md);
       /* ADDED: Make the leaderboard scrollable up to 300px */
       max-height: 300px; /* ADDED */
       overflow-y: auto;  /* ADDED */
@@ -521,7 +582,7 @@ html, body {
       z-index: 1;         /* ADDED */
     }
     .leaderboard h3 {
-      color: #d84315;
+      color: #c0561a;
       font-size: 1.4em;
       text-align: center;
       margin-bottom: 10px;
@@ -536,6 +597,10 @@ html, body {
       padding: 6px;
       border-bottom: 1px dotted #ccc;
     }
+    .leaderboard-table th {
+      color: #874c0d;
+      font-weight: 600;
+    }
 
     /* Leaderboard pagination */
     .leaderboard-pagination {
@@ -549,7 +614,7 @@ html, body {
     }
     .leaderboard-pagination button {
       padding: 5px 15px;
-      background: #2196F3;
+      background: var(--primary);
       color: white;
       border: none;
       border-radius: 5px;
@@ -561,7 +626,7 @@ html, body {
     }
     #pageInfo {
       font-size: 0.9em;
-      color: #666;
+      color: var(--text-muted);
     }
 
     /* ADDED: Ensure there's room below for the "Play Again?" button */
@@ -604,20 +669,46 @@ html, body {
         min-width: 300px;
       }
     }
+    .welcome-card {
+      background: var(--surface);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      border: 1px solid var(--border);
+      box-shadow: 0 12px 24px rgba(15, 30, 60, 0.08);
+    }
+    .quiz-intro > p {
+      color: var(--text-muted);
+    }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+    button:focus-visible,
+    .option:focus-visible,
+    input:focus-visible {
+      outline: 3px solid rgba(45, 108, 223, 0.4);
+      outline-offset: 2px;
+    }
   </style>
 </head>
 <body>
 
 <!-- Toast -->
-<div class="toast" id="toastMsg"></div>
+<div class="toast" id="toastMsg" role="status" aria-live="polite"></div>
 
 <!-- HAMBURGER MENU -->
 <div class="hamburger-menu">
-  <div class="hamburger-icon" onclick="toggleMenu()">
+  <button class="hamburger-icon" onclick="toggleMenu()" aria-label="Open menu" aria-expanded="false">
     <span></span>
     <span></span>
     <span></span>
-  </div>
+  </button>
   <ul class="hamburger-links" id="hamburgerLinks">
     <li><button onclick="restartQuiz()">Restart Game</button></li>
     <li><button onclick="showLeaderboardOnly()">See Leaderboard</button></li>
@@ -631,6 +722,7 @@ html, body {
 <div class="name-prompt-overlay" id="namePromptOverlay">
   <div class="name-prompt-box">
     <h3>Please enter your name to begin!</h3>
+    <label for="promptName" class="sr-only">Your name</label>
     <input type="text" 
            id="promptName" 
            placeholder="Your name..."
@@ -639,7 +731,7 @@ html, body {
            inputmode="text"
            onkeypress="handleNameInputKeypress(event)"/>
     <br>
-    <button onclick="actuallyStartQuiz()">Begin!</button>
+    <button onclick="actuallyStartQuiz()">Begin Quiz</button>
   </div>
 </div>
 
@@ -649,34 +741,34 @@ html, body {
     <div class="logo-container">
       <img src="assets/images/logo.jpg" alt="UCC Logo" class="ucc-logo">
     </div>
-    <h1>English Story Game</h1>
+    <h1>Story Character Challenge</h1>
     <div class="welcome-card">
       <div class="score-info">
-        <h2>Can you get the high score? 🚀</h2>
+        <h2>Ready to top the leaderboard?</h2>
         <div class="points-circle">
           <span class="big-number">100</span>
           <span class="points-text">POINTS</span>
         </div>
       </div>
       <div class="rules-box">
-        <h3>How to Play 🎮</h3>
+        <h3>How to Play</h3>
         <div class="rule-item">
           <span class="rule-icon">🤔</span>
-          <span>Try our 10 questions! Read the clues and choose your answer.</span>
+          <span>Answer 10 questions by reading the clues and picking the best match.</span>
         </div>
         <div class="rule-item">
           <span class="rule-icon">✅</span>
-          <span>Each correct answer = 10 points</span>
+          <span>Each correct answer is worth 10 points.</span>
         </div>
         <div class="rule-item">
           <span class="rule-icon">💡</span>
-          <span>“Help me!” to another clue. Each extra clue costs 3 points.</span>
+          <span>Need help? Each extra clue costs 3 points.</span>
         </div>
       </div>
     </div>
 
     <button class="start-button" onclick="showNamePrompt()">
-      <span class="button-text">START THE QUIZ</span>
+      <span class="button-text">Start the Quiz</span>
       <span class="button-icon">🎮</span>
     </button>
   </div>
@@ -716,17 +808,17 @@ html, body {
     <div class="logo-container">
       <img src="assets/images/logo.jpg" alt="UCC Logo" class="ucc-logo">
     </div>
-    <h1>Game Complete! 🏆</h1>
+    <h1>Game Complete</h1>
     <div class="welcome-card">
       <div class="score-info">
-        <h2>Final Score 🌟</h2>
+        <h2>Final Score</h2>
         <div class="points-circle">
           <span id="finalScore" class="big-number">0</span>
           <span class="points-text">POINTS</span>
         </div>
       </div>
       <div class="rules-box">
-        <h3>Your Achievement 🎉</h3>
+        <h3>Your Achievement</h3>
         <div class="rule-item">
           <span class="rule-icon">⭐</span>
           <span id="scoreDescription" style="text-align: left;"></span>
@@ -735,7 +827,7 @@ html, body {
     </div>
 
     <div class="leaderboard">
-      <h3>🏆 Top 50 Scores</h3>
+      <h3>Top 50 Scores</h3>
       <!-- Table for leaderboard -->
       <div id="leaderboardList">
         <table class="leaderboard-table">
@@ -758,7 +850,7 @@ html, body {
     </div>
 
     <button class="start-button" onclick="restartQuiz()">
-      <span class="button-text">Play Again?</span>
+      <span class="button-text">Play Again</span>
       <span class="button-icon">🎮</span>
     </button>
   </div>
@@ -768,7 +860,12 @@ html, body {
 <script>
 /* ============== HAMBURGER MENU ============== */
 function toggleMenu() {
-  document.getElementById('hamburgerLinks').classList.toggle('active');
+  const links = document.getElementById('hamburgerLinks');
+  const isActive = links.classList.toggle('active');
+  const menuButton = document.querySelector('.hamburger-icon');
+  if (menuButton) {
+    menuButton.setAttribute('aria-expanded', isActive ? 'true' : 'false');
+  }
 }
 function showLeaderboardOnly() {
   document.getElementById('startContainer').classList.remove('active');
@@ -786,6 +883,7 @@ let playerName = "";
 // Timer variables
 let quizStartTime = 0; 
 let timerInterval = null;
+let elapsedSeconds = 0;
 
 function showNamePrompt() {
   document.getElementById('namePromptOverlay').classList.add('active');
@@ -949,10 +1047,11 @@ const riddles = [
 /* ============== TIMER FUNCTIONS ============== */
 function startTimer() {
   quizStartTime = new Date();
+  elapsedSeconds = 0;
   timerInterval = setInterval(() => {
     const now = new Date();
-    const elapsed = Math.floor((now - quizStartTime)/1000);
-    document.getElementById('scoreBarLabel').textContent = `Score: ${score} | Time: ${elapsed}s`;
+    elapsedSeconds = Math.floor((now - quizStartTime)/1000);
+    updateScoreBarLabel();
   }, 1000);
 }
 function stopTimer() {
@@ -961,7 +1060,9 @@ function stopTimer() {
     timerInterval = null;
   }
   const now = new Date();
-  return Math.floor((now - quizStartTime)/1000); 
+  elapsedSeconds = Math.floor((now - quizStartTime)/1000);
+  updateScoreBarLabel();
+  return elapsedSeconds; 
 }
 
 /* ============== LOAD RIDDLE ============== */
@@ -1002,6 +1103,8 @@ function loadRiddle() {
   riddles[currentRiddle].options.forEach((optObj, idx) => {
     const optionDiv = document.createElement('div');
     optionDiv.className = 'option';
+    optionDiv.setAttribute('role', 'button');
+    optionDiv.setAttribute('tabindex', '0');
 
     const imgEl = document.createElement('img');
     imgEl.src = optObj.img;
@@ -1011,6 +1114,12 @@ function loadRiddle() {
     textSpan.textContent = optObj.text;
 
     optionDiv.onclick = () => selectOption(idx);
+    optionDiv.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        selectOption(idx);
+      }
+    });
     optionDiv.appendChild(imgEl);
     optionDiv.appendChild(textSpan);
     optionsDiv.appendChild(optionDiv);
@@ -1081,7 +1190,11 @@ function updateScoreBar() {
   if (percent > 100) percent = 100;
   const fill = document.getElementById('scoreBarFill');
   fill.style.width = `${percent}%`;
-  document.getElementById('scoreBarLabel').textContent = `Score: ${score} | Time: 0s`;
+  updateScoreBarLabel();
+}
+
+function updateScoreBarLabel() {
+  document.getElementById('scoreBarLabel').textContent = `Score: ${score} | Time: ${elapsedSeconds}s`;
 }
 
 /* ============== END SCREEN ============== */
@@ -1116,7 +1229,8 @@ function restartQuiz() {
   document.getElementById('endContainer').classList.remove('active');
   document.getElementById('startContainer').classList.add('active');
   document.getElementById('scoreBarFill').style.width = '0%';
-  document.getElementById('scoreBarLabel').textContent = 'Score: 0 | Time: 0s';
+  elapsedSeconds = 0;
+  updateScoreBarLabel();
   stopTimer();
   currentPage = 1;
   playerName = "";
@@ -1160,10 +1274,16 @@ function updateLeaderboardDisplay() {
   const tableBody = document.getElementById('leaderboardTableBody');
   tableBody.innerHTML = '';
 
-  const totalPages = Math.ceil(lb.length / entriesPerPage);
+  const totalPages = Math.max(1, Math.ceil(lb.length / entriesPerPage));
   const start = (currentPage - 1) * entriesPerPage;
   const end = start + entriesPerPage;
   const pageEntries = lb.slice(start, end);
+
+  if (lb.length === 0) {
+    const row = document.createElement('tr');
+    row.innerHTML = '<td colspan="4">No scores yet. Be the first to play!</td>';
+    tableBody.appendChild(row);
+  }
 
   pageEntries.forEach((entry, i) => {
     const rank = start + i + 1;
@@ -1180,12 +1300,12 @@ function updateLeaderboardDisplay() {
   document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages}`;
   const prev = document.querySelector('.leaderboard-pagination button:first-child');
   const nxt = document.querySelector('.leaderboard-pagination button:last-child');
-  prev.disabled = (currentPage === 1);
-  nxt.disabled = (currentPage === totalPages);
+  prev.disabled = (currentPage === 1 || lb.length === 0);
+  nxt.disabled = (currentPage === totalPages || lb.length === 0);
 }
 function changePage(delta) {
   const lb = getLeaderboard();
-  const totalPages = Math.ceil(lb.length / entriesPerPage);
+  const totalPages = Math.max(1, Math.ceil(lb.length / entriesPerPage));
   const newPage = currentPage + delta;
   if (newPage >= 1 && newPage <= totalPages) {
     currentPage = newPage;
