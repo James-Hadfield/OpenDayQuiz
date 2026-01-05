@@ -41,7 +41,7 @@
       align-items: center;
       min-height: 100dvh;
       box-sizing: border-box;
-      padding: clamp(12px, 2vw, 28px);
+      padding: 0;
     }
     *, *::before, *::after {
       box-sizing: border-box;
@@ -52,16 +52,17 @@
     .quiz-container,
     .end-container {
       background: var(--surface);
-      padding: clamp(16px, 2.2vw, 28px);
+      padding: clamp(12px, 2vw, 24px);
       border-radius: var(--radius-lg);
       box-shadow: var(--shadow);
       display: none;
       width: 100%;
-      max-width: 980px;
+      max-width: 1100px;
       margin: 0;
       box-sizing: border-box;
       overflow: hidden;
-      height: min(92dvh, 980px);
+      height: 100dvh;
+      max-height: 100dvh;
       flex-direction: column;
       position: relative;
       isolation: isolate;
@@ -132,15 +133,11 @@
       box-shadow: 0 0 0 3px rgba(45, 108, 223, 0.2);
     }
 
-    /* iPad portrait styling */
-    @media only screen 
-      and (orientation: portrait) 
-      and (min-device-width: 768px) 
-      and (max-device-width: 1024px) {
+    @media (max-width: 700px) {
       .start-container,
       .quiz-container,
       .end-container {
-        height: 94dvh;
+        border-radius: 0;
       }
     }
 
@@ -165,15 +162,14 @@
     }
 
     .quiz-intro {
-      display: flex;
-      flex-direction: column;
+      display: grid;
       height: 100%;
       min-height: 0;
       overflow: hidden;
       scrollbar-width: none; 
       -ms-overflow-style: none;
       text-align: center;
-      gap: clamp(8px, 1.2vw, 16px);
+      gap: clamp(6px, 1.2vw, 14px);
     }
     .quiz-intro::-webkit-scrollbar {
       display: none;
@@ -197,7 +193,7 @@
     }
     h1 {
       color: var(--primary);
-      font-size: clamp(2rem, 2.5vw, 2.8rem);
+      font-size: clamp(1.6rem, 3.2vw, 2.6rem);
       margin-bottom: clamp(10px, 1.8vw, 20px);
       letter-spacing: -0.02em;
     }
@@ -210,8 +206,8 @@
     }
     .points-circle {
       background: linear-gradient(135deg, var(--primary), #5fa1ff);
-      width: clamp(110px, 18vw, 150px);
-      height: clamp(110px, 18vw, 150px);
+      width: clamp(90px, 14vw, 140px);
+      height: clamp(90px, 14vw, 140px);
       border-radius: 50%;
       display: flex;
       flex-direction: column;
@@ -226,25 +222,25 @@
       font-weight: bold;
     }
     .points-text {
-      font-size: 1.2em;
+      font-size: clamp(0.95rem, 1.5vw, 1.1em);
     }
     .rules-box {
       background: var(--surface-muted);
       border-radius: var(--radius-md);
       padding: clamp(12px, 1.8vw, 20px);
-      margin-top: clamp(16px, 2vw, 30px);
+      margin-top: clamp(10px, 1.4vw, 20px);
       border: 1px solid var(--border);
     }
     .rule-item {
       display: flex;
       align-items: center;
-      margin: clamp(8px, 1.2vw, 14px) 0;
-      font-size: clamp(0.95rem, 1.6vw, 1.05em);
+      margin: clamp(6px, 1vw, 10px) 0;
+      font-size: clamp(0.85rem, 1.5vw, 1rem);
       color: var(--text);
     }
     .rule-icon {
-      margin-right: 15px;
-      font-size: 1.5em;
+      margin-right: 10px;
+      font-size: 1.2em;
     }
     .start-button {
       background: linear-gradient(135deg, var(--primary), #5fa1ff);
@@ -255,7 +251,7 @@
       color: white;
       cursor: pointer;
       transition: transform 0.2s, box-shadow 0.2s;
-      margin: 20px auto;
+      margin: clamp(8px, 1.4vw, 16px) auto;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -268,18 +264,18 @@
       box-shadow: 0 16px 28px rgba(45, 108, 223, 0.3);
     }
     .button-icon {
-      font-size: 1.3em;
+      font-size: 1.1em;
     }
 
     /* Gradient bar for score (now also shows time) */
     .score-bar-container {
-      width: min(80%, 520px);
-      max-width: 500px;
-      margin: 0 auto 15px auto;
+      width: min(90%, 520px);
+      max-width: 520px;
+      margin: 0 auto clamp(4px, 1vh, 10px) auto;
       background: var(--surface-muted);
       border-radius: 15px;
       overflow: hidden;
-      height: 25px;
+      height: clamp(18px, 3vh, 24px);
       position: relative;
       border: 1px solid var(--border);
     }
@@ -295,7 +291,8 @@
       top: 50%;
       transform: translate(-50%, -50%);
       color: #000;
-      font-weight: bold;
+      font-weight: 600;
+      font-size: clamp(0.8rem, 1.4vw, 0.95rem);
       text-shadow: 
         -1px -1px 0 #fff,
          1px -1px 0 #fff,
@@ -308,23 +305,22 @@
 
     /* Hints layout */
     .hints-row {
-      display: flex;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       justify-content: center;
       align-items: center;
-      gap: clamp(14px, 2.4vw, 30px);
-      margin: clamp(12px, 2.2vw, 22px) 0;
-      flex-wrap: wrap;
+      gap: clamp(8px, 1.8vw, 16px);
+      margin: clamp(6px, 1.6vw, 12px) 0;
       width: 100%;
-      min-height: clamp(90px, 16vh, 150px);
+      min-height: clamp(72px, 14vh, 120px);
     }
     .hint-block {
-      flex: 1 1 200px;
-      max-width: 260px;
-      min-height: clamp(90px, 14vh, 140px);
+      max-width: none;
+      min-height: clamp(70px, 12vh, 110px);
       border: 1px solid #f1e1b8;
       border-radius: var(--radius-sm);
       background: #fff4d6;
-      padding: 20px 15px 35px 15px;
+      padding: clamp(8px, 1.2vw, 14px);
       box-sizing: border-box;
       position: relative;
       display: none;
@@ -335,7 +331,7 @@
     .hint-block p {
       margin: 0;
       padding: 0;
-      font-size: clamp(0.95rem, 1.6vw, 1.15em);
+      font-size: clamp(0.75rem, 1.3vw, 1rem);
       font-style: italic;
       text-align: center;
       color: #6d4c02;
@@ -348,7 +344,7 @@
       left: 50%;
       transform: translate(-50%, -50%);
       line-height: 1.4;
-      min-height: 3em;
+      min-height: 2.4em;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -363,32 +359,19 @@
     }
     .hint-badge {
       position: absolute;
-      bottom: 10px;
+      bottom: 6px;
       left: 50%;
       transform: translateX(-50%);
       background: var(--success);
       color: #fff;
       padding: 5px 10px;
       border-radius: 15px;
-      font-size: 0.9em;
+      font-size: clamp(0.7rem, 1.1vw, 0.85rem);
       display: none;
       white-space: nowrap;
       z-index: 1;
     }
 
-    @media (max-width: 768px) {
-      .hints-row {
-        gap: 25px;
-      }
-      .hint-block {
-        flex: 1 1 100%;
-        max-width: none;
-        min-height: 130px;
-      }
-      .hint-block p {
-        font-size: 1.1em;
-      }
-    }
 
     /* Hamburger Menu */
     .hamburger-menu {
@@ -466,7 +449,7 @@
     .options {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: clamp(10px, 2vw, 18px);
+      gap: clamp(8px, 1.6vw, 14px);
       margin: 0;
       flex: 1;
       min-height: 0;
@@ -476,8 +459,8 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 10px;
-      padding: 10px;
+      gap: clamp(6px, 1vw, 10px);
+      padding: clamp(6px, 1vw, 10px);
       background: var(--surface-muted);
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
@@ -486,11 +469,15 @@
     }
     .option img {
       width: 100%;
-      max-height: clamp(80px, 18vh, 150px);
+      max-height: clamp(70px, 16vh, 140px);
       object-fit: contain;
       border-radius: 8px;
       border: 1px solid var(--border);
       background: #fff;
+    }
+    .option span {
+      font-size: clamp(0.8rem, 1.3vw, 1rem);
+      text-align: center;
     }
     .option:hover {
       background: #eef2f9;
@@ -513,21 +500,21 @@
       color: white;
       border: none;
       border-radius: 25px;
-      padding: 12px 30px;
-      font-size: clamp(1rem, 1.6vw, 1.1em);
+      padding: clamp(8px, 1.6vw, 12px) clamp(16px, 2.5vw, 24px);
+      font-size: clamp(0.85rem, 1.4vw, 1rem);
       cursor: pointer;
       transition: all 0.3s ease;
       box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-      min-width: 150px;
-      margin: 0 auto clamp(6px, 1.2vh, 12px) auto;
-      display: block;
+      min-width: 130px;
+      margin: 0;
+      display: inline-flex;
     }
     #hintButton::before {
       content: "-3 points";
       background: rgba(255, 255, 255, 0.2);
       padding: 4px 8px;
       border-radius: 12px;
-      font-size: 0.8em;
+      font-size: 0.75em;
       margin-right: 8px;
     }
     #hintButton:hover {
@@ -548,14 +535,14 @@
       color: white;
       border: none;
       border-radius: 25px;
-      padding: clamp(12px, 1.8vw, 15px) clamp(24px, 3vw, 40px);
-      font-size: clamp(1rem, 1.8vw, 1.2em);
+      padding: clamp(8px, 1.8vw, 12px) clamp(16px, 2.6vw, 28px);
+      font-size: clamp(0.85rem, 1.5vw, 1.05em);
       cursor: pointer;
       transition: all 0.3s ease;
       box-shadow: 0 10px 18px rgba(46, 125, 50, 0.2);
       font-weight: bold;
-      margin: clamp(8px, 1.4vh, 14px) auto 0 auto;
-      display: block;
+      margin: 0;
+      display: inline-flex;
     }
     #submitButton:hover {
       transform: translateY(-2px);
@@ -565,12 +552,12 @@
 
     /* Leaderboard style */
     .leaderboard {
-      margin-top: 20px;
-      padding: 15px;
+      margin-top: clamp(6px, 1.2vw, 12px);
+      padding: clamp(8px, 1.6vw, 14px);
       background: linear-gradient(135deg, #fff3e0, #ffe8cc);
       border: 1px solid #f4c97c;
       border-radius: var(--radius-md);
-      max-height: clamp(180px, 32vh, 320px);
+      max-height: clamp(140px, 30vh, 280px);
       overflow-y: auto;
       display: flex;
       flex-direction: column;
@@ -581,9 +568,9 @@
     }
     .leaderboard h3 {
       color: #c0561a;
-      font-size: 1.4em;
+      font-size: clamp(1rem, 1.6vw, 1.2em);
       text-align: center;
-      margin-bottom: 10px;
+      margin-bottom: clamp(6px, 1vw, 10px);
     }
     .leaderboard-table {
       width: 100%;
@@ -592,7 +579,7 @@
     .leaderboard-table th,
     .leaderboard-table td {
       text-align: left;
-      padding: 6px;
+      padding: clamp(4px, 0.8vw, 6px);
       border-bottom: 1px dotted #ccc;
     }
     .leaderboard-table th {
@@ -605,13 +592,13 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 15px;
-      margin: 10px 0;
-      padding: 10px 0;
+      gap: 10px;
+      margin: 6px 0;
+      padding: 6px 0;
       border-top: 1px solid rgba(0,0,0,0.1);
     }
     .leaderboard-pagination button {
-      padding: 5px 15px;
+      padding: 4px 12px;
       background: var(--primary);
       color: white;
       border: none;
@@ -623,7 +610,7 @@
       cursor: not-allowed;
     }
     #pageInfo {
-      font-size: 0.9em;
+      font-size: 0.8em;
       color: var(--text-muted);
     }
 
@@ -647,13 +634,13 @@
     @media (max-width: 768px) {
       body {
         align-items: center;
-        padding: 8px;
+        padding: 0;
       }
       
       .start-container,
       .quiz-container,
       .end-container {
-        height: 94dvh;
+        height: 100dvh;
       }
       
       .leaderboard {
@@ -662,6 +649,24 @@
       
       .leaderboard-table {
         min-width: 300px;
+      }
+    }
+    @media (max-width: 480px), (max-height: 700px) {
+      .hints-row {
+        min-height: clamp(60px, 12vh, 90px);
+      }
+      .hint-block {
+        min-height: clamp(60px, 10vh, 90px);
+        padding: 6px;
+      }
+      .hint-block p {
+        font-size: clamp(0.7rem, 1.1vw, 0.9rem);
+      }
+      .option img {
+        max-height: clamp(60px, 14vh, 110px);
+      }
+      .start-button {
+        padding: 10px 20px;
       }
     }
     .welcome-card {
@@ -737,7 +742,7 @@
       color: #4a2c2c;
       padding: 6px 12px;
       border-radius: 999px;
-      font-size: 0.9rem;
+      font-size: clamp(0.7rem, 1.2vw, 0.9rem);
       font-weight: 600;
       box-shadow: 0 6px 12px rgba(243, 129, 129, 0.25);
     }
@@ -749,29 +754,59 @@
     .hints-row {
       flex-shrink: 1;
     }
-    .start-container .quiz-intro,
+    .start-container .quiz-intro {
+      grid-template-rows: auto auto auto minmax(0, 1fr) auto;
+    }
     .end-container .quiz-intro {
-      justify-content: space-between;
+      grid-template-rows: auto auto minmax(0, 1fr) auto;
     }
     .quiz-container .quiz-intro {
-      justify-content: flex-start;
+      grid-template-rows: auto auto auto minmax(0, 1fr) auto;
     }
     @media (max-height: 820px) {
-      h1 {
-        font-size: clamp(1.7rem, 3.2vw, 2.3rem);
-      }
-      .points-circle {
-        width: clamp(90px, 16vw, 130px);
-        height: clamp(90px, 16vw, 130px);
-      }
-      .rule-item {
-        margin: 6px 0;
-      }
       .rules-box {
-        margin-top: 12px;
+        padding: 10px;
       }
-      .badge {
-        font-size: 0.8rem;
+      .options {
+        gap: 6px;
+      }
+      .option img {
+        max-height: clamp(60px, 14vh, 120px);
+      }
+    }
+    .quiz-actions {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: clamp(8px, 1.6vw, 14px);
+      flex-wrap: wrap;
+      width: 100%;
+    }
+    .start-layout .welcome-card {
+      display: grid;
+      gap: clamp(8px, 1.4vw, 16px);
+    }
+    @media (min-width: 860px) {
+      .start-layout .welcome-card {
+        grid-template-columns: 1fr 1fr;
+        align-items: center;
+      }
+      .start-layout .score-info {
+        order: 1;
+      }
+      .start-layout .rules-box {
+        order: 2;
+      }
+    }
+    .end-panels {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: clamp(8px, 1.4vw, 16px);
+      min-height: 0;
+    }
+    @media (min-width: 860px) {
+      .end-panels {
+        grid-template-columns: 1fr 1fr;
       }
     }
     .sr-only {
@@ -839,7 +874,7 @@
     <span class="sparkle"></span>
     <span class="sparkle"></span>
   </div>
-  <div class="quiz-intro">
+  <div class="quiz-intro start-layout">
     <div class="logo-container">
       <img src="assets/images/logo.jpg" alt="UCC Logo" class="ucc-logo">
     </div>
@@ -891,7 +926,7 @@
     <span class="sparkle"></span>
     <span class="sparkle"></span>
   </div>
-  <div class="quiz-intro">
+  <div class="quiz-intro quiz-layout">
     <!-- Fancy Score Bar at top -->
     <div class="score-bar-container" id="scoreBarContainer">
       <div class="score-bar-fill" id="scoreBarFill" style="width:0%"></div>
@@ -905,13 +940,15 @@
     <!-- Hints row -->
     <div class="hints-row" id="hintsRow"></div>
 
-    <!-- Help me! button -->
-    <button onclick="showNextHint()" id="hintButton">Help me!</button>
-
     <div class="options" id="options"></div>
 
-    <!-- Submit Answer button -->
-    <button onclick="submitAnswer()" id="submitButton">Submit Answer</button>
+    <div class="quiz-actions">
+      <!-- Help me! button -->
+      <button onclick="showNextHint()" id="hintButton">Help me!</button>
+
+      <!-- Submit Answer button -->
+      <button onclick="submitAnswer()" id="submitButton">Submit Answer</button>
+    </div>
   </div>
 </div>
 <!-- END QUIZ PAGE -->
@@ -925,48 +962,50 @@
     <span class="sparkle"></span>
     <span class="sparkle"></span>
   </div>
-  <div class="quiz-intro">
+  <div class="quiz-intro end-layout">
     <div class="logo-container">
       <img src="assets/images/logo.jpg" alt="UCC Logo" class="ucc-logo">
     </div>
     <h1>Game Complete</h1>
-    <div class="welcome-card">
-      <div class="score-info">
-        <h2>Final Score</h2>
-        <div class="points-circle">
-          <span id="finalScore" class="big-number">0</span>
-          <span class="points-text">POINTS</span>
+    <div class="end-panels">
+      <div class="welcome-card">
+        <div class="score-info">
+          <h2>Final Score</h2>
+          <div class="points-circle">
+            <span id="finalScore" class="big-number">0</span>
+            <span class="points-text">POINTS</span>
+          </div>
+        </div>
+        <div class="rules-box">
+          <h3>Your Achievement</h3>
+          <div class="rule-item">
+            <span class="rule-icon">⭐</span>
+            <span id="scoreDescription" style="text-align: left;"></span>
+          </div>
         </div>
       </div>
-      <div class="rules-box">
-        <h3>Your Achievement</h3>
-        <div class="rule-item">
-          <span class="rule-icon">⭐</span>
-          <span id="scoreDescription" style="text-align: left;"></span>
-        </div>
-      </div>
-    </div>
 
-    <div class="leaderboard">
-      <h3>Top 50 Scores</h3>
-      <!-- Table for leaderboard -->
-      <div id="leaderboardList">
-        <table class="leaderboard-table">
-          <thead>
-            <tr>
-              <th>Rank</th>
-              <th>Name</th>
-              <th>Score</th>
-              <th>Time (s)</th>
-            </tr>
-          </thead>
-          <tbody id="leaderboardTableBody"></tbody>
-        </table>
-      </div>
-      <div class="leaderboard-pagination">
-        <button onclick="changePage(-1)">Previous</button>
-        <span id="pageInfo">Page 1 of 1</span>
-        <button onclick="changePage(1)">Next</button>
+      <div class="leaderboard">
+        <h3>Top 50 Scores</h3>
+        <!-- Table for leaderboard -->
+        <div id="leaderboardList">
+          <table class="leaderboard-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Name</th>
+                <th>Score</th>
+                <th>Time (s)</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboardTableBody"></tbody>
+          </table>
+        </div>
+        <div class="leaderboard-pagination">
+          <button onclick="changePage(-1)">Previous</button>
+          <span id="pageInfo">Page 1 of 1</span>
+          <button onclick="changePage(1)">Next</button>
+        </div>
       </div>
     </div>
 
