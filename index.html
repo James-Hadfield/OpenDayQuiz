@@ -64,6 +64,7 @@
       height: min(92dvh, 980px);
       flex-direction: column;
       position: relative;
+      isolation: isolate;
     }
     .start-container.active,
     .quiz-container.active,
@@ -181,8 +182,8 @@
     /* Logo, headings, styling */
     .logo-container {
       width: 100%;
-      margin-bottom: clamp(8px, 1.6vw, 20px);
-      padding: 10px;
+      margin-bottom: clamp(6px, 1.4vw, 16px);
+      padding: clamp(4px, 1vw, 10px);
       display: flex;
       justify-content: center;
     }
@@ -230,15 +231,15 @@
     .rules-box {
       background: var(--surface-muted);
       border-radius: var(--radius-md);
-      padding: 20px;
+      padding: clamp(12px, 1.8vw, 20px);
       margin-top: clamp(16px, 2vw, 30px);
       border: 1px solid var(--border);
     }
     .rule-item {
       display: flex;
       align-items: center;
-      margin: 15px 0;
-      font-size: 1.05em;
+      margin: clamp(8px, 1.2vw, 14px) 0;
+      font-size: clamp(0.95rem, 1.6vw, 1.05em);
       color: var(--text);
     }
     .rule-icon {
@@ -314,12 +315,12 @@
       margin: clamp(12px, 2.2vw, 22px) 0;
       flex-wrap: wrap;
       width: 100%;
-      min-height: clamp(120px, 20vh, 180px);
+      min-height: clamp(90px, 16vh, 150px);
     }
     .hint-block {
       flex: 1 1 200px;
       max-width: 260px;
-      min-height: clamp(110px, 16vh, 150px);
+      min-height: clamp(90px, 14vh, 140px);
       border: 1px solid #f1e1b8;
       border-radius: var(--radius-sm);
       background: #fff4d6;
@@ -334,7 +335,7 @@
     .hint-block p {
       margin: 0;
       padding: 0;
-      font-size: 1.2em;
+      font-size: clamp(0.95rem, 1.6vw, 1.15em);
       font-style: italic;
       text-align: center;
       color: #6d4c02;
@@ -485,7 +486,7 @@
     }
     .option img {
       width: 100%;
-      max-height: clamp(90px, 20vh, 170px);
+      max-height: clamp(80px, 18vh, 150px);
       object-fit: contain;
       border-radius: 8px;
       border: 1px solid var(--border);
@@ -518,7 +519,7 @@
       transition: all 0.3s ease;
       box-shadow: 0 4px 6px rgba(0,0,0,0.1);
       min-width: 150px;
-      margin: 0 auto 15px auto;
+      margin: 0 auto clamp(6px, 1.2vh, 12px) auto;
       display: block;
     }
     #hintButton::before {
@@ -553,7 +554,7 @@
       transition: all 0.3s ease;
       box-shadow: 0 10px 18px rgba(46, 125, 50, 0.2);
       font-weight: bold;
-      margin: 15px auto 0 auto;
+      margin: clamp(8px, 1.4vh, 14px) auto 0 auto;
       display: block;
     }
     #submitButton:hover {
@@ -669,6 +670,11 @@
       padding: clamp(16px, 2vw, 24px);
       border: 1px solid var(--border);
       box-shadow: 0 12px 24px rgba(15, 30, 60, 0.08);
+      display: flex;
+      flex-direction: column;
+      gap: clamp(8px, 1.4vw, 16px);
+      flex: 1;
+      min-height: 0;
     }
     .quiz-intro > p {
       color: var(--text-muted);
@@ -683,6 +689,7 @@
       pointer-events: none;
       overflow: hidden;
       border-radius: var(--radius-lg);
+      z-index: 0;
     }
     .sparkle {
       position: absolute;
@@ -705,7 +712,7 @@
     .start-container .quiz-intro,
     .end-container .quiz-intro {
       position: relative;
-      z-index: 1;
+      z-index: 2;
     }
     .section-header {
       display: flex;
@@ -741,6 +748,31 @@
     .options,
     .hints-row {
       flex-shrink: 1;
+    }
+    .start-container .quiz-intro,
+    .end-container .quiz-intro {
+      justify-content: space-between;
+    }
+    .quiz-container .quiz-intro {
+      justify-content: flex-start;
+    }
+    @media (max-height: 820px) {
+      h1 {
+        font-size: clamp(1.7rem, 3.2vw, 2.3rem);
+      }
+      .points-circle {
+        width: clamp(90px, 16vw, 130px);
+        height: clamp(90px, 16vw, 130px);
+      }
+      .rule-item {
+        margin: 6px 0;
+      }
+      .rules-box {
+        margin-top: 12px;
+      }
+      .badge {
+        font-size: 0.8rem;
+      }
     }
     .sr-only {
       position: absolute;
