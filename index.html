@@ -2,8 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="color-scheme" content="light">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>🎮 Story Character Challenge | Can You Beat It?</title>
   <style>
     :root {
@@ -23,9 +25,9 @@
       --border: #2a2a4a;
       --shadow: 0 20px 60px rgba(0, 212, 255, 0.15);
       --glow: 0 0 30px rgba(0, 212, 255, 0.3);
-      --radius-lg: 24px;
-      --radius-md: 16px;
-      --radius-sm: 12px;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --radius-sm: 10px;
       --safe-top: env(safe-area-inset-top, 0px);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
       --safe-left: env(safe-area-inset-left, 0px);
@@ -34,11 +36,13 @@
 
     *, *::before, *::after {
       box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
     }
 
     html {
       height: 100%;
       -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
     }
 
     body {
@@ -46,7 +50,8 @@
       padding: 0;
       min-height: 100%;
       min-height: 100dvh;
-      font-family: 'Segoe UI', 'Inter', system-ui, sans-serif;
+      min-height: -webkit-fill-available;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
       color: var(--text);
       background: var(--bg);
       background-image: 
@@ -56,9 +61,10 @@
       display: flex;
       justify-content: center;
       align-items: flex-start;
-      padding: calc(20px + var(--safe-top)) calc(16px + var(--safe-right)) calc(20px + var(--safe-bottom)) calc(16px + var(--safe-left));
+      padding: calc(12px + var(--safe-top)) calc(12px + var(--safe-right)) calc(12px + var(--safe-bottom)) calc(12px + var(--safe-left));
       overflow-x: hidden;
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     /* Animated stars background */
@@ -75,8 +81,8 @@
 
     .star {
       position: absolute;
-      width: 3px;
-      height: 3px;
+      width: 2px;
+      height: 2px;
       background: white;
       border-radius: 50%;
       animation: twinkle 2s infinite;
@@ -87,20 +93,27 @@
       50% { opacity: 1; transform: scale(1.2); }
     }
 
-    /* Floating emojis */
+    /* Floating emojis - hidden on small screens */
     .floating-emoji {
       position: fixed;
-      font-size: 2rem;
+      font-size: 1.5rem;
       pointer-events: none;
       z-index: 0;
       animation: float 6s ease-in-out infinite;
-      opacity: 0.6;
+      opacity: 0.5;
+      display: none;
+    }
+
+    @media (min-width: 768px) {
+      .floating-emoji {
+        display: block;
+      }
     }
 
     @keyframes float {
       0%, 100% { transform: translateY(0) rotate(0deg); }
-      25% { transform: translateY(-20px) rotate(5deg); }
-      75% { transform: translateY(10px) rotate(-5deg); }
+      25% { transform: translateY(-15px) rotate(5deg); }
+      75% { transform: translateY(8px) rotate(-5deg); }
     }
 
     /* Main containers */
@@ -108,14 +121,14 @@
     .quiz-container,
     .end-container {
       background: linear-gradient(135deg, var(--surface) 0%, var(--surface-muted) 100%);
-      padding: clamp(20px, 5vw, 32px);
+      padding: clamp(16px, 4vw, 28px);
       border-radius: var(--radius-lg);
       box-shadow: var(--shadow);
       display: none;
       width: 100%;
-      max-width: 960px;
-      margin: 10px auto;
-      overflow-y: visible;
+      max-width: 900px;
+      margin: 0 auto;
+      overflow: visible;
       border: 1px solid var(--border);
       position: relative;
       z-index: 1;
@@ -125,11 +138,11 @@
     .quiz-container.active,
     .end-container.active {
       display: block;
-      animation: slideUp 0.5s ease-out;
+      animation: slideUp 0.4s ease-out;
     }
 
     @keyframes slideUp {
-      from { opacity: 0; transform: translateY(30px); }
+      from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
@@ -139,14 +152,14 @@
     .end-container::before {
       content: '';
       position: absolute;
-      top: -2px;
-      left: -2px;
-      right: -2px;
-      bottom: -2px;
+      top: -1px;
+      left: -1px;
+      right: -1px;
+      bottom: -1px;
       background: linear-gradient(45deg, var(--primary), var(--accent), var(--secondary), var(--primary));
-      border-radius: calc(var(--radius-lg) + 2px);
+      border-radius: calc(var(--radius-lg) + 1px);
       z-index: -1;
-      opacity: 0.5;
+      opacity: 0.4;
       background-size: 300% 300%;
       animation: gradientBorder 4s ease infinite;
     }
@@ -164,13 +177,16 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(10px);
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       display: none;
       justify-content: center;
       align-items: center;
       z-index: 9999;
-      padding: 20px;
+      padding: 16px;
+      padding-top: calc(16px + var(--safe-top));
+      padding-bottom: calc(16px + var(--safe-bottom));
     }
 
     .name-prompt-overlay.active {
@@ -185,14 +201,18 @@
 
     .name-prompt-box {
       background: linear-gradient(135deg, var(--surface) 0%, var(--surface-muted) 100%);
-      padding: clamp(24px, 6vw, 36px);
+      padding: clamp(20px, 5vw, 32px);
       border-radius: var(--radius-lg);
       width: 100%;
-      max-width: 420px;
+      max-width: 380px;
       box-shadow: var(--glow);
       text-align: center;
       border: 2px solid var(--primary);
       animation: popIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      max-height: calc(100vh - 32px - var(--safe-top) - var(--safe-bottom));
+      max-height: calc(100dvh - 32px - var(--safe-top) - var(--safe-bottom));
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     @keyframes popIn {
@@ -202,7 +222,8 @@
 
     .name-prompt-box h3 {
       margin-top: 0;
-      font-size: clamp(1.2rem, 4vw, 1.5rem);
+      margin-bottom: 8px;
+      font-size: clamp(1.1rem, 4vw, 1.4rem);
       background: linear-gradient(135deg, var(--primary), var(--accent));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -210,37 +231,39 @@
     }
 
     .name-prompt-box .emoji-row {
-      font-size: 2rem;
-      margin-bottom: 10px;
+      font-size: clamp(1.5rem, 5vw, 2rem);
+      margin-bottom: 8px;
       animation: bounce 1s infinite;
     }
 
     @keyframes bounce {
       0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
+      50% { transform: translateY(-8px); }
     }
 
     .name-prompt-box button {
       background: linear-gradient(135deg, var(--primary), var(--accent));
       border: none;
       border-radius: 50px;
-      padding: 16px 48px;
-      font-size: clamp(1.1rem, 3vw, 1.3rem);
+      padding: 14px 36px;
+      font-size: clamp(1rem, 3vw, 1.2rem);
       font-weight: bold;
       color: var(--bg);
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-      margin-top: 20px;
-      min-height: 56px;
+      transition: all 0.3s ease;
+      margin-top: 16px;
+      min-height: 50px;
       touch-action: manipulation;
       text-transform: uppercase;
       letter-spacing: 1px;
+      width: 100%;
+      max-width: 280px;
     }
 
     .name-prompt-box button:hover,
     .name-prompt-box button:active {
-      transform: scale(1.1) rotate(-2deg);
-      box-shadow: 0 10px 40px rgba(0, 212, 255, 0.4);
+      transform: scale(1.05);
+      box-shadow: 0 8px 30px rgba(0, 212, 255, 0.4);
     }
 
     .name-prompt-box input {
@@ -248,10 +271,10 @@
       -moz-appearance: none;
       appearance: none;
       width: 100%;
-      max-width: 300px;
-      padding: 16px 20px;
-      margin: 20px 0;
-      font-size: 18px;
+      max-width: 280px;
+      padding: 14px 18px;
+      margin: 16px 0;
+      font-size: 16px;
       border: 2px solid var(--border);
       border-radius: var(--radius-md);
       outline: none;
@@ -263,7 +286,7 @@
 
     .name-prompt-box input:focus {
       border-color: var(--primary);
-      box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+      box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
     }
 
     .name-prompt-box input::placeholder {
@@ -273,45 +296,46 @@
     /* Toast message */
     .toast {
       position: fixed;
-      top: calc(20px + var(--safe-top));
+      top: calc(16px + var(--safe-top));
       left: 50%;
       transform: translateX(-50%);
       background: linear-gradient(135deg, var(--surface), var(--surface-muted));
       color: var(--text);
-      padding: 16px 28px;
+      padding: 12px 24px;
       border-radius: 50px;
       opacity: 0;
       pointer-events: none;
-      transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      transition: all 0.4s ease;
       z-index: 10000;
       box-shadow: var(--glow);
-      max-width: calc(100% - 40px);
+      max-width: calc(100% - 32px);
       text-align: center;
       font-weight: bold;
-      font-size: 1.1rem;
+      font-size: clamp(0.9rem, 3vw, 1.1rem);
       border: 2px solid var(--primary);
+      white-space: nowrap;
     }
 
     .toast.show {
       opacity: 1;
-      transform: translateX(-50%) scale(1.05);
+      transform: translateX(-50%) scale(1.02);
     }
 
     .toast.correct {
       border-color: var(--success);
-      box-shadow: 0 0 30px rgba(0, 255, 136, 0.4);
+      box-shadow: 0 0 25px rgba(0, 255, 136, 0.4);
     }
 
     .toast.wrong {
       border-color: var(--secondary);
-      box-shadow: 0 0 30px rgba(255, 107, 157, 0.4);
-      animation: shake 0.5s ease;
+      box-shadow: 0 0 25px rgba(255, 107, 157, 0.4);
+      animation: shake 0.4s ease;
     }
 
     @keyframes shake {
       0%, 100% { transform: translateX(-50%) rotate(0); }
-      25% { transform: translateX(-50%) rotate(-5deg); }
-      75% { transform: translateX(-50%) rotate(5deg); }
+      25% { transform: translateX(-50%) rotate(-3deg); }
+      75% { transform: translateX(-50%) rotate(3deg); }
     }
 
     .quiz-intro {
@@ -321,8 +345,7 @@
     /* Logo styling */
     .logo-container {
       width: 100%;
-      margin-bottom: 20px;
-      padding: 10px;
+      margin-bottom: 16px;
       display: flex;
       justify-content: center;
       flex-direction: column;
@@ -332,11 +355,12 @@
     .ucc-logo {
       width: auto;
       height: auto;
-      max-width: 100px;
-      max-height: 100px;
+      max-width: 80px;
+      max-height: 80px;
       object-fit: contain;
-      filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.5));
+      filter: drop-shadow(0 0 15px rgba(0, 212, 255, 0.5));
       transition: transform 0.3s ease;
+      border-radius: 50%;
     }
 
     .ucc-logo:hover {
@@ -346,11 +370,11 @@
     .gaming-badge {
       background: linear-gradient(135deg, var(--warning), #ff9500);
       color: var(--bg);
-      padding: 6px 16px;
+      padding: 5px 14px;
       border-radius: 20px;
-      font-size: 0.8rem;
+      font-size: 0.7rem;
       font-weight: bold;
-      margin-top: 10px;
+      margin-top: 8px;
       text-transform: uppercase;
       letter-spacing: 1px;
       animation: pulse 2s infinite;
@@ -358,36 +382,30 @@
 
     @keyframes pulse {
       0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
+      50% { transform: scale(1.03); }
     }
 
     h1 {
-      font-size: clamp(1.8rem, 6vw, 3.2rem);
-      margin-bottom: 10px;
+      font-size: clamp(1.5rem, 5vw, 2.5rem);
+      margin: 0 0 8px 0;
       letter-spacing: -0.02em;
       background: linear-gradient(135deg, var(--primary), var(--accent), var(--secondary));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      text-shadow: none;
-      animation: glow 2s ease-in-out infinite alternate;
-    }
-
-    @keyframes glow {
-      from { filter: drop-shadow(0 0 5px rgba(0, 212, 255, 0.5)); }
-      to { filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.8)); }
+      line-height: 1.2;
     }
 
     .subtitle {
       color: var(--text-muted);
-      font-size: clamp(0.9rem, 2.5vw, 1.1rem);
-      margin-bottom: 20px;
+      font-size: clamp(0.85rem, 2.5vw, 1rem);
+      margin: 0 0 16px 0;
     }
 
     h2 {
-      margin-top: 0;
+      margin: 0 0 12px 0;
       color: var(--text);
-      font-size: clamp(1.2rem, 4vw, 1.6rem);
+      font-size: clamp(1rem, 3.5vw, 1.4rem);
     }
 
     .score-info {
@@ -396,23 +414,23 @@
 
     .points-circle {
       background: linear-gradient(135deg, var(--primary), var(--accent));
-      width: clamp(120px, 30vw, 180px);
-      height: clamp(120px, 30vw, 180px);
+      width: clamp(100px, 25vw, 150px);
+      height: clamp(100px, 25vw, 150px);
       border-radius: 50%;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      margin: 24px auto;
+      margin: 16px auto;
       color: var(--bg);
-      box-shadow: 0 0 50px rgba(0, 212, 255, 0.4);
+      box-shadow: 0 0 40px rgba(0, 212, 255, 0.4);
       position: relative;
       animation: floatCircle 3s ease-in-out infinite;
     }
 
     @keyframes floatCircle {
       0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
+      50% { transform: translateY(-8px); }
     }
 
     .points-circle::before {
@@ -421,32 +439,33 @@
       width: 100%;
       height: 100%;
       border-radius: 50%;
-      border: 3px solid var(--primary);
+      border: 2px solid var(--primary);
       animation: ripple 2s infinite;
     }
 
     @keyframes ripple {
       0% { transform: scale(1); opacity: 1; }
-      100% { transform: scale(1.5); opacity: 0; }
+      100% { transform: scale(1.4); opacity: 0; }
     }
 
     .big-number {
-      font-size: clamp(2.5em, 10vw, 4em);
+      font-size: clamp(2rem, 8vw, 3rem);
       font-weight: 900;
+      line-height: 1;
     }
 
     .points-text {
-      font-size: clamp(0.9em, 3vw, 1.2em);
+      font-size: clamp(0.7em, 2.5vw, 0.9em);
       font-weight: bold;
       text-transform: uppercase;
-      letter-spacing: 2px;
+      letter-spacing: 1px;
     }
 
     .rules-box {
       background: rgba(0, 212, 255, 0.05);
       border-radius: var(--radius-md);
-      padding: clamp(20px, 5vw, 28px);
-      margin-top: 24px;
+      padding: clamp(14px, 4vw, 24px);
+      margin-top: 16px;
       border: 1px solid var(--border);
       text-align: left;
       position: relative;
@@ -456,52 +475,51 @@
     .rules-box::before {
       content: '📋';
       position: absolute;
-      top: -20px;
-      right: -20px;
-      font-size: 80px;
-      opacity: 0.1;
+      top: -15px;
+      right: -15px;
+      font-size: 60px;
+      opacity: 0.08;
     }
 
     .rules-box h3 {
       text-align: center;
-      margin-top: 0;
+      margin: 0 0 12px 0;
       color: var(--primary);
-      font-size: clamp(1.1rem, 3vw, 1.4rem);
+      font-size: clamp(1rem, 3vw, 1.2rem);
     }
 
     .rule-item {
       display: flex;
       align-items: flex-start;
-      margin: 16px 0;
-      font-size: clamp(0.95em, 2.5vw, 1.1em);
+      margin: 10px 0;
+      font-size: clamp(0.85em, 2.5vw, 1em);
       color: var(--text);
-      gap: 14px;
-      padding: 12px;
-      background: rgba(255, 255, 255, 0.03);
+      gap: 10px;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.02);
       border-radius: var(--radius-sm);
       transition: all 0.3s ease;
     }
 
     .rule-item:hover {
-      background: rgba(0, 212, 255, 0.1);
-      transform: translateX(5px);
+      background: rgba(0, 212, 255, 0.08);
     }
 
     .rule-icon {
-      font-size: 1.5em;
+      font-size: 1.3em;
       flex-shrink: 0;
     }
 
     /* Easter egg counter */
     .easter-egg-counter {
       position: fixed;
-      bottom: calc(20px + var(--safe-bottom));
-      left: calc(20px + var(--safe-left));
+      bottom: calc(16px + var(--safe-bottom));
+      left: calc(16px + var(--safe-left));
       background: linear-gradient(135deg, var(--surface), var(--surface-muted));
       border: 2px solid var(--warning);
       border-radius: 50px;
-      padding: 10px 20px;
-      font-size: 0.9rem;
+      padding: 8px 16px;
+      font-size: 0.8rem;
       color: var(--warning);
       z-index: 100;
       display: none;
@@ -512,25 +530,26 @@
     .easter-egg-counter.show {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       animation: popIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
     }
 
     .easter-egg-counter:hover {
-      transform: scale(1.1);
-      box-shadow: 0 0 20px rgba(255, 204, 0, 0.4);
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(255, 204, 0, 0.4);
     }
 
     /* Secret achievements panel */
     .achievements-panel {
       position: fixed;
-      bottom: calc(80px + var(--safe-bottom));
-      left: calc(20px + var(--safe-left));
+      bottom: calc(70px + var(--safe-bottom));
+      left: calc(16px + var(--safe-left));
       background: linear-gradient(135deg, var(--surface), var(--surface-muted));
       border: 2px solid var(--accent);
       border-radius: var(--radius-md);
-      padding: 16px;
-      max-width: 280px;
+      padding: 14px;
+      max-width: calc(100vw - 32px - var(--safe-left) - var(--safe-right));
+      width: 260px;
       z-index: 100;
       display: none;
       box-shadow: var(--glow);
@@ -542,18 +561,18 @@
     }
 
     .achievements-panel h4 {
-      margin: 0 0 12px 0;
+      margin: 0 0 10px 0;
       color: var(--accent);
-      font-size: 1rem;
+      font-size: 0.95rem;
     }
 
     .achievement-item {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 8px 0;
+      gap: 8px;
+      padding: 6px 0;
       border-bottom: 1px solid var(--border);
-      font-size: 0.9rem;
+      font-size: 0.8rem;
     }
 
     .achievement-item:last-child {
@@ -566,27 +585,27 @@
     }
 
     .achievement-item .emoji {
-      font-size: 1.5rem;
+      font-size: 1.3rem;
     }
 
     .start-button {
       background: linear-gradient(135deg, var(--success), #00cc6a);
       border: none;
       border-radius: 50px;
-      padding: 18px 48px;
-      font-size: clamp(1.1rem, 3.5vw, 1.4rem);
+      padding: 16px 40px;
+      font-size: clamp(1rem, 3.5vw, 1.2rem);
       font-weight: bold;
       color: var(--bg);
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-      margin: 28px auto;
+      transition: all 0.3s ease;
+      margin: 20px auto 0 auto;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 12px;
+      gap: 10px;
       width: fit-content;
-      box-shadow: 0 10px 40px rgba(0, 255, 136, 0.3);
-      min-height: 60px;
+      box-shadow: 0 8px 30px rgba(0, 255, 136, 0.3);
+      min-height: 54px;
       touch-action: manipulation;
       text-transform: uppercase;
       letter-spacing: 1px;
@@ -594,12 +613,12 @@
 
     .start-button:hover,
     .start-button:active {
-      transform: scale(1.1) rotate(-1deg);
-      box-shadow: 0 15px 50px rgba(0, 255, 136, 0.5);
+      transform: scale(1.05);
+      box-shadow: 0 12px 40px rgba(0, 255, 136, 0.5);
     }
 
     .button-icon {
-      font-size: 1.5em;
+      font-size: 1.3em;
       animation: bounce 1s infinite;
     }
 
@@ -608,8 +627,8 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 20px;
-      margin-bottom: 15px;
+      gap: 12px;
+      margin-bottom: 12px;
       flex-wrap: wrap;
     }
 
@@ -617,8 +636,8 @@
       background: rgba(255, 107, 157, 0.1);
       border: 2px solid var(--secondary);
       border-radius: 50px;
-      padding: 8px 20px;
-      font-size: 1rem;
+      padding: 6px 16px;
+      font-size: 0.85rem;
       font-weight: bold;
       color: var(--secondary);
       display: none;
@@ -627,7 +646,7 @@
     .combo-meter.active {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       animation: popIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
     }
 
@@ -639,19 +658,19 @@
     }
 
     @keyframes fire {
-      from { box-shadow: 0 0 10px rgba(255, 107, 0, 0.5); }
-      to { box-shadow: 0 0 30px rgba(255, 107, 0, 0.8); }
+      from { box-shadow: 0 0 8px rgba(255, 107, 0, 0.5); }
+      to { box-shadow: 0 0 20px rgba(255, 107, 0, 0.8); }
     }
 
     /* Score bar */
     .score-bar-container {
       width: 100%;
-      max-width: 500px;
-      margin: 0 auto 20px auto;
+      max-width: 400px;
+      margin: 0 auto 16px auto;
       background: var(--surface-muted);
       border-radius: 20px;
       overflow: hidden;
-      height: 36px;
+      height: 32px;
       position: relative;
       border: 2px solid var(--border);
     }
@@ -661,7 +680,7 @@
       background-size: 200% 100%;
       width: 0%;
       height: 100%;
-      transition: width 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      transition: width 0.5s ease;
       animation: gradientMove 2s linear infinite;
     }
 
@@ -677,11 +696,11 @@
       transform: translate(-50%, -50%);
       color: var(--text);
       font-weight: bold;
-      font-size: clamp(0.8rem, 2.5vw, 1rem);
+      font-size: clamp(0.7rem, 2.5vw, 0.9rem);
       z-index: 1;
       user-select: none;
       white-space: nowrap;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
     }
 
     /* Hints layout */
@@ -689,53 +708,53 @@
       display: flex;
       justify-content: center;
       align-items: stretch;
-      gap: 16px;
-      margin: 24px 0;
+      gap: 10px;
+      margin: 16px 0;
       flex-wrap: wrap;
       width: 100%;
     }
 
     .hint-block {
-      flex: 1 1 160px;
-      max-width: 280px;
-      min-height: 110px;
+      flex: 1 1 140px;
+      max-width: 250px;
+      min-height: 90px;
       border: 2px solid var(--accent);
       border-radius: var(--radius-md);
       background: linear-gradient(135deg, rgba(197, 108, 255, 0.1), rgba(0, 212, 255, 0.05));
-      padding: 18px 14px 40px 14px;
+      padding: 14px 12px 36px 12px;
       position: relative;
       display: none;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      animation: hintAppear 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      animation: hintAppear 0.4s ease;
     }
 
     @keyframes hintAppear {
-      from { transform: scale(0.8) rotateY(-20deg); opacity: 0; }
-      to { transform: scale(1) rotateY(0); opacity: 1; }
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
     }
 
     .hint-block p {
       margin: 0;
       padding: 0;
-      font-size: clamp(1em, 2.8vw, 1.2em);
+      font-size: clamp(0.85em, 2.5vw, 1em);
       font-style: italic;
       text-align: center;
       color: var(--text);
-      line-height: 1.5;
+      line-height: 1.4;
     }
 
     .hint-badge {
       position: absolute;
-      bottom: 10px;
+      bottom: 8px;
       left: 50%;
       transform: translateX(-50%);
       background: linear-gradient(135deg, var(--success), #00cc6a);
       color: var(--bg);
-      padding: 5px 14px;
+      padding: 4px 12px;
       border-radius: 20px;
-      font-size: 0.85em;
+      font-size: 0.75em;
       font-weight: bold;
       display: none;
       white-space: nowrap;
@@ -745,22 +764,22 @@
     /* Hamburger Menu */
     .hamburger-menu {
       position: fixed;
-      top: calc(15px + var(--safe-top));
-      right: calc(15px + var(--safe-right));
+      top: calc(12px + var(--safe-top));
+      right: calc(12px + var(--safe-right));
       z-index: 9999;
     }
 
     .hamburger-icon {
-      width: 50px;
-      height: 50px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
       border: 2px solid var(--border);
       background: linear-gradient(135deg, var(--surface), var(--surface-muted));
-      box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+      box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
       display: flex;
       flex-direction: column;
       justify-content: center;
-      gap: 5px;
+      gap: 4px;
       align-items: center;
       cursor: pointer;
       position: relative;
@@ -770,8 +789,8 @@
 
     .hamburger-icon span {
       display: block;
-      height: 3px;
-      width: 24px;
+      height: 2px;
+      width: 20px;
       background: var(--primary);
       margin: 0;
       transition: 0.3s ease;
@@ -780,22 +799,22 @@
 
     .hamburger-icon:hover {
       transform: rotate(90deg);
-      box-shadow: 0 0 30px rgba(0, 212, 255, 0.4);
+      box-shadow: 0 0 25px rgba(0, 212, 255, 0.4);
     }
 
     .hamburger-links {
       position: absolute;
-      top: 58px;
+      top: 52px;
       right: 0;
       background: linear-gradient(135deg, var(--surface), var(--surface-muted));
       box-shadow: var(--glow);
       list-style: none;
-      padding: 12px;
+      padding: 10px;
       margin: 0;
       display: none;
       border-radius: var(--radius-md);
       border: 2px solid var(--border);
-      min-width: 200px;
+      min-width: 180px;
     }
 
     .hamburger-links.active {
@@ -804,7 +823,7 @@
     }
 
     @keyframes slideDown {
-      from { opacity: 0; transform: translateY(-10px); }
+      from { opacity: 0; transform: translateY(-8px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
@@ -816,34 +835,33 @@
     .hamburger-links button {
       background: none;
       border: none;
-      font-size: 15px;
+      font-size: 14px;
       color: var(--text);
       cursor: pointer;
       width: 100%;
       text-align: left;
-      padding: 14px 12px;
+      padding: 12px 10px;
       font-weight: 500;
       border-radius: var(--radius-sm);
       touch-action: manipulation;
       transition: all 0.2s ease;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
 
     .hamburger-links button:hover,
     .hamburger-links button:active {
       background: rgba(0, 212, 255, 0.1);
       color: var(--primary);
-      transform: translateX(5px);
     }
 
-    /* Options grid */
+    /* Options grid - responsive */
     .options {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 14px;
-      margin: 20px 0;
+      gap: 10px;
+      margin: 16px 0;
     }
 
     .option {
@@ -851,74 +869,49 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 10px;
-      padding: 14px;
+      gap: 8px;
+      padding: 10px;
       background: linear-gradient(135deg, var(--surface-muted), var(--surface));
       border: 2px solid var(--border);
       border-radius: var(--radius-md);
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      transition: all 0.3s ease;
       touch-action: manipulation;
-      min-height: 60px;
+      min-height: 50px;
       position: relative;
       overflow: hidden;
     }
 
-    .option::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-      transition: left 0.5s ease;
-    }
-
-    .option:hover::before {
-      left: 100%;
-    }
-
     .option img {
       width: 100%;
-      max-height: clamp(100px, 22vw, 180px);
+      max-height: clamp(60px, 15vw, 120px);
       object-fit: contain;
       border-radius: var(--radius-sm);
-      border: 2px solid var(--border);
+      border: 1px solid var(--border);
       background: var(--bg);
       transition: all 0.3s ease;
     }
 
     .option span {
-      font-size: clamp(0.9em, 2.8vw, 1.1em);
+      font-size: clamp(0.75em, 2.5vw, 0.95em);
       text-align: center;
       word-break: break-word;
       font-weight: 600;
+      line-height: 1.2;
     }
 
     .option:hover,
     .option:active {
       border-color: var(--primary);
-      transform: translateY(-5px) scale(1.02);
-      box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
-    }
-
-    .option:hover img {
-      transform: scale(1.05);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0, 212, 255, 0.2);
     }
 
     .option.selected {
       background: linear-gradient(135deg, var(--success), #00cc6a);
       color: var(--bg);
       border-color: var(--success);
-      box-shadow: 0 10px 40px rgba(0, 255, 136, 0.3);
-      animation: selected 0.4s ease;
-    }
-
-    @keyframes selected {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
+      box-shadow: 0 8px 30px rgba(0, 255, 136, 0.3);
     }
 
     .option.selected img {
@@ -931,16 +924,16 @@
       color: var(--bg);
       border: none;
       border-radius: 50px;
-      padding: 14px 28px;
-      font-size: clamp(1em, 2.8vw, 1.15em);
+      padding: 12px 24px;
+      font-size: clamp(0.9em, 2.8vw, 1em);
       font-weight: bold;
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-      box-shadow: 0 8px 25px rgba(255, 204, 0, 0.3);
-      min-width: 160px;
-      margin: 0 auto 20px auto;
+      transition: all 0.3s ease;
+      box-shadow: 0 6px 20px rgba(255, 204, 0, 0.3);
+      min-width: 140px;
+      margin: 0 auto 16px auto;
       display: block;
-      min-height: 52px;
+      min-height: 48px;
       touch-action: manipulation;
     }
 
@@ -951,13 +944,13 @@
     #hintButton::after {
       content: " (-3 pts)";
       opacity: 0.8;
-      font-size: 0.85em;
+      font-size: 0.8em;
     }
 
     #hintButton:hover:not(:disabled),
     #hintButton:active:not(:disabled) {
-      transform: scale(1.1) rotate(-2deg);
-      box-shadow: 0 12px 35px rgba(255, 204, 0, 0.5);
+      transform: scale(1.05);
+      box-shadow: 0 10px 30px rgba(255, 204, 0, 0.5);
     }
 
     #hintButton:disabled {
@@ -978,15 +971,15 @@
       color: var(--bg);
       border: none;
       border-radius: 50px;
-      padding: 18px 48px;
-      font-size: clamp(1.1rem, 3.2vw, 1.3rem);
+      padding: 14px 40px;
+      font-size: clamp(1rem, 3vw, 1.15rem);
       font-weight: bold;
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-      box-shadow: 0 10px 40px rgba(0, 212, 255, 0.3);
-      margin: 20px auto 0 auto;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 30px rgba(0, 212, 255, 0.3);
+      margin: 16px auto 0 auto;
       display: block;
-      min-height: 60px;
+      min-height: 54px;
       touch-action: manipulation;
       text-transform: uppercase;
       letter-spacing: 1px;
@@ -994,39 +987,24 @@
 
     #submitButton:hover,
     #submitButton:active {
-      transform: scale(1.1);
-      box-shadow: 0 15px 50px rgba(0, 212, 255, 0.5);
+      transform: scale(1.05);
+      box-shadow: 0 12px 40px rgba(0, 212, 255, 0.5);
     }
 
     /* Welcome card */
     .welcome-card {
       background: rgba(255, 255, 255, 0.02);
       border-radius: var(--radius-md);
-      padding: clamp(20px, 5vw, 28px);
+      padding: clamp(14px, 4vw, 24px);
       border: 1px solid var(--border);
       position: relative;
       overflow: hidden;
     }
 
-    .welcome-card::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: conic-gradient(from 0deg, transparent, rgba(0, 212, 255, 0.03), transparent 30%);
-      animation: rotate 10s linear infinite;
-    }
-
-    @keyframes rotate {
-      100% { transform: rotate(360deg); }
-    }
-
     /* Leaderboard */
     .leaderboard {
-      margin-top: 24px;
-      padding: 20px;
+      margin-top: 20px;
+      padding: 16px;
       background: linear-gradient(135deg, rgba(255, 204, 0, 0.05), rgba(255, 107, 0, 0.05));
       border: 2px solid var(--warning);
       border-radius: var(--radius-md);
@@ -1039,22 +1017,21 @@
     .leaderboard::before {
       content: '🏆';
       position: absolute;
-      top: -30px;
-      right: -30px;
-      font-size: 120px;
-      opacity: 0.1;
+      top: -20px;
+      right: -20px;
+      font-size: 80px;
+      opacity: 0.08;
     }
 
     .leaderboard h3 {
       color: var(--warning);
-      font-size: clamp(1.2em, 3.5vw, 1.5em);
+      font-size: clamp(1rem, 3.5vw, 1.3em);
       text-align: center;
-      margin-bottom: 16px;
-      margin-top: 0;
+      margin: 0 0 12px 0;
     }
 
     #leaderboardList {
-      max-height: 280px;
+      max-height: 220px;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
       position: relative;
@@ -1064,13 +1041,13 @@
     .leaderboard-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: clamp(0.85em, 2.5vw, 1em);
+      font-size: clamp(0.75em, 2.5vw, 0.9em);
     }
 
     .leaderboard-table th,
     .leaderboard-table td {
       text-align: left;
-      padding: 12px 8px;
+      padding: 10px 6px;
       border-bottom: 1px solid var(--border);
     }
 
@@ -1099,9 +1076,9 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 12px;
-      margin: 16px 0 0 0;
-      padding: 16px 0 0 0;
+      gap: 10px;
+      margin: 14px 0 0 0;
+      padding: 14px 0 0 0;
       border-top: 1px solid var(--border);
       flex-wrap: wrap;
       position: relative;
@@ -1109,7 +1086,7 @@
     }
 
     .leaderboard-pagination button {
-      padding: 10px 20px;
+      padding: 10px 18px;
       background: linear-gradient(135deg, var(--primary), var(--accent));
       color: var(--bg);
       border: none;
@@ -1117,7 +1094,7 @@
       cursor: pointer;
       min-height: 44px;
       touch-action: manipulation;
-      font-size: 0.95em;
+      font-size: 0.85em;
       font-weight: bold;
       transition: all 0.3s ease;
     }
@@ -1133,7 +1110,7 @@
     }
 
     #pageInfo {
-      font-size: 0.95em;
+      font-size: 0.85em;
       color: var(--text-muted);
     }
 
@@ -1151,8 +1128,8 @@
     button:focus-visible,
     .option:focus-visible,
     input:focus-visible {
-      outline: 3px solid var(--primary);
-      outline-offset: 3px;
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
     }
 
     /* Confetti container */
@@ -1169,8 +1146,8 @@
 
     .confetti {
       position: absolute;
-      width: 10px;
-      height: 10px;
+      width: 8px;
+      height: 8px;
       animation: confettiFall 3s linear forwards;
     }
 
@@ -1188,12 +1165,13 @@
       background: var(--surface);
       border: 3px solid var(--accent);
       border-radius: var(--radius-lg);
-      padding: 30px;
+      padding: 24px;
       z-index: 10001;
       text-align: center;
       display: none;
       box-shadow: var(--glow);
-      max-width: 90%;
+      max-width: calc(100% - 40px);
+      width: 300px;
     }
 
     .meme-popup.show {
@@ -1202,38 +1180,41 @@
     }
 
     .meme-popup .emoji-big {
-      font-size: 4rem;
-      margin-bottom: 15px;
+      font-size: 3rem;
+      margin-bottom: 12px;
     }
 
     .meme-popup .meme-text {
-      font-size: 1.3rem;
+      font-size: 1.1rem;
       font-weight: bold;
       color: var(--text);
-      margin-bottom: 20px;
+      margin-bottom: 16px;
+      line-height: 1.3;
     }
 
     .meme-popup button {
       background: linear-gradient(135deg, var(--primary), var(--accent));
       border: none;
       border-radius: 25px;
-      padding: 12px 30px;
+      padding: 12px 28px;
       color: var(--bg);
       font-weight: bold;
       cursor: pointer;
       font-size: 1rem;
+      min-height: 44px;
+      touch-action: manipulation;
     }
 
     /* Secret mode indicator */
     .secret-mode {
       position: fixed;
-      top: calc(15px + var(--safe-top));
-      left: calc(15px + var(--safe-left));
+      top: calc(12px + var(--safe-top));
+      left: calc(12px + var(--safe-left));
       background: linear-gradient(135deg, var(--accent), var(--secondary));
       color: var(--bg);
-      padding: 8px 16px;
+      padding: 6px 14px;
       border-radius: 25px;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       font-weight: bold;
       z-index: 100;
       display: none;
@@ -1248,7 +1229,7 @@
     .secret-mode.show {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
     }
 
     /* Speed run timer */
@@ -1256,15 +1237,99 @@
       background: rgba(255, 0, 0, 0.1);
       border: 2px solid #ff4444;
       border-radius: 25px;
-      padding: 6px 16px;
-      font-size: 0.9rem;
+      padding: 5px 14px;
+      font-size: 0.8rem;
       font-weight: bold;
       color: #ff4444;
       font-family: 'Courier New', monospace;
     }
 
-    /* Small screens */
-    @media (max-width: 480px) {
+    .easter-egg-hint {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      margin-top: 8px;
+    }
+
+    /* ============ RESPONSIVE BREAKPOINTS ============ */
+
+    /* Very small phones (iPhone SE, small Android) */
+    @media (max-width: 374px) {
+      .start-container,
+      .quiz-container,
+      .end-container {
+        padding: 12px;
+      }
+
+      .options {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+
+      .option {
+        padding: 8px;
+      }
+
+      .option img {
+        max-height: 55px;
+      }
+
+      .option span {
+        font-size: 0.7em;
+      }
+
+      .hints-row {
+        gap: 8px;
+      }
+
+      .hint-block {
+        flex: 1 1 100%;
+        max-width: 100%;
+        min-height: 70px;
+        padding: 10px 10px 30px 10px;
+      }
+
+      .points-circle {
+        width: 90px;
+        height: 90px;
+      }
+
+      .big-number {
+        font-size: 1.8rem;
+      }
+
+      .rule-item {
+        padding: 8px;
+        gap: 8px;
+        font-size: 0.8em;
+      }
+
+      .rule-icon {
+        font-size: 1.1em;
+      }
+
+      .leaderboard-table th,
+      .leaderboard-table td {
+        padding: 8px 4px;
+        font-size: 0.7em;
+      }
+
+      #leaderboardList {
+        max-height: 180px;
+      }
+
+      .easter-egg-counter {
+        padding: 6px 12px;
+        font-size: 0.7rem;
+      }
+
+      .achievements-panel {
+        width: calc(100vw - 32px);
+        left: 16px;
+      }
+    }
+
+    /* Standard phones (375-479px) */
+    @media (min-width: 375px) and (max-width: 479px) {
       .hints-row {
         flex-direction: column;
         align-items: center;
@@ -1281,100 +1346,405 @@
         gap: 10px;
       }
 
-      .option {
-        padding: 10px;
+      .option img {
+        max-height: 70px;
+      }
+    }
+
+    /* Large phones (480-599px) */
+    @media (min-width: 480px) and (max-width: 599px) {
+      .hints-row {
+        flex-direction: row;
+      }
+
+      .hint-block {
+        flex: 1 1 30%;
+        max-width: 200px;
+      }
+
+      .options {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
       }
 
       .option img {
         max-height: 90px;
       }
-
-      .floating-emoji {
-        display: none;
-      }
-
-      .easter-egg-counter {
-        font-size: 0.8rem;
-        padding: 8px 14px;
-      }
     }
 
-    @media (max-width: 350px) {
+    /* Small tablets (600-767px) */
+    @media (min-width: 600px) and (max-width: 767px) {
       .options {
-        grid-template-columns: 1fr;
-      }
-
-      .option {
-        flex-direction: row;
-        justify-content: flex-start;
+        grid-template-columns: repeat(2, 1fr);
         gap: 14px;
       }
 
       .option img {
-        width: 70px;
-        height: 70px;
-        max-height: none;
-        flex-shrink: 0;
+        max-height: 110px;
+      }
+
+      .hint-block {
+        flex: 1 1 30%;
       }
     }
 
-    /* Landscape on phones */
-    @media (max-height: 500px) and (orientation: landscape) {
+    /* Tablets (768-1023px) */
+    @media (min-width: 768px) {
       body {
-        padding: 10px calc(60px + var(--safe-right)) 10px calc(10px + var(--safe-left));
+        padding: calc(20px + var(--safe-top)) calc(20px + var(--safe-right)) calc(20px + var(--safe-bottom)) calc(20px + var(--safe-left));
       }
 
       .start-container,
       .quiz-container,
       .end-container {
-        padding: 16px;
-        margin: 5px auto;
-      }
-
-      .points-circle {
-        width: 90px;
-        height: 90px;
-      }
-
-      .big-number {
-        font-size: 2em;
-      }
-
-      .points-text {
-        font-size: 0.8em;
-      }
-
-      .hints-row {
-        flex-direction: row;
-        margin: 12px 0;
-      }
-
-      .hint-block {
-        min-height: 80px;
-        padding: 12px 10px 32px 10px;
+        padding: 28px;
       }
 
       .options {
         grid-template-columns: repeat(4, 1fr);
-        gap: 10px;
+        gap: 16px;
       }
 
       .option img {
-        max-height: 70px;
+        max-height: 130px;
       }
 
-      .rules-box {
-        margin-top: 12px;
-        padding: 12px;
+      .ucc-logo {
+        max-width: 100px;
+        max-height: 100px;
       }
 
-      .rule-item {
-        margin: 10px 0;
-        padding: 8px;
+      .hint-block {
+        flex: 1 1 28%;
+        max-width: 280px;
       }
 
       #leaderboardList {
-        max-height: 160px;
+        max-height: 280px;
+      }
+    }
+
+    /* Desktop (1024px+) */
+    @media (min-width: 1024px) {
+      .option img {
+        max-height: 150px;
+      }
+
+      .ucc-logo {
+        max-width: 110px;
+        max-height: 110px;
+      }
+    }
+
+    /* ============ LANDSCAPE ORIENTATIONS ============ */
+
+    /* Phone landscape (short height) */
+    @media (max-height: 500px) and (orientation: landscape) {
+      body {
+        padding: 8px calc(60px + var(--safe-right)) 8px calc(8px + var(--safe-left));
+        align-items: flex-start;
+      }
+
+      .start-container,
+      .quiz-container,
+      .end-container {
+        padding: 14px;
+        margin: 4px auto;
+      }
+
+      .logo-container {
+        margin-bottom: 10px;
+      }
+
+      .ucc-logo {
+        max-width: 50px;
+        max-height: 50px;
+      }
+
+      .gaming-badge {
+        padding: 3px 10px;
+        font-size: 0.6rem;
+        margin-top: 5px;
+      }
+
+      h1 {
+        font-size: 1.3rem;
+        margin-bottom: 4px;
+      }
+
+      .subtitle {
+        font-size: 0.75rem;
+        margin-bottom: 10px;
+      }
+
+      h2 {
+        font-size: 0.95rem;
+        margin-bottom: 8px;
+      }
+
+      .points-circle {
+        width: 70px;
+        height: 70px;
+        margin: 10px auto;
+      }
+
+      .big-number {
+        font-size: 1.5rem;
+      }
+
+      .points-text {
+        font-size: 0.6em;
+      }
+
+      .welcome-card {
+        padding: 12px;
+      }
+
+      .rules-box {
+        padding: 10px;
+        margin-top: 10px;
+      }
+
+      .rules-box h3 {
+        font-size: 0.9rem;
+        margin-bottom: 8px;
+      }
+
+      .rule-item {
+        margin: 6px 0;
+        padding: 6px;
+        font-size: 0.75em;
+        gap: 8px;
+      }
+
+      .rule-icon {
+        font-size: 1em;
+      }
+
+      .start-button {
+        padding: 12px 30px;
+        font-size: 0.9rem;
+        margin-top: 12px;
+        min-height: 44px;
+      }
+
+      .button-icon {
+        font-size: 1.1em;
+      }
+
+      .easter-egg-hint {
+        font-size: 0.7rem;
+        margin-top: 5px;
+      }
+
+      /* Quiz page landscape */
+      .score-bar-container {
+        height: 26px;
+        margin-bottom: 10px;
+      }
+
+      .combo-container {
+        margin-bottom: 8px;
+        gap: 8px;
+      }
+
+      .combo-meter {
+        padding: 4px 12px;
+        font-size: 0.75rem;
+      }
+
+      .speedrun-display {
+        padding: 4px 10px;
+        font-size: 0.7rem;
+      }
+
+      .hints-row {
+        flex-direction: row;
+        margin: 10px 0;
+        gap: 8px;
+      }
+
+      .hint-block {
+        min-height: 60px;
+        padding: 8px 8px 26px 8px;
+        flex: 1 1 30%;
+      }
+
+      .hint-block p {
+        font-size: 0.75em;
+      }
+
+      .hint-badge {
+        font-size: 0.65em;
+        padding: 3px 8px;
+        bottom: 5px;
+      }
+
+      #hintButton {
+        padding: 8px 18px;
+        font-size: 0.8em;
+        min-height: 38px;
+        margin-bottom: 10px;
+      }
+
+      .options {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+        margin: 10px 0;
+      }
+
+      .option {
+        padding: 8px;
+        gap: 5px;
+      }
+
+      .option img {
+        max-height: 55px;
+      }
+
+      .option span {
+        font-size: 0.7em;
+      }
+
+      #submitButton {
+        padding: 10px 30px;
+        font-size: 0.9rem;
+        margin-top: 10px;
+        min-height: 44px;
+      }
+
+      /* End page landscape */
+      .leaderboard {
+        padding: 12px;
+        margin-top: 14px;
+      }
+
+      .leaderboard h3 {
+        font-size: 1rem;
+        margin-bottom: 8px;
+      }
+
+      #leaderboardList {
+        max-height: 120px;
+      }
+
+      .leaderboard-table th,
+      .leaderboard-table td {
+        padding: 6px 4px;
+        font-size: 0.7em;
+      }
+
+      .leaderboard-pagination {
+        padding-top: 10px;
+        margin-top: 10px;
+        gap: 8px;
+      }
+
+      .leaderboard-pagination button {
+        padding: 8px 14px;
+        min-height: 36px;
+        font-size: 0.75em;
+      }
+
+      /* Fixed elements */
+      .hamburger-menu {
+        top: calc(8px + var(--safe-top));
+        right: calc(8px + var(--safe-right));
+      }
+
+      .hamburger-icon {
+        width: 38px;
+        height: 38px;
+      }
+
+      .hamburger-icon span {
+        width: 16px;
+        height: 2px;
+      }
+
+      .hamburger-links {
+        top: 44px;
+        min-width: 160px;
+        padding: 8px;
+      }
+
+      .hamburger-links button {
+        padding: 10px 8px;
+        font-size: 12px;
+      }
+
+      .easter-egg-counter {
+        bottom: calc(8px + var(--safe-bottom));
+        left: calc(8px + var(--safe-left));
+        padding: 5px 10px;
+        font-size: 0.7rem;
+      }
+
+      .achievements-panel {
+        bottom: calc(55px + var(--safe-bottom));
+        max-height: calc(100vh - 80px);
+        overflow-y: auto;
+      }
+
+      .secret-mode {
+        top: calc(8px + var(--safe-top));
+        left: calc(8px + var(--safe-left));
+        padding: 4px 10px;
+        font-size: 0.65rem;
+      }
+
+      .toast {
+        top: calc(8px + var(--safe-top));
+        padding: 8px 16px;
+        font-size: 0.8rem;
+      }
+
+      .name-prompt-box {
+        padding: 16px;
+      }
+
+      .name-prompt-box .emoji-row {
+        font-size: 1.3rem;
+        margin-bottom: 5px;
+      }
+
+      .name-prompt-box h3 {
+        font-size: 1rem;
+        margin-bottom: 5px;
+      }
+
+      .name-prompt-box input {
+        padding: 10px 14px;
+        margin: 10px 0;
+        font-size: 14px;
+      }
+
+      .name-prompt-box button {
+        padding: 10px 28px;
+        font-size: 0.9rem;
+        margin-top: 10px;
+        min-height: 42px;
+      }
+
+      .meme-popup {
+        padding: 18px;
+        width: 260px;
+      }
+
+      .meme-popup .emoji-big {
+        font-size: 2.2rem;
+        margin-bottom: 8px;
+      }
+
+      .meme-popup .meme-text {
+        font-size: 0.95rem;
+        margin-bottom: 12px;
+      }
+
+      .meme-popup button {
+        padding: 10px 22px;
+        font-size: 0.85rem;
+        min-height: 38px;
       }
 
       .floating-emoji {
@@ -1382,27 +1752,270 @@
       }
     }
 
-    /* Tablet */
-    @media (min-width: 600px) and (max-width: 900px) {
-      .options {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 16px;
+    /* Tablet landscape */
+    @media (min-height: 501px) and (max-height: 800px) and (orientation: landscape) {
+      body {
+        padding: 12px calc(20px + var(--safe-right)) 12px calc(12px + var(--safe-left));
       }
 
-      .option img {
-        max-height: 160px;
+      .start-container,
+      .quiz-container,
+      .end-container {
+        padding: 20px;
       }
-    }
 
-    /* Large screens */
-    @media (min-width: 900px) {
+      .points-circle {
+        width: 100px;
+        height: 100px;
+      }
+
+      .big-number {
+        font-size: 2rem;
+      }
+
       .options {
         grid-template-columns: repeat(4, 1fr);
       }
 
+      .option img {
+        max-height: 100px;
+      }
+
+      #leaderboardList {
+        max-height: 180px;
+      }
+    }
+
+    /* Very tall phones (like iPhone Pro Max in portrait) */
+    @media (min-height: 800px) and (max-width: 479px) {
+      .points-circle {
+        width: 120px;
+        height: 120px;
+        margin: 20px auto;
+      }
+
+      .big-number {
+        font-size: 2.5rem;
+      }
+
+      .rule-item {
+        padding: 12px;
+        margin: 12px 0;
+      }
+
+      .option img {
+        max-height: 80px;
+      }
+
+      #leaderboardList {
+        max-height: 280px;
+      }
+    }
+
+    /* Foldable phones (Galaxy Fold outer screen ~280px) */
+    @media (max-width: 300px) {
+      body {
+        padding: 8px;
+      }
+
+      .start-container,
+      .quiz-container,
+      .end-container {
+        padding: 10px;
+        border-radius: 12px;
+      }
+
       .ucc-logo {
-        max-width: 120px;
-        max-height: 120px;
+        max-width: 50px;
+        max-height: 50px;
+      }
+
+      .gaming-badge {
+        display: none;
+      }
+
+      h1 {
+        font-size: 1.2rem;
+      }
+
+      .points-circle {
+        width: 70px;
+        height: 70px;
+      }
+
+      .big-number {
+        font-size: 1.5rem;
+      }
+
+      .points-text {
+        font-size: 0.55em;
+      }
+
+      .rules-box {
+        display: none;
+      }
+
+      .start-button {
+        padding: 10px 20px;
+        font-size: 0.85rem;
+      }
+
+      .options {
+        grid-template-columns: 1fr;
+        gap: 6px;
+      }
+
+      .option {
+        flex-direction: row;
+        justify-content: flex-start;
+        padding: 8px;
+        gap: 10px;
+      }
+
+      .option img {
+        width: 45px;
+        height: 45px;
+        max-height: none;
+        flex-shrink: 0;
+      }
+
+      .option span {
+        text-align: left;
+        font-size: 0.75em;
+      }
+
+      .hint-block {
+        padding: 8px 8px 24px 8px;
+        min-height: 60px;
+      }
+
+      .hint-block p {
+        font-size: 0.75em;
+      }
+
+      #hintButton {
+        padding: 8px 16px;
+        font-size: 0.75em;
+        min-height: 40px;
+      }
+
+      #hintButton::after {
+        display: none;
+      }
+
+      #submitButton {
+        padding: 10px 24px;
+        font-size: 0.85rem;
+        min-height: 44px;
+      }
+
+      .hamburger-icon {
+        width: 36px;
+        height: 36px;
+      }
+
+      .hamburger-icon span {
+        width: 16px;
+      }
+
+      .easter-egg-counter,
+      .achievements-panel,
+      .secret-mode,
+      .combo-meter,
+      .speedrun-display {
+        display: none !important;
+      }
+
+      .leaderboard {
+        padding: 10px;
+      }
+
+      .leaderboard h3 {
+        font-size: 0.9rem;
+      }
+
+      .leaderboard-table th,
+      .leaderboard-table td {
+        padding: 6px 3px;
+        font-size: 0.65em;
+      }
+
+      #leaderboardList {
+        max-height: 150px;
+      }
+
+      .leaderboard-pagination button {
+        padding: 8px 12px;
+        font-size: 0.7em;
+      }
+    }
+
+    /* Print styles */
+    @media print {
+      body {
+        background: white;
+        color: black;
+      }
+
+      .stars,
+      .floating-emoji,
+      .hamburger-menu,
+      .easter-egg-counter,
+      .achievements-panel,
+      .confetti-container,
+      .meme-popup,
+      .secret-mode,
+      .toast {
+        display: none !important;
+      }
+
+      .start-container,
+      .quiz-container,
+      .end-container {
+        box-shadow: none;
+        border: 1px solid #ccc;
+      }
+
+      .start-container::before,
+      .quiz-container::before,
+      .end-container::before {
+        display: none;
+      }
+    }
+
+    /* Reduced motion preference */
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+
+      .star,
+      .floating-emoji,
+      .points-circle,
+      .gaming-badge,
+      .combo-meter,
+      .name-prompt-box .emoji-row,
+      .button-icon {
+        animation: none !important;
+      }
+    }
+
+    /* High contrast mode */
+    @media (prefers-contrast: high) {
+      :root {
+        --border: #666;
+      }
+
+      .option {
+        border-width: 3px;
+      }
+
+      .option.selected {
+        border-width: 4px;
       }
     }
   </style>
@@ -1505,7 +2118,7 @@
 <div class="start-container active" id="startContainer">
   <div class="quiz-intro">
     <div class="logo-container">
-      <img src="assets/images/logo.jpg" alt="UCC Logo" class="ucc-logo" id="mainLogo" onclick="logoClick()">
+      <img src="assets/images/logo.jpg" alt="UCC Logo" class="ucc-logo" id="mainLogo" onclick="logoClick()" onerror="this.style.display='none'">
       <div class="gaming-badge">🔥 Limited Time Event</div>
     </div>
     <h1>Story Character Challenge</h1>
@@ -1543,7 +2156,7 @@
       <span class="button-text">Start Quiz</span>
       <span class="button-icon">🎮</span>
     </button>
-    <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0;">Psst... there are hidden easter eggs 🥚👀</p>
+    <p class="easter-egg-hint">Psst... there are hidden easter eggs 🥚👀</p>
   </div>
 </div>
 
@@ -1584,7 +2197,7 @@
 <div class="end-container" id="endContainer">
   <div class="quiz-intro">
     <div class="logo-container">
-      <img src="assets/images/logo.jpg" alt="UCC Logo" class="ucc-logo">
+      <img src="assets/images/logo.jpg" alt="UCC Logo" class="ucc-logo" onerror="this.style.display='none'">
     </div>
     <h1 id="endTitle">GG! 🎮</h1>
     <div class="welcome-card">
@@ -1642,10 +2255,11 @@
 </div>
 
 <script>
-// Create stars
+// Create stars with reduced count for performance
 function createStars() {
   const container = document.getElementById('starsContainer');
-  for (let i = 0; i < 50; i++) {
+  const starCount = window.innerWidth < 480 ? 25 : 40;
+  for (let i = 0; i < starCount; i++) {
     const star = document.createElement('div');
     star.className = 'star';
     star.style.left = Math.random() * 100 + '%';
@@ -1670,7 +2284,7 @@ function toggleMenu() {
 document.addEventListener('click', function(e) {
   const menu = document.getElementById('hamburgerLinks');
   const menuButton = document.querySelector('.hamburger-icon');
-  if (menu.classList.contains('active') && !menu.contains(e.target) && !menuButton.contains(e.target)) {
+  if (menu && menu.classList.contains('active') && !menu.contains(e.target) && !menuButton.contains(e.target)) {
     menu.classList.remove('active');
     menuButton.setAttribute('aria-expanded', 'false');
   }
@@ -1701,21 +2315,29 @@ function clearAllData() {
 }
 
 /* ============== EASTER EGGS ============== */
-let easterEggsFound = JSON.parse(localStorage.getItem('easterEggs') || '[]');
+let easterEggsFound = [];
+try {
+  easterEggsFound = JSON.parse(localStorage.getItem('easterEggs') || '[]');
+} catch(e) {
+  easterEggsFound = [];
+}
+
 let logoClicks = 0;
 let secretCode = '';
 let rainbowMode = false;
 
 function updateEasterEggDisplay() {
   const counter = document.getElementById('easterEggCounter');
-  document.getElementById('eggCount').textContent = easterEggsFound.length;
-  if (easterEggsFound.length > 0) {
-    counter.classList.add('show');
-  } else {
-    counter.classList.remove('show');
+  const eggCountEl = document.getElementById('eggCount');
+  if (eggCountEl) eggCountEl.textContent = easterEggsFound.length;
+  if (counter) {
+    if (easterEggsFound.length > 0) {
+      counter.classList.add('show');
+    } else {
+      counter.classList.remove('show');
+    }
   }
   
-  // Update achievement visuals
   easterEggsFound.forEach(id => {
     const ach = document.getElementById(id);
     if (ach) ach.classList.remove('locked');
@@ -1726,7 +2348,9 @@ updateEasterEggDisplay();
 function unlockEasterEgg(id, message, emoji) {
   if (easterEggsFound.includes(id)) return;
   easterEggsFound.push(id);
-  localStorage.setItem('easterEggs', JSON.stringify(easterEggsFound));
+  try {
+    localStorage.setItem('easterEggs', JSON.stringify(easterEggsFound));
+  } catch(e) {}
   updateEasterEggDisplay();
   showMemePopup(emoji, message);
   triggerConfetti();
@@ -1734,13 +2358,13 @@ function unlockEasterEgg(id, message, emoji) {
 
 function toggleAchievements() {
   const panel = document.getElementById('achievementsPanel');
-  panel.classList.toggle('show');
+  if (panel) panel.classList.toggle('show');
 }
 
 document.addEventListener('click', function(e) {
   const panel = document.getElementById('achievementsPanel');
   const counter = document.getElementById('easterEggCounter');
-  if (panel.classList.contains('show') && !panel.contains(e.target) && !counter.contains(e.target)) {
+  if (panel && panel.classList.contains('show') && !panel.contains(e.target) && counter && !counter.contains(e.target)) {
     panel.classList.remove('show');
   }
 });
@@ -1748,15 +2372,17 @@ document.addEventListener('click', function(e) {
 function logoClick() {
   logoClicks++;
   const logo = document.getElementById('mainLogo');
-  logo.style.transform = `rotate(${logoClicks * 72}deg) scale(${1 + logoClicks * 0.05})`;
-  
-  if (logoClicks >= 5 && !easterEggsFound.includes('ach1')) {
-    unlockEasterEgg('ach1', 'You found the spinny logo secret! 🌀', '🖱️');
+  if (logo) {
+    logo.style.transform = `rotate(${logoClicks * 72}deg) scale(${1 + logoClicks * 0.05})`;
+    
+    if (logoClicks >= 5 && !easterEggsFound.includes('ach1')) {
+      unlockEasterEgg('ach1', 'You found the spinny logo secret! 🌀', '🖱️');
+    }
+    
+    setTimeout(() => {
+      logo.style.transform = '';
+    }, 300);
   }
-  
-  setTimeout(() => {
-    logo.style.transform = '';
-  }, 300);
 }
 
 function checkSecretCode(e) {
@@ -1766,7 +2392,8 @@ function checkSecretCode(e) {
   if (secretCode.includes('rainbow')) {
     if (!rainbowMode) {
       rainbowMode = true;
-      document.getElementById('secretMode').classList.add('show');
+      const secretModeEl = document.getElementById('secretMode');
+      if (secretModeEl) secretModeEl.classList.add('show');
       document.body.style.animation = 'rainbow 3s linear infinite';
       if (!easterEggsFound.includes('ach5')) {
         unlockEasterEgg('ach5', 'RAINBOW MODE ACTIVATED! 🌈✨', '🌈');
@@ -1776,20 +2403,26 @@ function checkSecretCode(e) {
 }
 
 function showMemePopup(emoji, text) {
-  document.getElementById('memeEmoji').textContent = emoji;
-  document.getElementById('memeText').textContent = text;
-  document.getElementById('memePopup').classList.add('show');
+  const emojiEl = document.getElementById('memeEmoji');
+  const textEl = document.getElementById('memeText');
+  const popup = document.getElementById('memePopup');
+  if (emojiEl) emojiEl.textContent = emoji;
+  if (textEl) textEl.textContent = text;
+  if (popup) popup.classList.add('show');
 }
 
 function closeMemePopup() {
-  document.getElementById('memePopup').classList.remove('show');
+  const popup = document.getElementById('memePopup');
+  if (popup) popup.classList.remove('show');
 }
 
 function triggerConfetti() {
   const container = document.getElementById('confettiContainer');
+  if (!container) return;
   const colors = ['#00d4ff', '#ff6b9d', '#c56cff', '#00ff88', '#ffcc00'];
+  const count = window.innerWidth < 480 ? 30 : 50;
   
-  for (let i = 0; i < 50; i++) {
+  for (let i = 0; i < count; i++) {
     const confetti = document.createElement('div');
     confetti.className = 'confetti';
     confetti.style.left = Math.random() * 100 + '%';
@@ -1812,13 +2445,16 @@ let combo = 0;
 let bestCombo = 0;
 
 function showNamePrompt() {
-  document.getElementById('namePromptOverlay').classList.add('active');
+  const overlay = document.getElementById('namePromptOverlay');
+  if (overlay) overlay.classList.add('active');
   const inputField = document.getElementById('promptName');
-  inputField.value = "";
-  secretCode = '';
-  setTimeout(() => {
-    inputField.focus();
-  }, 100);
+  if (inputField) {
+    inputField.value = "";
+    secretCode = '';
+    setTimeout(() => {
+      inputField.focus();
+    }, 100);
+  }
 }
 
 function handleNameInputKeypress(event) {
@@ -1828,13 +2464,15 @@ function handleNameInputKeypress(event) {
 }
 
 function actuallyStartQuiz() {
-  const input = document.getElementById('promptName').value.trim();
+  const inputEl = document.getElementById('promptName');
+  const input = inputEl ? inputEl.value.trim() : '';
   if (!input) {
     showToast("Bruh, enter your name first! 😅", false);
     return;
   }
   playerName = input;
-  document.getElementById('namePromptOverlay').classList.remove('active');
+  const overlay = document.getElementById('namePromptOverlay');
+  if (overlay) overlay.classList.remove('active');
   document.getElementById('startContainer').classList.remove('active');
   document.getElementById('quizContainer').classList.add('active');
 
@@ -1873,6 +2511,7 @@ const funnyWrongMessages = [
 
 function showToast(message, isCorrect) {
   const toast = document.getElementById('toastMsg');
+  if (!toast) return;
   toast.innerText = message;
   toast.className = 'toast show ' + (isCorrect ? 'correct' : 'wrong');
   setTimeout(() => {
@@ -2017,12 +2656,14 @@ let questionTimerInterval = null;
 
 function startQuestionTimer() {
   questionStartTime = new Date();
-  document.getElementById('speedrunDisplay').style.display = 'block';
+  const display = document.getElementById('speedrunDisplay');
+  if (display) display.style.display = 'block';
   
   if (questionTimerInterval) clearInterval(questionTimerInterval);
   questionTimerInterval = setInterval(() => {
     const elapsed = ((new Date() - questionStartTime) / 1000).toFixed(1);
-    document.getElementById('questionTimer').textContent = elapsed;
+    const timerEl = document.getElementById('questionTimer');
+    if (timerEl) timerEl.textContent = elapsed;
   }, 100);
 }
 
@@ -2037,20 +2678,23 @@ function stopQuestionTimer() {
 /* ============== COMBO SYSTEM ============== */
 function updateComboDisplay() {
   const meter = document.getElementById('comboMeter');
-  document.getElementById('comboCount').textContent = combo;
+  const countEl = document.getElementById('comboCount');
+  if (countEl) countEl.textContent = combo;
   
-  if (combo >= 2) {
-    meter.classList.add('active');
-    if (combo >= 5) {
-      meter.classList.add('fire');
-      if (!easterEggsFound.includes('ach3')) {
-        unlockEasterEgg('ach3', "YOU'RE ON FIRE! 5x COMBO! 🔥🔥🔥", '🔥');
+  if (meter) {
+    if (combo >= 2) {
+      meter.classList.add('active');
+      if (combo >= 5) {
+        meter.classList.add('fire');
+        if (!easterEggsFound.includes('ach3')) {
+          unlockEasterEgg('ach3', "YOU'RE ON FIRE! 5x COMBO! 🔥🔥🔥", '🔥');
+        }
+      } else {
+        meter.classList.remove('fire');
       }
     } else {
-      meter.classList.remove('fire');
+      meter.classList.remove('active', 'fire');
     }
-  } else {
-    meter.classList.remove('active', 'fire');
   }
   
   if (combo > bestCombo) bestCombo = combo;
@@ -2058,61 +2702,70 @@ function updateComboDisplay() {
 
 /* ============== LOAD RIDDLE ============== */
 function loadRiddle() {
-  document.getElementById('questionTracker').textContent = `Question ${currentRiddle+1} of ${riddles.length}`;
+  const tracker = document.getElementById('questionTracker');
+  if (tracker) tracker.textContent = `Question ${currentRiddle+1} of ${riddles.length}`;
   hintsShown = 0;
   selectedOptionIndex = null;
-  document.getElementById('hintButton').disabled = false;
+  const hintBtn = document.getElementById('hintButton');
+  if (hintBtn) hintBtn.disabled = false;
 
   const hintsRow = document.getElementById('hintsRow');
-  hintsRow.innerHTML = '';
-  const curHints = riddles[currentRiddle].hints;
-  for (let i = 0; i < 3; i++) {
-    const block = document.createElement('div');
-    block.className = 'hint-block';
-    block.id = `hintBlock${i+1}`;
-    block.style.display = 'none';
+  if (hintsRow) {
+    hintsRow.innerHTML = '';
+    const curHints = riddles[currentRiddle].hints;
+    for (let i = 0; i < 3; i++) {
+      const block = document.createElement('div');
+      block.className = 'hint-block';
+      block.id = `hintBlock${i+1}`;
+      block.style.display = 'none';
 
-    const badge = document.createElement('span');
-    badge.className = 'hint-badge';
-    badge.id = `hintBadge${i+1}`;
-    const potential = 10 - (3 * i);
-    badge.textContent = `+${potential} pts`;
-    badge.style.display = 'none';
+      const badge = document.createElement('span');
+      badge.className = 'hint-badge';
+      badge.id = `hintBadge${i+1}`;
+      const potential = 10 - (3 * i);
+      badge.textContent = `+${potential} pts`;
+      badge.style.display = 'none';
 
-    const hintPara = document.createElement('p');
-    hintPara.textContent = curHints[i];
+      const hintPara = document.createElement('p');
+      hintPara.textContent = curHints[i];
 
-    block.appendChild(hintPara);
-    block.appendChild(badge);
-    hintsRow.appendChild(block);
+      block.appendChild(hintPara);
+      block.appendChild(badge);
+      hintsRow.appendChild(block);
+    }
   }
 
   const optionsDiv = document.getElementById('options');
-  optionsDiv.innerHTML = '';
-  riddles[currentRiddle].options.forEach((optObj, idx) => {
-    const optionDiv = document.createElement('div');
-    optionDiv.className = 'option';
-    optionDiv.setAttribute('role', 'button');
-    optionDiv.setAttribute('tabindex', '0');
+  if (optionsDiv) {
+    optionsDiv.innerHTML = '';
+    riddles[currentRiddle].options.forEach((optObj, idx) => {
+      const optionDiv = document.createElement('div');
+      optionDiv.className = 'option';
+      optionDiv.setAttribute('role', 'button');
+      optionDiv.setAttribute('tabindex', '0');
 
-    const imgEl = document.createElement('img');
-    imgEl.src = optObj.img;
-    imgEl.alt = optObj.text;
+      const imgEl = document.createElement('img');
+      imgEl.src = optObj.img;
+      imgEl.alt = optObj.text;
+      imgEl.onerror = function() {
+        this.style.display = 'none';
+      };
 
-    const textSpan = document.createElement('span');
-    textSpan.textContent = optObj.text;
+      const textSpan = document.createElement('span');
+      textSpan.textContent = optObj.text;
 
-    optionDiv.onclick = () => selectOption(idx);
-    optionDiv.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault();
-        selectOption(idx);
-      }
+      optionDiv.onclick = () => selectOption(idx);
+      optionDiv.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          selectOption(idx);
+        }
+      });
+      optionDiv.appendChild(imgEl);
+      optionDiv.appendChild(textSpan);
+      optionsDiv.appendChild(optionDiv);
     });
-    optionDiv.appendChild(imgEl);
-    optionDiv.appendChild(textSpan);
-    optionsDiv.appendChild(optionDiv);
-  });
+  }
 
   showNextHint();
   startQuestionTimer();
@@ -2136,7 +2789,8 @@ function showNextHint() {
     }
   }
   if (hintsShown === 3) {
-    document.getElementById('hintButton').disabled = true;
+    const hintBtn = document.getElementById('hintButton');
+    if (hintBtn) hintBtn.disabled = true;
   }
 }
 
@@ -2167,7 +2821,6 @@ function submitAnswer() {
     const msg = funnyCorrectMessages[Math.floor(Math.random() * funnyCorrectMessages.length)];
     showToast(`${msg} +${pointsEarned}`, true);
     
-    // Speed achievement
     if (answerTime < 3 && !easterEggsFound.includes('ach2')) {
       unlockEasterEgg('ach2', "SPEEDRUNNER! Under 3 seconds! ⚡", '⚡');
     }
@@ -2193,28 +2846,28 @@ function updateScoreBar() {
   let percent = (score / maxScore) * 100;
   if (percent > 100) percent = 100;
   const fill = document.getElementById('scoreBarFill');
-  fill.style.width = `${percent}%`;
+  if (fill) fill.style.width = `${percent}%`;
   updateScoreBarLabel();
 }
 
 function updateScoreBarLabel() {
-  document.getElementById('scoreBarLabel').textContent = `Score: ${score} | Time: ${elapsedSeconds}s`;
+  const label = document.getElementById('scoreBarLabel');
+  if (label) label.textContent = `Score: ${score} | Time: ${elapsedSeconds}s`;
 }
 
 /* ============== END SCREEN ============== */
 function showEndScreen() {
   document.getElementById('quizContainer').classList.remove('active');
   document.getElementById('endContainer').classList.add('active');
-  document.getElementById('finalScore').textContent = score;
+  const finalScoreEl = document.getElementById('finalScore');
+  if (finalScoreEl) finalScoreEl.textContent = score;
 
   const totalTime = stopTimer();
 
-  // Perfect score achievement
   if (score === 100 && !easterEggsFound.includes('ach4')) {
     unlockEasterEgg('ach4', "PERFECT SCORE! You're literally a genius! 💯", '💯');
   }
 
-  // End screen reactions
   let endTitle, reaction;
   if (score === 100) {
     endTitle = "FLAWLESS VICTORY! 👑";
@@ -2235,11 +2888,17 @@ function showEndScreen() {
     reaction = "Okay that was rough, BUT you can run it back! 🎮";
   }
 
-  document.getElementById('endTitle').textContent = endTitle;
-  document.getElementById('scoreReaction').textContent = reaction;
-  document.getElementById('scoreDescription').textContent = getScoreDescription(score);
-  document.getElementById('timeDescription').textContent = `Time: ${totalTime} seconds ${totalTime < 60 ? '⚡ Speed demon!' : ''}`;
-  document.getElementById('comboDescription').textContent = `Best combo: ${bestCombo}x ${bestCombo >= 5 ? '🔥 ON FIRE!' : ''}`;
+  const endTitleEl = document.getElementById('endTitle');
+  const reactionEl = document.getElementById('scoreReaction');
+  const descEl = document.getElementById('scoreDescription');
+  const timeDescEl = document.getElementById('timeDescription');
+  const comboDescEl = document.getElementById('comboDescription');
+
+  if (endTitleEl) endTitleEl.textContent = endTitle;
+  if (reactionEl) reactionEl.textContent = reaction;
+  if (descEl) descEl.textContent = getScoreDescription(score);
+  if (timeDescEl) timeDescEl.textContent = `Time: ${totalTime} seconds ${totalTime < 60 ? '⚡ Speed demon!' : ''}`;
+  if (comboDescEl) comboDescEl.textContent = `Best combo: ${bestCombo}x ${bestCombo >= 5 ? '🔥 ON FIRE!' : ''}`;
 
   saveScore(totalTime);
   updateLeaderboardDisplay();
@@ -2261,7 +2920,8 @@ function getScoreDescription(finalScore) {
 function restartQuiz() {
   document.getElementById('endContainer').classList.remove('active');
   document.getElementById('startContainer').classList.add('active');
-  document.getElementById('scoreBarFill').style.width = '0%';
+  const fill = document.getElementById('scoreBarFill');
+  if (fill) fill.style.width = '0%';
   elapsedSeconds = 0;
   updateScoreBarLabel();
   stopTimer();
@@ -2274,37 +2934,44 @@ function restartQuiz() {
 
 /* ============== LEADERBOARD ============== */
 function getLeaderboard() {
-  const raw = localStorage.getItem('quizLeaderboard');
-  const arr = raw ? JSON.parse(raw) : [];
-  arr.sort((a, b) => {
-    if (b.score !== a.score) return b.score - a.score;
-    return a.time - b.time;
-  });
-  return arr.slice(0, 50);
+  try {
+    const raw = localStorage.getItem('quizLeaderboard');
+    const arr = raw ? JSON.parse(raw) : [];
+    arr.sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      return a.time - b.time;
+    });
+    return arr.slice(0, 50);
+  } catch(e) {
+    return [];
+  }
 }
 
 function saveScore(totalTime) {
   if (!playerName) return;
-  const newScore = { 
-    name: playerName, 
-    score: score, 
-    time: totalTime, 
-    date: new Date().toISOString() 
-  };
-  const lb = getLeaderboard();
-  lb.push(newScore);
-  lb.sort((a, b) => {
-    if (b.score !== a.score) return b.score - a.score;
-    return a.time - b.time;
-  });
-  while (lb.length > 50) lb.pop();
-  localStorage.setItem('quizLeaderboard', JSON.stringify(lb));
-  currentPage = 1;
+  try {
+    const newScore = { 
+      name: playerName, 
+      score: score, 
+      time: totalTime, 
+      date: new Date().toISOString() 
+    };
+    const lb = getLeaderboard();
+    lb.push(newScore);
+    lb.sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      return a.time - b.time;
+    });
+    while (lb.length > 50) lb.pop();
+    localStorage.setItem('quizLeaderboard', JSON.stringify(lb));
+    currentPage = 1;
+  } catch(e) {}
 }
 
 function updateLeaderboardDisplay() {
   const lb = getLeaderboard();
   const tableBody = document.getElementById('leaderboardTableBody');
+  if (!tableBody) return;
   tableBody.innerHTML = '';
 
   const totalPages = Math.max(1, Math.ceil(lb.length / entriesPerPage));
@@ -2336,11 +3003,13 @@ function updateLeaderboardDisplay() {
     tableBody.appendChild(row);
   });
 
-  document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages}`;
+  const pageInfo = document.getElementById('pageInfo');
+  if (pageInfo) pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+  
   const prev = document.querySelector('.leaderboard-pagination button:first-child');
   const nxt = document.querySelector('.leaderboard-pagination button:last-child');
-  prev.disabled = (currentPage === 1 || lb.length === 0);
-  nxt.disabled = (currentPage === totalPages || lb.length === 0);
+  if (prev) prev.disabled = (currentPage === 1 || lb.length === 0);
+  if (nxt) nxt.disabled = (currentPage === totalPages || lb.length === 0);
 }
 
 function changePage(delta) {
@@ -2365,7 +3034,8 @@ function exportMarkdown() {
     if (index === 0) emoji = '🥇 ';
     else if (index === 1) emoji = '🥈 ';
     else if (index === 2) emoji = '🥉 ';
-    md += `| ${emoji}${index+1} | ${entry.name} | ${entry.score} | ${entry.time || 0} | ${entry.date.split('T')[0]} |\n`;
+    const dateStr = entry.date ? entry.date.split('T')[0] : 'N/A';
+    md += `| ${emoji}${index+1} | ${entry.name} | ${entry.score} | ${entry.time || 0} | ${dateStr} |\n`;
   });
 
   const blob = new Blob([md], { type: 'text/markdown' });
@@ -2375,9 +3045,25 @@ function exportMarkdown() {
   a.download = 'leaderboard.md';
   a.click();
   URL.revokeObjectURL(url);
-  document.getElementById('hamburgerLinks').classList.remove('active');
+  const menu = document.getElementById('hamburgerLinks');
+  if (menu) menu.classList.remove('active');
   showToast("Leaderboard exported! 📥", false);
 }
+
+// Handle orientation changes
+window.addEventListener('orientationchange', function() {
+  setTimeout(() => {
+    window.scrollTo(0, 0);
+  }, 100);
+});
+
+// Handle resize for dynamic adjustments
+window.addEventListener('resize', function() {
+  // Re-scroll to top on significant resize (orientation change)
+  if (Math.abs(window.innerHeight - window.innerWidth) > 200) {
+    window.scrollTo(0, 0);
+  }
+});
 </script>
 </body>
 </html>
